@@ -1,0 +1,195 @@
+/* Futuristic Marketplace Styles */
+
+/* Global animations */
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@keyframes glow {
+    0%,
+    100% {
+        text-shadow: 0 0 5px rgba(255, 143, 0, 0.5), 0 0 10px rgba(255, 143, 0, 0.5), 0 0 15px rgba(255, 143, 0, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 10px rgba(255, 143, 0, 0.8), 0 0 20px rgba(255, 143, 0, 0.8), 0 0 30px rgba(255, 143, 0, 0.8);
+    }
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Particle effect background */
+.futuristic-bg {
+    position: relative;
+    overflow: hidden;
+}
+
+.futuristic-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(255, 143, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(171, 2, 201, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(138, 1, 161, 0.05) 0%, transparent 50%);
+    z-index: 1;
+    pointer-events: none;
+    animation: float 8s ease-in-out infinite;
+}
+
+/* Neon text effects */
+.neon-text {
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+/* Glassmorphism effects */
+.glass-card {
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 143, 0, 0.2);
+    border-radius: 20px;
+}
+
+/* Hover effects for cards */
+.hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(255, 143, 0, 0.2);
+}
+
+/* Loading skeleton effects */
+.futuristic-skeleton {
+    background: linear-gradient(90deg, rgba(255, 143, 0, 0.1) 0%, rgba(171, 2, 201, 0.1) 50%, rgba(255, 215, 0, 0.1) 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Button shimmer effect */
+.shimmer-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.shimmer-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.shimmer-button:hover::before {
+    left: 100%;
+}
+
+/* Tab indicator glow */
+.glowing-tabs .MuiTabs-indicator {
+    background: linear-gradient(90deg, #ff8f00, #ffd700);
+    height: 3px;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(255, 143, 0, 0.5);
+}
+
+/* Custom scrollbar for dark theme */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(138, 1, 161, 0.1);
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #ff8f00, #ab02c9);
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #ffd700, #8a01a1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .futuristic-bg::before {
+        opacity: 0.5;
+    }
+
+    .neon-text {
+        animation: none;
+        text-shadow: none;
+    }
+
+    .glass-card {
+        backdrop-filter: blur(10px);
+    }
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Dark mode specific styles */
+@media (prefers-color-scheme: dark) {
+    .glass-card {
+        background: rgba(138, 1, 161, 0.1);
+        border-color: rgba(255, 143, 0, 0.3);
+    }
+}
