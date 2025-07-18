@@ -189,6 +189,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
     }, [getSpecificToolApi.error])
 
     useEffect(() => {
+        if (!dialogProps || !dialogProps.type) return
         if (dialogProps.type === 'EDIT' && dialogProps.data) {
             // When tool dialog is opened from Tools dashboard
             setToolId(dialogProps.data.id)
@@ -423,11 +424,29 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
             maxWidth='md'
             open={show}
             onClose={onCancel}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
+            aria-labelledby='tool-dialog-title'
+            aria-describedby='tool-dialog-description'
+            PaperProps={{
+                sx: {
+                    background: (theme) => theme.palette.background.paper,
+                    borderRadius: 4,
+                    boxShadow: 24
+                }
+            }}
         >
-            <DialogTitle sx={{ fontSize: '1rem', p: 3, pb: 0 }} id='alert-dialog-title'>
-                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <DialogTitle
+                sx={{
+                    fontSize: '1.25rem',
+                    p: 3,
+                    pb: 0,
+                    fontWeight: 700,
+                    borderBottom: '1px solid',
+                    borderColor: 'divider',
+                    letterSpacing: '-1px'
+                }}
+                id='alert-dialog-title'
+            >
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                     {dialogProps.title}
                     <Box>
                         {dialogProps.type === 'EDIT' && (
@@ -449,11 +468,22 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                     </Box>
                 </Box>
             </DialogTitle>
-            <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxHeight: '75vh', position: 'relative', px: 3, pb: 3 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 2 }}>
+            <DialogContent
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 3,
+                    maxHeight: '75vh',
+                    position: 'relative',
+                    px: 4,
+                    py: 4,
+                    background: 'none'
+                }}
+            >
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     <Box>
-                        <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
-                            <Typography variant='overline'>
+                        <Stack sx={{ position: 'relative', alignItems: 'center', mb: 1 }} direction='row'>
+                            <Typography variant='subtitle2' fontWeight={600}>
                                 Tool Name
                                 <span style={{ color: 'red' }}>&nbsp;*</span>
                             </Typography>
@@ -467,13 +497,14 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                             placeholder='My New Tool'
                             value={toolName}
                             name='toolName'
+                            sx={{ borderRadius: 2, fontSize: 16, background: customization.isDarkMode ? '#232627' : '#f9f9f9', mb: 2 }}
                             onChange={(e) => setToolName(e.target.value)}
                         />
                     </Box>
                     <Box>
-                        <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
-                            <Typography variant='overline'>
-                                Tool description
+                        <Stack sx={{ position: 'relative', alignItems: 'center', mb: 1 }} direction='row'>
+                            <Typography variant='subtitle2' fontWeight={600}>
+                                Tool Description
                                 <span style={{ color: 'red' }}>&nbsp;*</span>
                             </Typography>
                             <TooltipWithParser
@@ -490,12 +521,15 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                             rows={3}
                             value={toolDesc}
                             name='toolDesc'
+                            sx={{ borderRadius: 2, fontSize: 16, background: customization.isDarkMode ? '#232627' : '#f9f9f9', mb: 2 }}
                             onChange={(e) => setToolDesc(e.target.value)}
                         />
                     </Box>
                     <Box>
-                        <Stack sx={{ position: 'relative' }} direction='row'>
-                            <Typography variant='overline'>Tool Icon Source</Typography>
+                        <Stack sx={{ position: 'relative', mb: 1 }} direction='row'>
+                            <Typography variant='subtitle2' fontWeight={600}>
+                                Tool Icon Source
+                            </Typography>
                         </Stack>
                         <OutlinedInput
                             id='toolIcon'
@@ -505,13 +539,16 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                             placeholder='https://raw.githubusercontent.com/gilbarbara/logos/main/logos/airtable.svg'
                             value={toolIcon}
                             name='toolIcon'
+                            sx={{ borderRadius: 2, fontSize: 16, background: customization.isDarkMode ? '#232627' : '#f9f9f9', mb: 2 }}
                             onChange={(e) => setToolIcon(e.target.value)}
                         />
                     </Box>
                     <Box>
-                        <Stack sx={{ position: 'relative', justifyContent: 'space-between' }} direction='row'>
+                        <Stack sx={{ position: 'relative', justifyContent: 'space-between', mb: 1 }} direction='row'>
                             <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
-                                <Typography variant='overline'>Input Schema</Typography>
+                                <Typography variant='subtitle2' fontWeight={600}>
+                                    Input Schema
+                                </Typography>
                                 <TooltipWithParser title={'What is the input format in JSON?'} />
                             </Stack>
                             {dialogProps.type !== 'TEMPLATE' && (
@@ -528,9 +565,11 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                         <Grid columns={columns} rows={toolSchema} disabled={dialogProps.type === 'TEMPLATE'} onRowUpdate={onRowUpdate} />
                     </Box>
                     <Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
                             <Stack sx={{ position: 'relative', alignItems: 'center' }} direction='row'>
-                                <Typography variant='overline'>Javascript Function</Typography>
+                                <Typography variant='subtitle2' fontWeight={600}>
+                                    Javascript Function
+                                </Typography>
                                 <TooltipWithParser title='Function to execute when tool is being used. You can use properties specified in Input Schema as variables. For example, if the property is <code>userid</code>, you can use as <code>$userid</code>. Return value must be a string. You can also override the code from API by following this <a target="_blank" href="https://docs.flowiseai.com/tools/custom-tool#override-function-from-api">guide</a>' />
                             </Stack>
                             <Stack direction='row'>
@@ -559,14 +598,24 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                     </Box>
                 </Box>
             </DialogContent>
-            <DialogActions sx={{ p: 3 }}>
+            <DialogActions sx={{ p: 3, borderTop: '1px solid', borderColor: 'divider', background: 'none' }}>
                 {dialogProps.type === 'EDIT' && (
-                    <StyledButton color='error' variant='contained' onClick={() => deleteTool()}>
+                    <StyledButton
+                        color='error'
+                        variant='contained'
+                        onClick={() => deleteTool()}
+                        sx={{ borderRadius: 2, minWidth: 120, fontWeight: 700 }}
+                    >
                         Delete
                     </StyledButton>
                 )}
                 {dialogProps.type === 'TEMPLATE' && (
-                    <StyledButton color='secondary' variant='contained' onClick={useToolTemplate}>
+                    <StyledButton
+                        color='secondary'
+                        variant='contained'
+                        onClick={useToolTemplate}
+                        sx={{ borderRadius: 2, minWidth: 120, fontWeight: 700 }}
+                    >
                         Use Template
                     </StyledButton>
                 )}
@@ -574,6 +623,7 @@ const ToolDialog = ({ show, dialogProps, onUseTemplate, onCancel, onConfirm, set
                     <StyledButton
                         disabled={!(toolName && toolDesc)}
                         variant='contained'
+                        sx={{ borderRadius: 2, minWidth: 120, fontWeight: 700 }}
                         onClick={() => (dialogProps.type === 'ADD' || dialogProps.type === 'IMPORT' ? addNewTool() : saveTool())}
                     >
                         {dialogProps.confirmButtonName}

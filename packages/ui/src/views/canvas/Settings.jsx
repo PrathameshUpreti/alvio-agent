@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 // material-ui
 import { useTheme, styled } from '@mui/material/styles'
 import { Popper, ClickAwayListener, Paper, List, ListItemButton, ListItemIcon, ListItemText, Divider, Box, Typography } from '@mui/material'
+import Fade from '@mui/material/Fade'
 
 // icons
 import {
@@ -20,24 +21,16 @@ import {
 // ==============================|| CANVAS SETTINGS ||============================== //
 
 // Styled components to match dashboard styling
-const GradientPaper = styled(Paper)(({ theme }) => ({
+const GlassGradientPaper = styled(Paper)(({ theme }) => ({
     width: '100%',
-    borderRadius: '12px',
+    borderRadius: '18px',
     overflowY: 'auto',
     overflowX: 'hidden',
-    '&::-webkit-scrollbar': {
-        display: 'none'
-    },
-    msOverflowStyle: 'none' /* IE and Edge */,
-    scrollbarWidth: 'none' /* Firefox */,
     position: 'relative',
-    background:
-        theme.palette.mode === 'dark'
-            ? 'linear-gradient(to bottom right, rgb(40, 45, 50), rgb(30, 35, 40))'
-            : 'linear-gradient(to bottom right, #ffffff, #f8fafc)',
-    border: '1px solid',
-    borderColor: theme.palette.mode === 'dark' ? 'rgba(128, 128, 128, 0.2)' : 'rgba(14, 165, 233, 0.15)',
-    boxShadow: theme.palette.mode === 'dark' ? '0 8px 32px rgba(0, 0, 0, 0.3)' : '0 8px 32px rgba(0, 0, 0, 0.1)'
+    background: theme.palette.background.paper,
+    border: '1.5px solid',
+    borderColor: theme.palette.mode === 'dark' ? 'rgba(128, 128, 128, 0.25)' : 'rgba(14, 165, 233, 0.18)',
+    boxShadow: theme.palette.mode === 'dark' ? '0 8px 32px rgba(141,54,249,0.18)' : '0 8px 32px rgba(141,54,249,0.10)'
 }))
 
 const GradientOverlay = styled(Box)(({ theme }) => ({
@@ -75,10 +68,15 @@ const OrangeBall = styled(Box)(({ theme }) => ({
 }))
 
 const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
-    borderRadius: '8px',
+    borderRadius: '10px',
     margin: '4px 0',
+    transition: 'background 0.18s, box-shadow 0.18s',
     '&:hover': {
-        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(14, 165, 233, 0.1)'
+        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(141,54,249,0.10)' : 'rgba(141,54,249,0.08)',
+        boxShadow: '0 2px 8px rgba(141,54,249,0.10)'
+    },
+    '&:focus': {
+        outline: '2px solid ' + theme.palette.primary.main
     }
 }))
 
@@ -115,122 +113,128 @@ const Settings = ({ chatflow, isSettingsOpen, anchorEl, onClose, onSettingsItemC
             open={isSettingsOpen}
             role={undefined}
             transition
-            disablePortal
-            placement={undefined} // optional
-            anchorEl={null} // remove anchor positioning
-            style={{
-                zIndex: 1000,
-                position: 'fixed',
-                top: '70px',
-                right: '25px'
-            }}
+            disablePortal={false}
+            placement='bottom-end'
+            anchorEl={anchorEl}
+            modifiers={[
+                {
+                    name: 'offset',
+                    options: {
+                        offset: [0, 10]
+                    }
+                }
+            ]}
+            style={{ zIndex: 1300 }}
         >
-            <GradientPaper
-                elevation={16}
-                sx={{
-                    p: 2,
-                    width: 280,
-                    maxHeight: '80vh'
-                }}
-            >
-                <GradientOverlay>
-                    <PinkBall />
-                    <OrangeBall />
-                </GradientOverlay>
-
-                <Box sx={{ position: 'relative', zIndex: 1 }}>
-                    <Box
+            {({ TransitionProps }) => (
+                <Fade {...TransitionProps} timeout={200}>
+                    <Paper
+                        elevation={4}
                         sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            mb: 2
+                            p: 2,
+                            width: 300,
+                            maxHeight: '80vh',
+                            borderRadius: '10px',
+                            background: theme.palette.background.paper,
+                            border: `1px solid ${theme.palette.divider}`,
+                            boxShadow: theme.shadows[2]
                         }}
                     >
-                        <Typography variant='h5' sx={{ fontWeight: 600 }}>
-                            Settings
-                        </Typography>
-                    </Box>
+                        <Box sx={{ position: 'relative' }}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    mb: 2
+                                }}
+                            >
+                                <Typography variant='h6' sx={{ fontWeight: 600 }}>
+                                    Settings
+                                </Typography>
+                            </Box>
 
-                    <ClickAwayListener onClickAway={onClose}>
-                        <List component='nav' sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
-                            {chatflow?.id && (
-                                <>
-                                    <StyledListItemButton onClick={() => onSettingsItemClick('chatflowConfiguration')}>
-                                        <StyledListItemIcon>
-                                            <IconSettings stroke={1.5} size='1.3rem' />
-                                        </StyledListItemIcon>
-                                        <StyledListItemText
-                                            primary={isAgentCanvas ? 'Agents Configuration' : 'Chatflow Configuration'}
-                                            primaryTypographyProps={{ fontWeight: 500 }}
-                                        />
-                                    </StyledListItemButton>
-                                    <StyledListItemButton onClick={() => onSettingsItemClick('viewMessages')}>
-                                        <StyledListItemIcon>
-                                            <IconMessages stroke={1.5} size='1.3rem' />
-                                        </StyledListItemIcon>
-                                        <StyledListItemText primary='View Messages' primaryTypographyProps={{ fontWeight: 500 }} />
-                                    </StyledListItemButton>
-                                    {!isAgentCanvas && (
-                                        <StyledListItemButton onClick={() => onSettingsItemClick('viewLeads')}>
-                                            <StyledListItemIcon>
-                                                <IconUserCircle stroke={1.5} size='1.3rem' />
-                                            </StyledListItemIcon>
-                                            <StyledListItemText primary='View Leads' primaryTypographyProps={{ fontWeight: 500 }} />
-                                        </StyledListItemButton>
+                            <ClickAwayListener onClickAway={onClose}>
+                                <List component='nav' sx={{ p: 0 }}>
+                                    {chatflow?.id && (
+                                        <>
+                                            <ListItemButton onClick={() => onSettingsItemClick('chatflowConfiguration')}>
+                                                <ListItemIcon>
+                                                    <IconSettings stroke={1.5} size='1.3rem' />
+                                                </ListItemIcon>
+                                                <ListItemText
+                                                    primary={isAgentCanvas ? 'Agents Configuration' : 'Chatflow Configuration'}
+                                                    primaryTypographyProps={{ fontWeight: 500 }}
+                                                />
+                                            </ListItemButton>
+                                            <ListItemButton onClick={() => onSettingsItemClick('viewMessages')}>
+                                                <ListItemIcon>
+                                                    <IconMessages stroke={1.5} size='1.3rem' />
+                                                </ListItemIcon>
+                                                <ListItemText primary='View Messages' primaryTypographyProps={{ fontWeight: 500 }} />
+                                            </ListItemButton>
+                                            {!isAgentCanvas && (
+                                                <ListItemButton onClick={() => onSettingsItemClick('viewLeads')}>
+                                                    <ListItemIcon>
+                                                        <IconUserCircle stroke={1.5} size='1.3rem' />
+                                                    </ListItemIcon>
+                                                    <ListItemText primary='View Leads' primaryTypographyProps={{ fontWeight: 500 }} />
+                                                </ListItemButton>
+                                            )}
+                                            <ListItemButton onClick={() => onSettingsItemClick('viewUpsertHistory')}>
+                                                <ListItemIcon>
+                                                    <IconDatabaseImport stroke={1.5} size='1.3rem' />
+                                                </ListItemIcon>
+                                                <ListItemText primary='View Upsert History' primaryTypographyProps={{ fontWeight: 500 }} />
+                                            </ListItemButton>
+                                            <Divider sx={{ my: 1.5 }} />
+                                        </>
                                     )}
-                                    <StyledListItemButton onClick={() => onSettingsItemClick('viewUpsertHistory')}>
-                                        <StyledListItemIcon>
-                                            <IconDatabaseImport stroke={1.5} size='1.3rem' />
-                                        </StyledListItemIcon>
-                                        <StyledListItemText primary='View Upsert History' primaryTypographyProps={{ fontWeight: 500 }} />
-                                    </StyledListItemButton>
-                                    <Divider sx={{ my: 1.5 }} />
-                                </>
-                            )}
-                            <StyledListItemButton onClick={() => onSettingsItemClick('duplicateChatflow')}>
-                                <StyledListItemIcon>
-                                    <IconCopy stroke={1.5} size='1.3rem' />
-                                </StyledListItemIcon>
-                                <StyledListItemText primary='Duplicate' primaryTypographyProps={{ fontWeight: 500 }} />
-                            </StyledListItemButton>
-                            <StyledListItemButton onClick={() => onSettingsItemClick('exportChatflow')}>
-                                <StyledListItemIcon>
-                                    <IconDownload stroke={1.5} size='1.3rem' />
-                                </StyledListItemIcon>
-                                <StyledListItemText primary='Export' primaryTypographyProps={{ fontWeight: 500 }} />
-                            </StyledListItemButton>
-                            <StyledListItemButton component='label'>
-                                <StyledListItemIcon>
-                                    <IconUpload stroke={1.5} size='1.3rem' />
-                                </StyledListItemIcon>
-                                <StyledListItemText primary='Import' primaryTypographyProps={{ fontWeight: 500 }} />
-                                <input type='file' onChange={handleFileUpload} hidden accept='.json' />
-                            </StyledListItemButton>
-                            {chatflow?.id && (
-                                <>
-                                    <StyledListItemButton onClick={() => onSettingsItemClick('saveAsTemplate')}>
-                                        <StyledListItemIcon>
-                                            <IconTemplate stroke={1.5} size='1.3rem' />
-                                        </StyledListItemIcon>
-                                        <StyledListItemText primary='Save as Template' primaryTypographyProps={{ fontWeight: 500 }} />
-                                    </StyledListItemButton>
-                                    <Divider sx={{ my: 1.5 }} />
-                                    <StyledListItemButton
-                                        onClick={() => onSettingsItemClick('deleteChatflow')}
-                                        sx={{ color: 'error.main' }}
-                                    >
-                                        <StyledListItemIcon sx={{ color: 'error.main' }}>
-                                            <IconTrash stroke={1.5} size='1.3rem' />
-                                        </StyledListItemIcon>
-                                        <StyledListItemText primary='Delete' primaryTypographyProps={{ fontWeight: 500 }} />
-                                    </StyledListItemButton>
-                                </>
-                            )}
-                        </List>
-                    </ClickAwayListener>
-                </Box>
-            </GradientPaper>
+                                    <ListItemButton onClick={() => onSettingsItemClick('duplicateChatflow')}>
+                                        <ListItemIcon>
+                                            <IconCopy stroke={1.5} size='1.3rem' />
+                                        </ListItemIcon>
+                                        <ListItemText primary='Duplicate' primaryTypographyProps={{ fontWeight: 500 }} />
+                                    </ListItemButton>
+                                    <ListItemButton onClick={() => onSettingsItemClick('exportChatflow')}>
+                                        <ListItemIcon>
+                                            <IconDownload stroke={1.5} size='1.3rem' />
+                                        </ListItemIcon>
+                                        <ListItemText primary='Export' primaryTypographyProps={{ fontWeight: 500 }} />
+                                    </ListItemButton>
+                                    <ListItemButton component='label'>
+                                        <ListItemIcon>
+                                            <IconUpload stroke={1.5} size='1.3rem' />
+                                        </ListItemIcon>
+                                        <ListItemText primary='Import' primaryTypographyProps={{ fontWeight: 500 }} />
+                                        <input type='file' onChange={handleFileUpload} hidden accept='.json' />
+                                    </ListItemButton>
+                                    {chatflow?.id && (
+                                        <>
+                                            <ListItemButton onClick={() => onSettingsItemClick('saveAsTemplate')}>
+                                                <ListItemIcon>
+                                                    <IconTemplate stroke={1.5} size='1.3rem' />
+                                                </ListItemIcon>
+                                                <ListItemText primary='Save as Template' primaryTypographyProps={{ fontWeight: 500 }} />
+                                            </ListItemButton>
+                                            <Divider sx={{ my: 1.5 }} />
+                                            <ListItemButton
+                                                onClick={() => onSettingsItemClick('deleteChatflow')}
+                                                sx={{ color: 'error.main' }}
+                                            >
+                                                <ListItemIcon sx={{ color: 'error.main' }}>
+                                                    <IconTrash stroke={1.5} size='1.3rem' />
+                                                </ListItemIcon>
+                                                <ListItemText primary='Delete' primaryTypographyProps={{ fontWeight: 500 }} />
+                                            </ListItemButton>
+                                        </>
+                                    )}
+                                </List>
+                            </ClickAwayListener>
+                        </Box>
+                    </Paper>
+                </Fade>
+            )}
         </Popper>
     )
 }

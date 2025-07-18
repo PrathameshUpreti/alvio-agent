@@ -15,7 +15,7 @@ import { IconChevronDown, IconChevronUp } from '@tabler/icons-react'
 
 // ==============================|| SIDEBAR MENU LIST COLLAPSE ITEMS ||============================== //
 
-const NavCollapse = ({ menu, level }) => {
+const NavCollapse = ({ menu, level, miniSidebar }) => {
     const theme = useTheme()
     const customization = useSelector((state) => state.customization)
 
@@ -31,9 +31,9 @@ const NavCollapse = ({ menu, level }) => {
     const menus = menu.children?.map((item) => {
         switch (item.type) {
             case 'collapse':
-                return <NavCollapse key={item.id} menu={item} level={level + 1} />
+                return <NavCollapse key={item.id} menu={item} level={level + 1} miniSidebar={miniSidebar} />
             case 'item':
-                return <NavItem key={item.id} item={item} level={level + 1} />
+                return <NavItem key={item.id} item={item} level={level + 1} miniSidebar={miniSidebar} />
             default:
                 return (
                     <Typography key={item.id} variant='h6' color='error' align='center'>
@@ -71,20 +71,22 @@ const NavCollapse = ({ menu, level }) => {
                 onClick={handleClick}
             >
                 <ListItemIcon sx={{ my: 'auto', minWidth: !menu.icon ? 18 : 36 }}>{menuIcon}</ListItemIcon>
-                <ListItemText
-                    primary={
-                        <Typography variant={selected === menu.id ? 'h5' : 'body1'} color='inherit' sx={{ my: 'auto' }}>
-                            {menu.title}
-                        </Typography>
-                    }
-                    secondary={
-                        menu.caption && (
-                            <Typography variant='caption' sx={{ ...theme.typography.subMenuCaption }} display='block' gutterBottom>
-                                {menu.caption}
+                {!miniSidebar && (
+                    <ListItemText
+                        primary={
+                            <Typography variant={selected === menu.id ? 'h5' : 'body1'} color='inherit' sx={{ my: 'auto' }}>
+                                {menu.title}
                             </Typography>
-                        )
-                    }
-                />
+                        }
+                        secondary={
+                            menu.caption && (
+                                <Typography variant='caption' sx={{ ...theme.typography.subMenuCaption }} display='block' gutterBottom>
+                                    {menu.caption}
+                                </Typography>
+                            )
+                        }
+                    />
+                )}
                 {open ? (
                     <IconChevronUp stroke={1.5} size='1rem' style={{ marginTop: 'auto', marginBottom: 'auto' }} />
                 ) : (
@@ -118,7 +120,8 @@ const NavCollapse = ({ menu, level }) => {
 
 NavCollapse.propTypes = {
     menu: PropTypes.object,
-    level: PropTypes.number
+    level: PropTypes.number,
+    miniSidebar: PropTypes.bool
 }
 
 export default NavCollapse

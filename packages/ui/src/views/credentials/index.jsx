@@ -9,8 +9,6 @@ import { tableCellClasses } from '@mui/material/TableCell'
 import {
     Button,
     Box,
-    Skeleton,
-    Stack,
     Table,
     TableBody,
     TableCell,
@@ -20,11 +18,11 @@ import {
     Paper,
     IconButton,
     useTheme,
-    Typography
+    Typography,
+    OutlinedInput
 } from '@mui/material'
 
 // project imports
-import MainCard from '@/ui-component/cards/MainCard'
 import { StyledButton } from '@/ui-component/button/StyledButton'
 import CredentialListDialog from './CredentialListDialog'
 import ConfirmDialog from '@/ui-component/dialog/ConfirmDialog'
@@ -42,13 +40,10 @@ import useNotifier from '@/utils/useNotifier'
 
 // Icons
 import { IconTrash, IconEdit, IconX, IconPlus } from '@tabler/icons-react'
-import CredentialEmptySVG from '@/assets/images/credential_empty.svg'
 import keySVG from '@/assets/images/key.svg'
 
 // const
-import { baseURL } from '@/store/constant'
 import { SET_COMPONENT_CREDENTIALS } from '@/store/actions'
-import ViewHeader from '@/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/ErrorBoundary'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -141,6 +136,82 @@ const GradientBackground = styled(Box)(({ theme }) => ({
         transform: 'translate(-80px, 80px)'
     }
 }))
+
+// Add split layout styled components
+const SplitLayout = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    minHeight: 'calc(100vh - 56px)',
+    marginTop: 0,
+    background: theme.palette.background.default,
+    borderRadius: '8px',
+    boxShadow: 'none',
+    overflow: 'visible'
+}))
+
+const LeftPanel = styled(Box)(({ theme }) => ({
+    width: 300,
+    minWidth: 220,
+    maxWidth: 340,
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    borderRight: `1px solid ${theme.palette.divider}`,
+    background: theme.palette.mode === 'dark' ? '#181A1B' : '#f7f7fa',
+    [theme.breakpoints.down('md')]: {
+        width: '100%',
+        maxWidth: '100%',
+        borderRight: 'none',
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        alignItems: 'center',
+        padding: theme.spacing(1)
+    }
+}))
+
+const RightPanel = styled(Box)(({ theme }) => ({
+    flex: 1,
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    [theme.breakpoints.down('md')]: {
+        padding: theme.spacing(1)
+    }
+}))
+
+const EngagingEmptyState = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '30vh',
+    width: '100%',
+    padding: theme.spacing(6, 2),
+    color: theme.palette.text.secondary,
+    opacity: 0.9
+}))
+
+const PulseEmoji = styled('span')`
+    display: inline-block;
+    font-size: 3rem;
+    animation: pulse 1.5s infinite;
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+        50% {
+            transform: scale(1.12);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+    }
+`
 
 // ==============================|| Credentials ||============================== //
 
@@ -295,303 +366,126 @@ const Credentials = () => {
     }, [getAllComponentsCredentialsApi.data, dispatch])
 
     return (
-        <>
-            <MainCard
-                sx={{
-                    height: '100%',
-                    borderRadius: '16px',
-                    boxShadow: theme.palette.mode === 'dark' ? '0 8px 40px rgba(0, 0, 0, 0.4)' : '0 8px 40px rgba(0, 0, 0, 0.1)'
-                }}
-            >
+        <SplitLayout>
+            {/* Left Panel: Header + Actions */}
+            <LeftPanel>
+                <Box>
+                    <Box>
+                        <Box sx={{ fontWeight: 900, fontSize: '2rem', color: 'primary.main', mb: 0.5 }}>Credentials</Box>
+                        <Box sx={{ color: 'text.secondary', fontWeight: 500, mb: 2 }}>
+                            API keys, tokens, and secrets for 3rd party integrations
+                        </Box>
+                    </Box>
+                    <Box sx={{ mt: 2, mb: 2, width: '100%' }}>
+                        <StyledButton
+                            variant='contained'
+                            sx={{ borderRadius: 2, height: 40 }}
+                            onClick={listCredential}
+                            startIcon={<IconPlus />}
+                        >
+                            Add Credential
+                        </StyledButton>
+                    </Box>
+                </Box>
+                <Box sx={{ mt: 2, width: '100%' }}>
+                    <OutlinedInput
+                        fullWidth
+                        size='small'
+                        placeholder='Search Credentials'
+                        value={search}
+                        onChange={onSearchChange}
+                        sx={{ borderRadius: 8, background: theme.palette.background.default, fontSize: 16 }}
+                    />
+                </Box>
+            </LeftPanel>
+            {/* Right Panel: Content */}
+            <RightPanel>
                 {error ? (
                     <ErrorBoundary error={error} />
-                ) : (
-                    <Stack flexDirection='column' sx={{ gap: 3 }}>
-                        <ViewHeader
-                            onSearchChange={onSearchChange}
-                            search={true}
-                            searchPlaceholder='Search Credentials'
-                            title='Credentials'
-                            description='API keys, tokens, and secrets for 3rd party integrations'
+                ) : !isLoading && credentials.length <= 0 ? (
+                    <EngagingEmptyState>
+                        <PulseEmoji>🔐</PulseEmoji>
+                        <Typography variant='h5' sx={{ fontWeight: 700, mb: 1, mt: 2 }}>
+                            You are just one click away from adding your first credential!
+                        </Typography>
+                        <Typography variant='body2' sx={{ color: 'text.secondary', mb: 3 }}>
+                            Credentials let you securely connect to external services. Add one now!
+                        </Typography>
+                        <StyledButton
+                            variant='contained'
+                            sx={{ borderRadius: 2, height: 44, fontWeight: 700 }}
+                            onClick={listCredential}
+                            startIcon={<IconPlus />}
                         >
-                            <StyledButton
-                                variant='contained'
+                            Add Credential
+                        </StyledButton>
+                    </EngagingEmptyState>
+                ) : (
+                    <StyledTableContainer sx={{ borderRadius: 2 }} component={Paper}>
+                        <GradientBackground>
+                            <div className='top-right-gradient' />
+                            <div className='bottom-left-gradient' />
+                        </GradientBackground>
+                        <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+                            <TableHead
                                 sx={{
-                                    borderRadius: '30px',
-                                    px: 3,
-                                    py: 1,
-                                    height: '100%',
-                                    background: 'linear-gradient(135deg, #FF7400, #FF5A00)',
-                                    boxShadow: '0 4px 10px rgba(255, 116, 0, 0.3)',
-                                    '&:hover': {
-                                        background: 'linear-gradient(135deg, #FF5A00, #FF4500)',
-                                        boxShadow: '0 6px 15px rgba(255, 116, 0, 0.4)'
-                                    }
-                                }}
-                                onClick={listCredential}
-                                startIcon={<IconPlus />}
-                            >
-                                Add Credential
-                            </StyledButton>
-                        </ViewHeader>
-                        {!isLoading && credentials.length <= 0 ? (
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    py: 8,
+                                    backgroundColor: customization.isDarkMode ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.02)',
+                                    height: 56,
                                     position: 'relative',
-                                    borderRadius: '16px',
-                                    overflow: 'hidden',
-                                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(26, 29, 30, 0.8)' : 'rgba(255, 255, 255, 0.9)',
-                                    boxShadow:
-                                        theme.palette.mode === 'dark' ? '0 8px 32px rgba(0, 0, 0, 0.4)' : '0 8px 32px rgba(0, 0, 0, 0.08)'
+                                    zIndex: 2
                                 }}
                             >
-                                <GradientBackground>
-                                    <div className='top-right-gradient' />
-                                    <div className='bottom-left-gradient' />
-                                </GradientBackground>
-                                <Box sx={{ p: 2, height: 'auto', position: 'relative', zIndex: 1 }}>
-                                    <img
-                                        style={{ objectFit: 'cover', height: '16vh', width: 'auto' }}
-                                        src={CredentialEmptySVG}
-                                        alt='CredentialEmptySVG'
-                                    />
-                                </Box>
-                                <Typography
-                                    variant='h5'
-                                    sx={{
-                                        fontWeight: 600,
-                                        position: 'relative',
-                                        zIndex: 1,
-                                        color: theme.palette.mode === 'dark' ? '#fff' : '#4A0072'
-                                    }}
-                                >
-                                    No Credentials Yet
-                                </Typography>
-                                <Typography
-                                    variant='body2'
-                                    sx={{
-                                        mt: 1,
-                                        position: 'relative',
-                                        zIndex: 1,
-                                        color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.6)'
-                                    }}
-                                >
-                                    Add credentials to connect to external services
-                                </Typography>
-                            </Box>
-                        ) : (
-                            <StyledTableContainer sx={{ borderRadius: 2 }} component={Paper}>
-                                <GradientBackground>
-                                    <div className='top-right-gradient' />
-                                    <div className='bottom-left-gradient' />
-                                </GradientBackground>
-                                <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-                                    <TableHead
-                                        sx={{
-                                            backgroundColor: customization.isDarkMode ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.02)',
-                                            height: 56,
-                                            position: 'relative',
-                                            zIndex: 2
-                                        }}
-                                    >
-                                        <TableRow>
-                                            <StyledTableCell>Name</StyledTableCell>
-                                            <StyledTableCell>Last Updated</StyledTableCell>
-                                            <StyledTableCell>Created</StyledTableCell>
-                                            <StyledTableCell> </StyledTableCell>
-                                            <StyledTableCell> </StyledTableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {isLoading ? (
-                                            <>
-                                                <StyledTableRow>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                </StyledTableRow>
-                                                <StyledTableRow>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                </StyledTableRow>
-                                            </>
-                                        ) : (
-                                            <>
-                                                {credentials.filter(filterCredentials).map((credential, index) => (
-                                                    <StyledTableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                                        <StyledTableCell scope='row'>
-                                                            <Box
-                                                                sx={{
-                                                                    display: 'flex',
-                                                                    flexDirection: 'row',
-                                                                    alignItems: 'center',
-                                                                    gap: 1.5
-                                                                }}
-                                                            >
-                                                                <Box
-                                                                    sx={{
-                                                                        width: 40,
-                                                                        height: 40,
-                                                                        borderRadius: '12px',
-                                                                        display: 'flex',
-                                                                        alignItems: 'center',
-                                                                        justifyContent: 'center',
-                                                                        backgroundColor: customization.isDarkMode
-                                                                            ? 'rgba(255, 255, 255, 0.1)'
-                                                                            : 'rgba(0, 0, 0, 0.05)',
-                                                                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
-                                                                    }}
-                                                                >
-                                                                    <img
-                                                                        style={{
-                                                                            width: '100%',
-                                                                            height: '100%',
-                                                                            padding: 8,
-                                                                            objectFit: 'contain'
-                                                                        }}
-                                                                        alt={credential.credentialName}
-                                                                        src={`${baseURL}/api/v1/components-credentials-icon/${credential.credentialName}`}
-                                                                        onError={(e) => {
-                                                                            e.target.onerror = null
-                                                                            e.target.style.padding = '8px'
-                                                                            e.target.src = keySVG
-                                                                        }}
-                                                                    />
-                                                                </Box>
-                                                                <Typography
-                                                                    sx={{
-                                                                        fontWeight: 500,
-                                                                        color: theme.palette.mode === 'dark' ? '#fff' : '#333'
-                                                                    }}
-                                                                >
-                                                                    {credential.name}
-                                                                </Typography>
-                                                            </Box>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell>
-                                                            <Typography
-                                                                sx={{
-                                                                    color:
-                                                                        theme.palette.mode === 'dark'
-                                                                            ? 'rgba(255, 255, 255, 0.7)'
-                                                                            : 'rgba(0, 0, 0, 0.6)',
-                                                                    fontSize: '0.85rem'
-                                                                }}
-                                                            >
-                                                                {moment(credential.updatedDate).format('MMM D, YYYY • HH:mm')}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell>
-                                                            <Typography
-                                                                sx={{
-                                                                    color:
-                                                                        theme.palette.mode === 'dark'
-                                                                            ? 'rgba(255, 255, 255, 0.7)'
-                                                                            : 'rgba(0, 0, 0, 0.6)',
-                                                                    fontSize: '0.85rem'
-                                                                }}
-                                                            >
-                                                                {moment(credential.createdDate).format('MMM D, YYYY • HH:mm')}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell>
-                                                            <IconButton
-                                                                title='Edit'
-                                                                sx={{
-                                                                    backgroundColor:
-                                                                        theme.palette.mode === 'dark'
-                                                                            ? 'rgba(141, 54, 249, 0.15)'
-                                                                            : 'rgba(141, 54, 249, 0.08)',
-                                                                    color: theme.palette.mode === 'dark' ? '#9B5DE5' : '#8D36F9',
-                                                                    '&:hover': {
-                                                                        backgroundColor:
-                                                                            theme.palette.mode === 'dark'
-                                                                                ? 'rgba(141, 54, 249, 0.25)'
-                                                                                : 'rgba(141, 54, 249, 0.15)'
-                                                                    }
-                                                                }}
-                                                                onClick={() => edit(credential)}
-                                                            >
-                                                                <IconEdit size={20} />
-                                                            </IconButton>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell>
-                                                            <IconButton
-                                                                title='Delete'
-                                                                sx={{
-                                                                    backgroundColor:
-                                                                        theme.palette.mode === 'dark'
-                                                                            ? 'rgba(255, 76, 76, 0.15)'
-                                                                            : 'rgba(255, 76, 76, 0.08)',
-                                                                    color: theme.palette.mode === 'dark' ? '#ff7c7c' : '#FF4C4C',
-                                                                    '&:hover': {
-                                                                        backgroundColor:
-                                                                            theme.palette.mode === 'dark'
-                                                                                ? 'rgba(255, 76, 76, 0.25)'
-                                                                                : 'rgba(255, 76, 76, 0.15)'
-                                                                    }
-                                                                }}
-                                                                onClick={() => deleteCredential(credential)}
-                                                            >
-                                                                <IconTrash size={20} />
-                                                            </IconButton>
-                                                        </StyledTableCell>
-                                                    </StyledTableRow>
-                                                ))}
-                                            </>
-                                        )}
-                                    </TableBody>
-                                </Table>
-                            </StyledTableContainer>
-                        )}
-                    </Stack>
+                                <TableRow>
+                                    <StyledTableCell>Credential Name</StyledTableCell>
+                                    <StyledTableCell>Type</StyledTableCell>
+                                    <StyledTableCell>Created</StyledTableCell>
+                                    <StyledTableCell>Last Updated</StyledTableCell>
+                                    <StyledTableCell align='right'>Actions</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {credentials.filter(filterCredentials).map((row, idx) => (
+                                    <StyledTableRow key={row.id}>
+                                        <StyledTableCell component='th' scope='row'>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <img src={keySVG} alt='' style={{ width: 24, height: 24, marginRight: 8 }} />
+                                                <Typography variant='subtitle2' sx={{ fontWeight: 700 }}>
+                                                    {row.credentialName}
+                                                </Typography>
+                                            </Box>
+                                        </StyledTableCell>
+                                        <StyledTableCell>{row.type}</StyledTableCell>
+                                        <StyledTableCell>{moment(row.createdAt).format('YYYY-MM-DD HH:mm')}</StyledTableCell>
+                                        <StyledTableCell>{moment(row.updatedAt).format('YYYY-MM-DD HH:mm')}</StyledTableCell>
+                                        <StyledTableCell align='right'>
+                                            <IconButton color='primary' onClick={() => edit(row)}>
+                                                <IconEdit />
+                                            </IconButton>
+                                            <IconButton color='error' onClick={() => deleteCredential(row)}>
+                                                <IconTrash />
+                                            </IconButton>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </StyledTableContainer>
                 )}
-            </MainCard>
-            <CredentialListDialog
-                show={showCredentialListDialog}
-                dialogProps={credentialListDialogProps}
-                onCancel={() => setShowCredentialListDialog(false)}
-                onCredentialSelected={onCredentialSelected}
-            ></CredentialListDialog>
-            <AddEditCredentialDialog
-                show={showSpecificCredentialDialog}
-                dialogProps={specificCredentialDialogProps}
-                onCancel={() => setShowSpecificCredentialDialog(false)}
-                onConfirm={onConfirm}
-                setError={setError}
-            ></AddEditCredentialDialog>
-            <ConfirmDialog />
-        </>
+                <CredentialListDialog
+                    show={showCredentialListDialog}
+                    dialogProps={credentialListDialogProps}
+                    onCancel={() => setShowCredentialListDialog(false)}
+                    onConfirm={onCredentialSelected}
+                />
+                <AddEditCredentialDialog
+                    show={showSpecificCredentialDialog}
+                    dialogProps={specificCredentialDialogProps}
+                    onCancel={() => setShowSpecificCredentialDialog(false)}
+                    onConfirm={onConfirm}
+                />
+                <ConfirmDialog />
+            </RightPanel>
+        </SplitLayout>
     )
 }
 

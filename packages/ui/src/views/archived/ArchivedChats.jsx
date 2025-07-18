@@ -2,30 +2,70 @@ import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { styled } from '@mui/material/styles'
 import { Box, Typography, Dialog, DialogContent, IconButton, InputBase, Divider } from '@mui/material'
+import PropTypes from 'prop-types'
 
 // icons
 import { IconX, IconSearch } from '@tabler/icons-react'
 
 const ArchivedDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialog-paper': {
-        borderRadius: '6px',
+        borderRadius: '14px',
         overflow: 'hidden',
         maxWidth: '500px',
         width: '100%',
         maxHeight: '90vh',
-        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : '#ffffff'
+        background: theme.palette.background.paper,
+        boxShadow: '0 8px 32px 0 rgba(0,0,0,0.18)'
     }
 }))
 
-const SearchInput = styled(InputBase)(({ theme }) => ({
+const GradientHeader = styled(Box)(({ theme }) => ({
+    width: '100%',
+    padding: '28px 32px 16px 32px',
+    background: 'linear-gradient(135deg, #4f8cff 0%, #7b2ff2 50%, #f357a8 100%)',
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14
+}))
+
+const SearchInputWrapper = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    background: theme.palette.mode === 'dark' ? 'rgba(50, 50, 50, 0.3)' : 'rgba(200, 200, 200, 0.2)',
+    borderRadius: 8,
+    padding: '6px 12px',
+    margin: '20px 32px 0 32px'
+}))
+
+const StyledSearchInput = styled(InputBase)(({ theme }) => ({
     flex: 1,
-    fontSize: '0.875rem',
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(4),
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    color: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
-    backgroundColor: 'transparent'
+    fontSize: '1rem',
+    color: theme.palette.mode === 'dark' ? '#fff' : '#222',
+    background: 'transparent',
+    border: 'none',
+    outline: 'none',
+    marginLeft: 8
+}))
+
+const ScrollableContent = styled(DialogContent)(({ theme }) => ({
+    padding: 0,
+    overflowY: 'auto',
+    minHeight: 200,
+    maxHeight: '60vh',
+    // Custom scrollbar
+    '&::-webkit-scrollbar': {
+        width: 8
+    },
+    '&::-webkit-scrollbar-thumb': {
+        background: theme.palette.mode === 'dark' ? '#444' : '#ccc',
+        borderRadius: 4
+    },
+    '&::-webkit-scrollbar-track': {
+        background: 'transparent'
+    }
 }))
 
 const ArchivedChats = ({ open, onClose }) => {
@@ -38,77 +78,48 @@ const ArchivedChats = ({ open, onClose }) => {
 
     return (
         <ArchivedDialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-            <DialogContent sx={{ padding: 3, overflowY: 'auto' }}>
-                <Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            px: 2.5,
-                            pt: 2,
-                            pb: 0.5
-                        }}
-                    >
-                        <Typography variant='h4' sx={{ fontWeight: 500 }}>
-                            Archived Chats
-                        </Typography>
-                        <IconButton onClick={onClose} size='small'>
-                            <IconX size={20} />
-                        </IconButton>
-                    </Box>
-
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            width: '100%',
-                            px: 2.5,
-                            pb: 2
-                        }}
-                    >
-                        <Box sx={{ display: 'flex', width: '100%', mt: 1, mb: 1 }}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flex: 1,
-                                    alignItems: 'center',
-                                    backgroundColor: customization.isDarkMode ? 'rgba(50, 50, 50, 0.2)' : 'rgba(200, 200, 200, 0.2)',
-                                    borderRadius: '8px',
-                                    px: 1
-                                }}
-                            >
-                                <IconSearch size={18} color={customization.isDarkMode ? '#aaa' : '#666'} />
-                                <SearchInput placeholder='Search Chats' value={searchTerm} onChange={handleSearch} />
-                            </Box>
-                        </Box>
-
-                        <Divider
-                            sx={{
-                                my: 1,
-                                borderColor: customization.isDarkMode ? 'rgba(128, 128, 128, 0.2)' : 'rgba(200, 200, 200, 0.8)'
-                            }}
-                        />
-
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                minHeight: '200px',
-                                py: 4
-                            }}
-                        >
-                            <Typography variant='body2' color='textSecondary'>
-                                You have no archived conversations.
-                            </Typography>
-                        </Box>
-                    </Box>
+            <GradientHeader>
+                <Typography variant='h4' sx={{ fontWeight: 700, letterSpacing: 0.5 }}>
+                    Archived Chats
+                </Typography>
+                <IconButton onClick={onClose} size='small' sx={{ color: '#fff' }}>
+                    <IconX size={22} />
+                </IconButton>
+            </GradientHeader>
+            <SearchInputWrapper>
+                <IconSearch size={20} color={customization.isDarkMode ? '#aaa' : '#666'} />
+                <StyledSearchInput placeholder='Search Chats' value={searchTerm} onChange={handleSearch} />
+            </SearchInputWrapper>
+            <ScrollableContent>
+                <Divider
+                    sx={{
+                        my: 2,
+                        mx: 4,
+                        borderColor: customization.isDarkMode ? 'rgba(128, 128, 128, 0.2)' : 'rgba(200, 200, 200, 0.8)'
+                    }}
+                />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: '180px',
+                        py: 4
+                    }}
+                >
+                    <Typography variant='body1' color='text.secondary' sx={{ fontWeight: 500, opacity: 0.7 }}>
+                        You have no archived conversations.
+                    </Typography>
                 </Box>
-            </DialogContent>
+            </ScrollableContent>
         </ArchivedDialog>
     )
+}
+
+ArchivedChats.propTypes = {
+    open: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired
 }
 
 export default ArchivedChats

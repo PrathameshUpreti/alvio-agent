@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 // material-ui
 import { Toolbar, Box, AppBar } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 // project imports
 import AgentFlowNode from './AgentFlowNode'
@@ -20,6 +21,23 @@ import { flowContext } from '@/store/context/ReactFlowContext'
 
 const nodeTypes = { agentFlow: AgentFlowNode, stickyNote: StickyNote, iteration: IterationNode }
 const edgeTypes = { agentFlow: AgentFlowEdge }
+
+// Custom canvas background
+const CanvasBackground = styled('div')(({ theme }) => ({
+    position: 'absolute',
+    inset: 0,
+    zIndex: 0,
+    width: '100%',
+    height: '100%',
+    background:
+        theme.palette.mode === 'dark'
+            ? 'linear-gradient(120deg, #232526 0%, #414345 100%)'
+            : 'linear-gradient(120deg, #f7f7fa 0%, #e3e3f3 100%)',
+    animation: 'gradientMove 12s ease-in-out infinite',
+    backgroundSize: '200% 200%',
+    borderRadius: 0,
+    pointerEvents: 'none'
+}))
 
 // ==============================|| CANVAS ||============================== //
 
@@ -76,7 +94,8 @@ const MarketplaceCanvasV2 = () => {
 
     return (
         <>
-            <Box>
+            <Box sx={{ position: 'relative' }}>
+                <CanvasBackground />
                 <AppBar
                     enableColorOnDark
                     position='fixed'
@@ -96,7 +115,7 @@ const MarketplaceCanvasV2 = () => {
                 </AppBar>
                 <Box sx={{ pt: '70px', height: '100vh', width: '100%' }}>
                     <div className='reactflow-parent-wrapper'>
-                        <div className='reactflow-wrapper' ref={reactFlowWrapper}>
+                        <div className='reactflow-wrapper' ref={reactFlowWrapper} style={{ position: 'relative' }}>
                             <ReactFlow
                                 nodes={nodes}
                                 edges={edges}
@@ -114,10 +133,14 @@ const MarketplaceCanvasV2 = () => {
                                         display: 'flex',
                                         flexDirection: 'row',
                                         left: '50%',
-                                        transform: 'translate(-50%, -50%)'
+                                        transform: 'translate(-50%, -50%)',
+                                        background: theme.palette.background.paper,
+                                        borderRadius: 16,
+                                        boxShadow: '0 2px 12px rgba(141,54,249,0.10)',
+                                        padding: 4
                                     }}
                                 />
-                                <Background color='#aaa' gap={16} />
+                                <Background color={theme.palette.mode === 'dark' ? '#393a4a' : '#e3e3f3'} gap={20} />
                                 <EditNodeDialog
                                     show={editNodeDialogOpen}
                                     dialogProps={editNodeDialogProps}

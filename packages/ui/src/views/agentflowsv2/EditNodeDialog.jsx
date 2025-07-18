@@ -10,6 +10,17 @@ import { IconPencil, IconX, IconCheck, IconInfoCircle } from '@tabler/icons-reac
 import { useTheme } from '@mui/material/styles'
 import { flowContext } from '@/store/context/ReactFlowContext'
 import { showHideInputParams } from '@/utils/genericHelper'
+import { styled } from '@mui/material/styles'
+
+const GlassDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiPaper-root': {
+        background: theme.palette.background.paper,
+        borderRadius: 22,
+        border: `2.5px solid ${theme.palette.primary.main}`,
+        boxShadow: theme.shadows[24],
+        transition: 'box-shadow 0.3s, border-color 0.3s'
+    }
+}))
 
 const EditNodeDialog = ({ show, dialogProps, onCancel }) => {
     const portalElement = document.getElementById('portal')
@@ -99,7 +110,7 @@ const EditNodeDialog = ({ show, dialogProps, onCancel }) => {
     }, [show, dispatch])
 
     const component = show ? (
-        <Dialog
+        <GlassDialog
             onClose={onCancel}
             open={show}
             fullWidth
@@ -264,7 +275,7 @@ const EditNodeDialog = ({ show, dialogProps, onCancel }) => {
                         />
                     ))}
             </DialogContent>
-        </Dialog>
+        </GlassDialog>
     ) : null
 
     return createPortal(component, portalElement)

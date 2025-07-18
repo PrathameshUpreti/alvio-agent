@@ -16,17 +16,34 @@ import { baseURL } from '@/store/constant'
 import { flowContext } from '@/store/context/ReactFlowContext'
 import { getAvailableNodesForVariable } from '@/utils/genericHelper'
 
-const StyledPopper = styled(Popper)({
+const StyledPopper = styled(Popper)(({ theme }) => ({
     boxShadow: '0px 8px 10px -5px rgb(0 0 0 / 20%), 0px 16px 24px 2px rgb(0 0 0 / 14%), 0px 6px 30px 5px rgb(0 0 0 / 12%)',
     borderRadius: '10px',
+    background: theme.palette.background.paper,
     [`& .${autocompleteClasses.listbox}`]: {
         boxSizing: 'border-box',
+        background: theme.palette.background.paper,
         '& ul': {
             padding: 10,
             margin: 10
         }
     }
-})
+}))
+
+const GlassyFormControl = styled('div')(({ theme }) => ({
+    width: '100%',
+    marginTop: theme.spacing(1),
+    background: theme.palette.mode === 'dark' ? 'rgba(30,30,40,0.7)' : 'rgba(255,255,255,0.7)',
+    borderRadius: 12,
+    boxShadow: '0 4px 24px 0 rgba(0,0,0,0.10)',
+    border: '1.5px solid #f357a8',
+    '& .MuiInputBase-root': {
+        color: theme.palette.mode === 'dark' ? 'white' : 'black'
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+        border: 'none'
+    }
+}))
 
 const fetchList = async ({ name, nodeData, previousNodes, currentNode }) => {
     const selectedParam = nodeData.inputParams.find((param) => param.name === name)
@@ -167,7 +184,7 @@ export const AsyncDropdown = ({
     }, [])
 
     return (
-        <>
+        <GlassyFormControl>
             <Autocomplete
                 id={name}
                 freeSolo={freeSolo}
@@ -176,7 +193,7 @@ export const AsyncDropdown = ({
                 multiple={multiple}
                 filterSelectedOptions={multiple}
                 size='small'
-                sx={{ mt: 1, width: '100%' }}
+                sx={{ width: '100%' }}
                 open={open}
                 onOpen={() => {
                     setOpen(true)
@@ -215,13 +232,26 @@ export const AsyncDropdown = ({
                         <TextField
                             {...params}
                             value={internalValue}
+                            label={name}
+                            variant='outlined'
                             sx={{
                                 height: '100%',
                                 '& .MuiInputBase-root': {
                                     height: '100%',
+                                    background: 'transparent',
+                                    borderRadius: 12,
                                     '& fieldset': {
-                                        borderColor: theme.palette.grey[900] + 25
+                                        borderColor: 'transparent'
                                     }
+                                },
+                                '& .MuiInputLabel-root': {
+                                    color: '#f357a8'
+                                },
+                                '& .Mui-focused .MuiInputLabel-root': {
+                                    color: '#f357a8'
+                                },
+                                '& .MuiAutocomplete-endAdornment': {
+                                    color: '#f357a8'
                                 }
                             }}
                             InputProps={{
@@ -280,7 +310,7 @@ export const AsyncDropdown = ({
                     </Box>
                 )}
             />
-        </>
+        </GlassyFormControl>
     )
 }
 

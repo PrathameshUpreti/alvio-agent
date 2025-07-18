@@ -4,25 +4,7 @@ import * as PropTypes from 'prop-types'
 import { useNavigate, useParams } from 'react-router-dom'
 
 // material-ui
-import {
-    Box,
-    Stack,
-    Typography,
-    TableContainer,
-    Paper,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    Chip,
-    Menu,
-    MenuItem,
-    Divider,
-    Button,
-    Skeleton,
-    IconButton
-} from '@mui/material'
+import { Box, Stack, Typography, Paper, TableRow, TableCell, Chip, Menu, MenuItem, Divider, Button, IconButton } from '@mui/material'
 import { alpha, styled, useTheme } from '@mui/material/styles'
 import { tableCellClasses } from '@mui/material/TableCell'
 
@@ -550,129 +532,64 @@ const DocumentStoreDetails = () => {
                             </Stack>
                         )}
                         {!isLoading && documentStore && !documentStore?.loaders?.length ? (
-                            <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
-                                <Box sx={{ p: 2, height: 'auto' }}>
-                                    <img
-                                        style={{ objectFit: 'cover', height: '16vh', width: 'auto' }}
-                                        src={doc_store_details_emptySVG}
-                                        alt='doc_store_details_emptySVG'
-                                    />
-                                </Box>
-                                <div>No Document Added Yet</div>
-                                <StyledButton
-                                    variant='contained'
-                                    sx={{ borderRadius: 2, height: '100%', mt: 2, color: 'white' }}
-                                    startIcon={<IconPlus />}
-                                    onClick={listLoaders}
-                                >
-                                    Add Document Loader
-                                </StyledButton>
-                            </Stack>
-                        ) : (
-                            <TableContainer
-                                sx={{ border: 1, borderColor: theme.palette.grey[900] + 25, borderRadius: 2 }}
-                                component={Paper}
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    minHeight: '50vh',
+                                    width: '100%'
+                                }}
                             >
-                                <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-                                    <TableHead
+                                <Paper
+                                    elevation={0}
+                                    sx={{
+                                        p: { xs: 2, sm: 4 },
+                                        background: (theme) => (theme.palette.mode === 'dark' ? theme.palette.background.paper : '#fff'),
+                                        borderRadius: 4,
+                                        boxShadow: (theme) => theme.shadows[2],
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        width: { xs: '100%', sm: 420 },
+                                        maxWidth: '100%',
+                                        mb: 4
+                                    }}
+                                >
+                                    <Box sx={{ p: 0, mb: 2, width: '100%', display: 'flex', justifyContent: 'center' }}>
+                                        <img
+                                            style={{ objectFit: 'cover', height: '18vh', width: 'auto', maxWidth: '100%' }}
+                                            src={doc_store_details_emptySVG}
+                                            alt='No Document Added'
+                                        />
+                                    </Box>
+                                    <Typography variant='h5' sx={{ fontWeight: 800, mb: 1, color: 'text.primary', textAlign: 'center' }}>
+                                        No Document Added Yet
+                                    </Typography>
+                                    <Typography variant='body2' sx={{ color: 'text.secondary', mb: 2, textAlign: 'center' }}>
+                                        Add your first document loader to start using this store for RAG and LLM retrieval.
+                                    </Typography>
+                                    <StyledButton
+                                        variant='contained'
                                         sx={{
-                                            backgroundColor: customization.isDarkMode
-                                                ? theme.palette.common.black
-                                                : theme.palette.grey[100],
-                                            height: 56
+                                            borderRadius: 3,
+                                            height: 44,
+                                            fontWeight: 700,
+                                            px: 4,
+                                            color: 'white',
+                                            fontSize: '1.1rem',
+                                            boxShadow: 'none',
+                                            textTransform: 'none'
                                         }}
+                                        startIcon={<IconPlus />}
+                                        onClick={listLoaders}
                                     >
-                                        <TableRow>
-                                            <StyledTableCell>&nbsp;</StyledTableCell>
-                                            <StyledTableCell>Loader</StyledTableCell>
-                                            <StyledTableCell>Splitter</StyledTableCell>
-                                            <StyledTableCell>Source(s)</StyledTableCell>
-                                            <StyledTableCell>Chunks</StyledTableCell>
-                                            <StyledTableCell>Chars</StyledTableCell>
-                                            <StyledTableCell>Actions</StyledTableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {isLoading ? (
-                                            <>
-                                                <StyledTableRow>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                </StyledTableRow>
-                                                <StyledTableRow>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                </StyledTableRow>
-                                            </>
-                                        ) : (
-                                            <>
-                                                {documentStore?.loaders &&
-                                                    documentStore?.loaders.length > 0 &&
-                                                    documentStore?.loaders.map((loader, index) => (
-                                                        <LoaderRow
-                                                            key={index}
-                                                            index={index}
-                                                            loader={loader}
-                                                            theme={theme}
-                                                            onEditClick={() => openPreviewSettings(loader.id)}
-                                                            onViewChunksClick={() => showStoredChunks(loader.id)}
-                                                            onDeleteClick={() =>
-                                                                onLoaderDelete(
-                                                                    loader,
-                                                                    documentStore?.vectorStoreConfig,
-                                                                    documentStore?.recordManagerConfig
-                                                                )
-                                                            }
-                                                            onChunkUpsert={() =>
-                                                                navigate(`/document-stores/vector/${documentStore.id}/${loader.id}`)
-                                                            }
-                                                            onViewUpsertAPI={() => onViewUpsertAPI(documentStore.id, loader.id)}
-                                                        />
-                                                    ))}
-                                            </>
-                                        )}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        )}
+                                        Add Document Loader
+                                    </StyledButton>
+                                </Paper>
+                            </Box>
+                        ) : null}
                         {getSpecificDocumentStore.data?.status === 'STALE' && (
                             <div style={{ width: '100%', textAlign: 'center', marginTop: '20px' }}>
                                 <Typography

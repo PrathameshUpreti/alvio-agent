@@ -1,16 +1,15 @@
 import { useEffect, useState, useRef } from 'react'
 
 // material-ui
-import { Box, Stack, Button, ButtonGroup, Skeleton, ToggleButtonGroup, ToggleButton } from '@mui/material'
+import { Box, Button, Skeleton, ToggleButtonGroup, ToggleButton, Typography } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
 // project imports
-import MainCard from '@/ui-component/cards/MainCard'
 import ItemCard from '@/ui-component/cards/ItemCard'
-import { gridSpacing } from '@/store/constant'
-import ToolEmptySVG from '@/assets/images/tools_empty.svg'
 import { StyledButton } from '@/ui-component/button/StyledButton'
 import ToolDialog from './ToolDialog'
 import { ToolsTable } from '@/ui-component/table/ToolsListTable'
+import { OutlinedInput } from '@mui/material'
 
 // API
 import toolsApi from '@/api/tools'
@@ -20,11 +19,86 @@ import useApi from '@/hooks/useApi'
 
 // icons
 import { IconPlus, IconFileUpload, IconLayoutGrid, IconList } from '@tabler/icons-react'
-import ViewHeader from '@/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/ErrorBoundary'
 import { useTheme } from '@mui/material/styles'
 
 // ==============================|| CHATFLOWS ||============================== //
+
+// Add split layout styled components
+const SplitLayout = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    minHeight: 'calc(100vh - 56px)',
+    marginTop: 0,
+    background: theme.palette.background.default,
+    borderRadius: '8px',
+    boxShadow: 'none',
+    overflow: 'visible'
+}))
+
+const LeftPanel = styled(Box)(({ theme }) => ({
+    width: 300,
+    minWidth: 220,
+    maxWidth: 340,
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    borderRight: `1px solid ${theme.palette.divider}`,
+    background: theme.palette.mode === 'dark' ? '#181A1B' : '#f7f7fa',
+    [theme.breakpoints.down('md')]: {
+        width: '100%',
+        maxWidth: '100%',
+        borderRight: 'none',
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        alignItems: 'center',
+        padding: theme.spacing(1)
+    }
+}))
+
+const RightPanel = styled(Box)(({ theme }) => ({
+    flex: 1,
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    [theme.breakpoints.down('md')]: {
+        padding: theme.spacing(1)
+    }
+}))
+
+const EngagingEmptyState = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '30vh',
+    width: '100%',
+    padding: theme.spacing(6, 2),
+    color: theme.palette.text.secondary,
+    opacity: 0.9
+}))
+
+const PulseEmoji = styled('span')`
+    display: inline-block;
+    font-size: 3rem;
+    animation: pulse 1.5s infinite;
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+        50% {
+            transform: scale(1.12);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+    }
+`
 
 const Tools = () => {
     const theme = useTheme()
@@ -132,123 +206,113 @@ const Tools = () => {
     }, [getAllToolsApi.error])
 
     return (
-        <>
-            <MainCard>
+        <SplitLayout>
+            {/* Left Panel: Header + Actions */}
+            <LeftPanel>
+                <Box>
+                    <Box>
+                        <Box sx={{ fontWeight: 900, fontSize: '2rem', color: 'primary.main', mb: 0.5 }}>Tools</Box>
+                        <Box sx={{ color: 'text.secondary', fontWeight: 500, mb: 2 }}>
+                            External functions or APIs the agent can use to take action
+                        </Box>
+                    </Box>
+                    <Box sx={{ mt: 2, mb: 2, width: '100%' }}>
+                        <StyledButton
+                            variant='contained'
+                            onClick={addNew}
+                            startIcon={<IconPlus />}
+                            sx={{ borderRadius: 2, height: 40, mr: 1 }}
+                        >
+                            Add New
+                        </StyledButton>
+                        <Button
+                            variant='outlined'
+                            onClick={() => inputRef.current.click()}
+                            startIcon={<IconFileUpload />}
+                            sx={{ borderRadius: 2, height: 40 }}
+                        >
+                            Load
+                        </Button>
+                        <input
+                            style={{ display: 'none' }}
+                            ref={inputRef}
+                            type='file'
+                            hidden
+                            accept='.json'
+                            onChange={(e) => handleFileUpload(e)}
+                        />
+                    </Box>
+                </Box>
+                <Box sx={{ mt: 2, width: '100%' }}>
+                    <OutlinedInput
+                        fullWidth
+                        size='small'
+                        placeholder='Search Tools'
+                        value={search}
+                        onChange={onSearchChange}
+                        sx={{ borderRadius: 8, background: theme.palette.background.default, fontSize: 16 }}
+                    />
+                </Box>
+                <ToggleButtonGroup
+                    orientation='vertical'
+                    sx={{ borderRadius: '20px', width: '100%', mt: 2 }}
+                    value={view}
+                    color='primary'
+                    exclusive
+                    onChange={handleChange}
+                >
+                    <ToggleButton sx={{ borderRadius: '20px', mb: 1 }} variant='outlined' value='card' title='Card View'>
+                        <IconLayoutGrid /> Card View
+                    </ToggleButton>
+                    <ToggleButton sx={{ borderRadius: '20px' }} variant='outlined' value='list' title='List View'>
+                        <IconList /> List View
+                    </ToggleButton>
+                </ToggleButtonGroup>
+            </LeftPanel>
+            {/* Right Panel: Content */}
+            <RightPanel>
                 {error ? (
                     <ErrorBoundary error={error} />
-                ) : (
-                    <Stack flexDirection='column' sx={{ gap: 3 }}>
-                        <ViewHeader
-                            onSearchChange={onSearchChange}
-                            search={true}
-                            searchPlaceholder='Search Tools'
-                            title='Tools'
-                            description='External functions or APIs the agent can use to take action'
-                        >
-                            <ToggleButtonGroup
-                                sx={{ borderRadius: 2, maxHeight: 40 }}
-                                value={view}
-                                color='primary'
-                                exclusive
-                                onChange={handleChange}
-                            >
-                                <ToggleButton
-                                    sx={{
-                                        borderColor: theme.palette.grey[900] + 25,
-                                        borderRadius: 2,
-                                        color: theme?.customization?.isDarkMode ? 'white' : 'inherit'
-                                    }}
-                                    variant='contained'
-                                    value='card'
-                                    title='Card View'
-                                >
-                                    <IconLayoutGrid />
-                                </ToggleButton>
-                                <ToggleButton
-                                    sx={{
-                                        borderColor: theme.palette.grey[900] + 25,
-                                        borderRadius: 2,
-                                        color: theme?.customization?.isDarkMode ? 'white' : 'inherit'
-                                    }}
-                                    variant='contained'
-                                    value='list'
-                                    title='List View'
-                                >
-                                    <IconList />
-                                </ToggleButton>
-                            </ToggleButtonGroup>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Button
-                                    variant='outlined'
-                                    onClick={() => inputRef.current.click()}
-                                    startIcon={<IconFileUpload />}
-                                    sx={{ borderRadius: 2, height: 40 }}
-                                >
-                                    Load
-                                </Button>
-                                <input
-                                    style={{ display: 'none' }}
-                                    ref={inputRef}
-                                    type='file'
-                                    hidden
-                                    accept='.json'
-                                    onChange={(e) => handleFileUpload(e)}
-                                />
+                ) : !view || view === 'card' ? (
+                    <>
+                        {isLoading ? (
+                            <Box display='grid' gridTemplateColumns='repeat(auto-fit, minmax(320px, 1fr))' gap={4}>
+                                <Skeleton variant='rounded' height={180} />
+                                <Skeleton variant='rounded' height={180} />
+                                <Skeleton variant='rounded' height={180} />
                             </Box>
-                            <ButtonGroup disableElevation aria-label='outlined primary button group'>
+                        ) : getAllToolsApi.data?.filter(filterTools).length === 0 ? (
+                            <EngagingEmptyState>
+                                <PulseEmoji>🛠️</PulseEmoji>
+                                <Typography variant='h5' sx={{ fontWeight: 700, mb: 1, mt: 2 }}>
+                                    You are just one click away from adding your first tool!
+                                </Typography>
+                                <Typography variant='body2' sx={{ color: 'text.secondary', mb: 3 }}>
+                                    Tools let your agents interact with external APIs and services. Add one now!
+                                </Typography>
                                 <StyledButton
                                     variant='contained'
                                     onClick={addNew}
                                     startIcon={<IconPlus />}
-                                    sx={{ borderRadius: 2, height: 40 }}
+                                    sx={{ borderRadius: 2, height: 44, fontWeight: 700 }}
                                 >
-                                    Create
+                                    Add Tool
                                 </StyledButton>
-                            </ButtonGroup>
-                        </ViewHeader>
-                        {!view || view === 'card' ? (
-                            <>
-                                {isLoading ? (
-                                    <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
-                                        <Skeleton variant='rounded' height={160} />
-                                        <Skeleton variant='rounded' height={160} />
-                                        <Skeleton variant='rounded' height={160} />
-                                    </Box>
-                                ) : (
-                                    <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
-                                        {getAllToolsApi.data &&
-                                            getAllToolsApi.data
-                                                ?.filter(filterTools)
-                                                .map((data, index) => <ItemCard data={data} key={index} onClick={() => edit(data)} />)}
-                                    </Box>
-                                )}
-                            </>
+                            </EngagingEmptyState>
                         ) : (
-                            <ToolsTable data={getAllToolsApi.data} isLoading={isLoading} onSelect={edit} />
+                            <Box display='grid' gridTemplateColumns='repeat(auto-fit, minmax(320px, 1fr))' gap={4}>
+                                {getAllToolsApi.data?.filter(filterTools).map((data, index) => (
+                                    <ItemCard key={index} onClick={() => edit(data)} data={data} />
+                                ))}
+                            </Box>
                         )}
-                        {!isLoading && (!getAllToolsApi.data || getAllToolsApi.data.length === 0) && (
-                            <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
-                                <Box sx={{ p: 2, height: 'auto' }}>
-                                    <img
-                                        style={{ objectFit: 'cover', height: '20vh', width: 'auto' }}
-                                        src={ToolEmptySVG}
-                                        alt='ToolEmptySVG'
-                                    />
-                                </Box>
-                                <div>No Tools Created Yet</div>
-                            </Stack>
-                        )}
-                    </Stack>
+                    </>
+                ) : (
+                    <ToolsTable data={getAllToolsApi.data} isLoading={isLoading} filterFunction={filterTools} edit={edit} />
                 )}
-            </MainCard>
-            <ToolDialog
-                show={showDialog}
-                dialogProps={dialogProps}
-                onCancel={() => setShowDialog(false)}
-                onConfirm={onConfirm}
-                setError={setError}
-            ></ToolDialog>
-        </>
+            </RightPanel>
+            <ToolDialog show={showDialog} dialogProps={dialogProps} onConfirm={onConfirm} onCancel={() => setShowDialog(false)} />
+        </SplitLayout>
     )
 }
 

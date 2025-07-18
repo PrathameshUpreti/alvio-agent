@@ -46,6 +46,24 @@ const StyledNodeToolbar = styled(NodeToolbar)(({ theme }) => ({
     boxShadow: '0 2px 14px 0 rgb(32 40 45 / 8%)'
 }))
 
+const GlassIterationCard = styled('div')(({ theme, selected }) => ({
+    background: theme.palette.mode === 'dark' ? 'rgba(30, 30, 40, 0.85)' : 'rgba(255,255,255,0.65)',
+    backdropFilter: 'blur(16px)',
+    WebkitBackdropFilter: 'blur(16px)',
+    borderRadius: 24,
+    border: selected ? `2.5px solid ${theme.palette.primary.main}` : '2px solid rgba(141,54,249,0.10)',
+    boxShadow: selected
+        ? '0 0 0 4px ' + theme.palette.primary.main + ', 0 8px 32px 0 rgba(141,54,249,0.18)'
+        : '0 4px 24px 0 rgba(141,54,249,0.10)',
+    minWidth: 300,
+    minHeight: 250,
+    padding: 18,
+    display: 'flex',
+    alignItems: 'center',
+    position: 'relative',
+    transition: 'box-shadow 0.3s, border-color 0.3s, transform 0.18s'
+}))
+
 // ===========================|| ITERATION NODE ||=========================== //
 
 const IterationNode = ({ data }) => {
@@ -264,24 +282,7 @@ const IterationNode = ({ data }) => {
                 </ButtonGroup>
             </StyledNodeToolbar>
             <NodeResizer minWidth={300} minHeight={Math.max(getMinimumHeight(), 250)} onResizeEnd={onResizeEnd} />
-            <CardWrapper
-                content={false}
-                sx={{
-                    borderColor: getStateColor(),
-                    borderWidth: '1px',
-                    boxShadow: data.selected ? `0 0 0 1px ${getStateColor()} !important` : 'none',
-                    minHeight: Math.max(getMinimumHeight(), 250),
-                    minWidth: 300,
-                    width: cardDimensions.width,
-                    height: cardDimensions.height,
-                    backgroundColor: getBackgroundColor(),
-                    display: 'flex',
-                    '&:hover': {
-                        boxShadow: data.selected ? `0 0 0 1px ${getStateColor()} !important` : 'none'
-                    }
-                }}
-                border={false}
-            >
+            <GlassIterationCard selected={data.selected} style={{ width: cardDimensions.width, height: cardDimensions.height }}>
                 {data && data.status && (
                     <Tooltip title={data.status === 'ERROR' ? data.error || 'Error' : ''}>
                         <Avatar
@@ -412,7 +413,7 @@ const IterationNode = ({ data }) => {
                         )
                     })}
                 </Box>
-            </CardWrapper>
+            </GlassIterationCard>
             <NodeInfoDialog show={showInfoDialog} dialogProps={infoDialogProps} onCancel={() => setShowInfoDialog(false)}></NodeInfoDialog>
         </div>
     )

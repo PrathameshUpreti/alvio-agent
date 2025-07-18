@@ -6,6 +6,17 @@ import { Dialog, DialogContent } from '@mui/material'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import NodeInputHandler from '@/views/canvas/NodeInputHandler'
 import { HIDE_CANVAS_DIALOG, SHOW_CANVAS_DIALOG } from '@/store/actions'
+import { styled } from '@mui/material/styles'
+
+const GlassDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiPaper-root': {
+        background: theme.palette.background.paper,
+        borderRadius: 22,
+        border: `2.5px solid ${theme.palette.primary.main}`,
+        boxShadow: theme.shadows[24],
+        transition: 'box-shadow 0.3s, border-color 0.3s'
+    }
+}))
 
 const AdditionalParamsDialog = ({ show, dialogProps, onCancel }) => {
     const portalElement = document.getElementById('portal')
@@ -31,7 +42,7 @@ const AdditionalParamsDialog = ({ show, dialogProps, onCancel }) => {
     }, [show, dispatch])
 
     const component = show ? (
-        <Dialog
+        <GlassDialog
             onClose={onCancel}
             open={show}
             fullWidth
@@ -60,7 +71,7 @@ const AdditionalParamsDialog = ({ show, dialogProps, onCancel }) => {
                         ))}
                 </PerfectScrollbar>
             </DialogContent>
-        </Dialog>
+        </GlassDialog>
     ) : null
 
     return createPortal(component, portalElement)

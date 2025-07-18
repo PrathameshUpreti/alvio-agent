@@ -48,9 +48,9 @@ const AgentFlowEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition,
     return (
         <>
             <defs>
-                <linearGradient id={gradientId}>
-                    <stop offset='0%' stopColor={data?.sourceColor || '#ae53ba'} />
-                    <stop offset='100%' stopColor={data?.targetColor || '#2a8af6'} />
+                <linearGradient id={gradientId} x1='0' y1='0' x2='1' y2='1'>
+                    <stop offset='0%' stopColor={data?.sourceColor || '#8D36F9'} />
+                    <stop offset='100%' stopColor={data?.targetColor || '#C837AB'} />
                 </linearGradient>
             </defs>
             <path
@@ -58,7 +58,7 @@ const AgentFlowEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition,
                 className='agent-flow-edge-selector'
                 style={{
                     stroke: 'transparent',
-                    strokeWidth: 15,
+                    strokeWidth: 18,
                     fill: 'none',
                     cursor: 'pointer'
                 }}
@@ -68,24 +68,40 @@ const AgentFlowEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition,
                 id={id}
                 className='agent-flow-edge'
                 style={{
-                    strokeWidth: selected ? 3 : 2,
+                    strokeWidth: selected ? 4 : 2.5,
                     stroke: `url(#${gradientId})`,
-                    filter: selected ? 'drop-shadow(0 0 3px rgba(0,0,0,0.3))' : 'none',
+                    filter: selected ? 'drop-shadow(0 0 8px #C837AB)' : 'drop-shadow(0 2px 8px rgba(141,54,249,0.10))',
                     cursor: 'pointer',
-                    opacity: selected ? 1 : 0.75,
-                    fill: 'none'
+                    opacity: selected ? 1 : 0.85,
+                    fill: 'none',
+                    transition: 'stroke-width 0.2s, filter 0.2s'
                 }}
                 d={edgePath}
                 markerEnd={markerEnd}
             />
             {data?.edgeLabel && (
                 <EdgeLabelRenderer>
-                    <EdgeLabel
-                        isHumanInput={data?.isHumanInput}
-                        color={data?.sourceColor || '#ae53ba'}
-                        label={data.edgeLabel}
-                        transform={`translate(-50%, 0%) translate(${sourceX}px,${sourceY}px)`}
-                    />
+                    <div
+                        style={{
+                            position: 'absolute',
+                            left: sourceX + 20,
+                            top: sourceY - 10,
+                            background: 'rgba(255,255,255,0.75)',
+                            color: '#8D36F9',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            borderRadius: 16,
+                            boxShadow: '0 2px 8px rgba(141,54,249,0.10)',
+                            padding: '4px 14px',
+                            border: '1.5px solid #C837AB',
+                            zIndex: 1000,
+                            pointerEvents: 'none',
+                            filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.10))'
+                        }}
+                        className='nodrag nopan'
+                    >
+                        {data.edgeLabel}
+                    </div>
                 </EdgeLabelRenderer>
             )}
         </>

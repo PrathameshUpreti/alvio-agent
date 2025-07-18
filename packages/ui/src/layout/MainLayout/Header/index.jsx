@@ -5,26 +5,14 @@ import { useNavigate } from 'react-router-dom'
 
 // material-ui
 import { useTheme } from '@mui/material/styles'
-import { Avatar, Box, ButtonBase, MenuItem, Tooltip, Typography, Divider, Paper, Popper, ClickAwayListener } from '@mui/material'
+import { Avatar, Box, ButtonBase, MenuItem, Tooltip, Typography, Divider, Paper, Menu, Fade } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 // project imports
 import LogoSection from '../LogoSection'
-import Settings from '@/views/settings'
-import ArchivedChats from '@/views/archived/ArchivedChats'
 
 // assets
-import {
-    IconMenu2,
-    IconSettings,
-    IconArchive,
-    IconCreditCard,
-    IconLogout,
-    IconSun,
-    IconMoon,
-    IconChevronDown,
-    IconUser
-} from '@tabler/icons-react'
+import { IconSettings, IconArchive, IconCreditCard, IconLogout, IconSun, IconMoon, IconUser } from '@tabler/icons-react'
 
 // store
 import { SET_DARKMODE } from '@/store/actions'
@@ -32,7 +20,7 @@ import { SET_DARKMODE } from '@/store/actions'
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
 const GradientButton = styled(ButtonBase)(({ theme }) => ({
-    background: 'linear-gradient(90deg, #00E676, #00E699)',
+    background: 'linear-gradient(135deg, #4f8cff 0%, #7b2ff2 50%, #f357a8 100%)',
     color: theme.palette.common.white,
     padding: '13px 18px',
     borderRadius: '4px',
@@ -43,7 +31,8 @@ const GradientButton = styled(ButtonBase)(({ theme }) => ({
     alignItems: 'center',
     gap: '8px',
     '&:hover': {
-        background: 'linear-gradient(90deg, #00C853, #00BA88)'
+        background: 'linear-gradient(135deg, #4f8cff 0%, #7b2ff2 50%, #f357a8 100%)',
+        filter: 'brightness(0.95)'
     }
 }))
 
@@ -145,6 +134,14 @@ const Header = ({ handleLeftDrawerToggle }) => {
     const [settingsOpen, setSettingsOpen] = useState(false)
     const [archivedOpen, setArchivedOpen] = useState(false)
     const anchorRef = useRef(null)
+    const [profileMenuAnchor, setProfileMenuAnchor] = useState(null)
+    const isProfileMenuOpen = Boolean(profileMenuAnchor)
+    const handleProfileMenuOpen = (event) => {
+        setProfileMenuAnchor(event.currentTarget)
+    }
+    const handleProfileMenuClose = () => {
+        setProfileMenuAnchor(null)
+    }
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen)
@@ -217,41 +214,25 @@ const Header = ({ handleLeftDrawerToggle }) => {
                     width: '100%',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
-                    p: 2
+                    justifyContent: { xs: 'center', md: 'space-between' },
+                    p: { xs: 1, sm: 2 },
+                    minHeight: { xs: 56, sm: 64 },
+                    gap: { xs: 1, sm: 2 }
                 }}
             >
-                <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row-reverse', gap: '15px' }}>
-                    <ButtonBase sx={{ borderRadius: '4px', overflow: 'hidden' }}>
-                        <Avatar
-                            variant='rounded'
-                            sx={{
-                                ...theme.typography.commonAvatar,
-                                ...theme.typography.mediumAvatar,
-                                overflow: 'hidden',
-                                transition: 'all .2s ease-in-out',
-                                background: theme.palette.mode === 'dark' ? theme.palette.darkLevel1 : theme.palette.secondary.light,
-                                color: theme.palette.mode === 'dark' ? theme.palette.secondary.lighter : theme.palette.secondary.dark,
-                                '&:hover': {
-                                    background: theme.palette.mode === 'dark' ? theme.palette.darkLevel1 : theme.palette.secondary.dark,
-                                    color: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.secondary.light
-                                }
-                            }}
-                            onClick={handleLeftDrawerToggle}
-                            color='inherit'
-                        >
-                            <IconMenu2 stroke={1.5} size='1.3rem' />
-                        </Avatar>
-                    </ButtonBase>
-                    <Box component='span' sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
-                        <LogoSection />
-                    </Box>
+                <Box
+                    component='span'
+                    sx={{ display: { xs: 'block', md: 'block' }, flexGrow: { xs: 0, md: 1 }, textAlign: { xs: 'center', md: 'left' } }}
+                >
+                    <LogoSection />
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 } }}>
                     <GradientButton onClick={handleUpgradeClick} sx={{ display: { xs: 'none', sm: 'flex' } }}>
                         <IconCreditCard size={18} />
-                        Upgrade Plan
+                        <Box component='span' sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                            Upgrade Plan
+                        </Box>
                     </GradientButton>
 
                     <Tooltip title={isDark ? 'Light Mode' : 'Dark Mode'}>
@@ -260,125 +241,96 @@ const Header = ({ handleLeftDrawerToggle }) => {
                         </ThemeToggleButton>
                     </Tooltip>
 
-                    {/* Profile Button */}
-                    <ProfileButton
-                        ref={anchorRef}
-                        aria-controls={open ? 'profile-menu' : undefined}
+                    {/* Profile Dropdown - always visible, icon only on xs */}
+                    <ButtonBase
+                        onClick={handleProfileMenuOpen}
+                        sx={{
+                            borderRadius: '50%',
+                            border: '2px solid',
+                            borderColor: theme.palette.mode === 'dark' ? 'rgba(128,128,128,0.2)' : 'rgba(200,200,200,0.7)',
+                            width: 40,
+                            height: 40,
+                            boxShadow: theme.palette.mode === 'dark' ? '0 2px 8px rgba(0,0,0,0.3)' : '0 2px 8px rgba(0,0,0,0.08)',
+                            background: theme.palette.mode === 'dark' ? theme.palette.background.paper : '#fff',
+                            p: 0,
+                            ml: { xs: 0, sm: 1 },
+                            transition: 'box-shadow 0.2s, border-color 0.2s',
+                            '&:hover': {
+                                boxShadow: theme.palette.mode === 'dark' ? '0 4px 16px rgba(0,0,0,0.4)' : '0 4px 16px rgba(0,0,0,0.12)',
+                                borderColor: theme.palette.primary.main
+                            }
+                        }}
+                        aria-controls={isProfileMenuOpen ? 'profile-menu' : undefined}
                         aria-haspopup='true'
-                        aria-expanded={open ? 'true' : undefined}
-                        onClick={handleToggle}
+                        aria-expanded={isProfileMenuOpen ? 'true' : undefined}
                     >
-                        <Avatar
-                            sx={{
-                                width: 32,
-                                height: 32,
-                                border: '2px solid',
-                                borderColor: theme.palette.mode === 'dark' ? 'rgba(128, 128, 128, 0.4)' : 'rgba(200, 200, 200, 1)',
-                                mr: 1
-                            }}
-                        >
+                        <Avatar sx={{ width: 32, height: 32, bgcolor: theme.palette.primary.main, color: '#fff', fontWeight: 700 }}>
                             <IconUser size={20} />
                         </Avatar>
-                        <Box sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'column', alignItems: 'flex-start' }}>
-                            <Typography variant='caption' sx={{ fontWeight: 500, color: theme.palette.mode === 'dark' ? '#fff' : '#333' }}>
+                    </ButtonBase>
+                    <Menu
+                        id='profile-menu'
+                        anchorEl={profileMenuAnchor}
+                        open={isProfileMenuOpen}
+                        onClose={handleProfileMenuClose}
+                        TransitionComponent={Fade}
+                        PaperProps={{
+                            elevation: 8,
+                            sx: {
+                                borderRadius: 3,
+                                minWidth: 220,
+                                p: 1,
+                                mt: 1.5,
+                                boxShadow: theme.palette.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.5)' : '0 8px 32px rgba(0,0,0,0.12)',
+                                background: theme.palette.mode === 'dark' ? theme.palette.background.paper : '#fff'
+                            }
+                        }}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                    >
+                        <Box sx={{ px: 2, py: 1, mb: 1, borderBottom: '1px solid', borderColor: theme.palette.divider }}>
+                            <Typography variant='subtitle1' fontWeight={700} sx={{ color: theme.palette.text.primary }}>
                                 {username}
                             </Typography>
-                            <Typography variant='caption' sx={{ fontSize: '10px', color: theme.palette.mode === 'dark' ? '#bbb' : '#666' }}>
+                            <Typography variant='caption' sx={{ color: theme.palette.text.secondary }}>
                                 {email}
                             </Typography>
                         </Box>
-                        <Box sx={{ ml: 1, color: theme.palette.mode === 'dark' ? '#999' : '#666', display: 'flex', alignItems: 'center' }}>
-                            <IconChevronDown size={14} />
-                        </Box>
-                    </ProfileButton>
-
-                    <Popper
-                        open={open}
-                        anchorEl={anchorRef.current}
-                        role={undefined}
-                        placement='bottom'
-                        transition
-                        popperOptions={{
-                            modifiers: [
-                                {
-                                    name: 'offset',
-                                    options: {
-                                        offset: [0, 10]
-                                    }
-                                },
-                                {
-                                    name: 'preventOverflow',
-                                    options: {
-                                        altAxis: true,
-                                        rootBoundary: 'viewport'
-                                    }
-                                }
-                            ]
-                        }}
-                        sx={{
-                            zIndex: 1500,
-                            transformOrigin: 'top center',
-                            position: 'fixed',
-                            right: '30px !important',
-                            top: '70px !important'
-                        }}
-                    >
-                        <ClickAwayListener onClickAway={handleClose}>
-                            <UserMenuCard>
-                                <GradientOverlay>
-                                    <OrangeBall />
-                                    <PinkBall />
-                                </GradientOverlay>
-
-                                <Box sx={{ position: 'relative', zIndex: 1 }}>
-                                    <MenuItemStyled onClick={() => handleMenuAction('settings')}>
-                                        <IconSettings size={20} stroke={theme.palette.mode === 'dark' ? '#fff' : '#000'} strokeWidth={2} />
-                                        <Typography sx={{ color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>
-                                            Settings
-                                        </Typography>
-                                    </MenuItemStyled>
-
-                                    <MenuItemStyled onClick={() => handleMenuAction('archived')}>
-                                        <IconArchive size={20} stroke={theme.palette.mode === 'dark' ? '#fff' : '#000'} strokeWidth={2} />
-                                        <Typography sx={{ color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>
-                                            Archived Chats
-                                        </Typography>
-                                    </MenuItemStyled>
-
-                                    <MenuItemStyled onClick={() => handleMenuAction('billing')}>
-                                        <IconCreditCard
-                                            size={20}
-                                            stroke={theme.palette.mode === 'dark' ? '#fff' : '#000'}
-                                            strokeWidth={2}
-                                        />
-                                        <Typography sx={{ color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>
-                                            Billing & Subscription
-                                        </Typography>
-                                    </MenuItemStyled>
-
-                                    <Divider
-                                        sx={{
-                                            my: 1,
-                                            borderColor: theme.palette.mode === 'dark' ? 'rgba(107, 114, 128, 0.5)' : 'rgb(243, 244, 246)'
-                                        }}
-                                    />
-
-                                    <MenuItemStyled onClick={() => handleMenuAction('signout')}>
-                                        <IconLogout size={20} stroke={theme.palette.mode === 'dark' ? '#fff' : '#000'} strokeWidth={2} />
-                                        <Typography sx={{ color: (theme) => (theme.palette.mode === 'dark' ? '#fff' : '#000') }}>
-                                            Sign Out
-                                        </Typography>
-                                    </MenuItemStyled>
-                                </Box>
-                            </UserMenuCard>
-                        </ClickAwayListener>
-                    </Popper>
-
-                    {/* Settings Dialog */}
-                    <Settings open={settingsOpen} onClose={handleSettingsClose} />
-
-                    {/* Archived Chats Dialog */}
-                    <ArchivedChats open={archivedOpen} onClose={handleArchivedClose} />
+                        <MenuItem
+                            onClick={() => {
+                                handleProfileMenuClose()
+                                navigate('/settings')
+                            }}
+                        >
+                            <IconSettings size={18} style={{ marginRight: 10 }} /> Settings
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                handleProfileMenuClose()
+                                navigate('/archived-chats')
+                            }}
+                        >
+                            <IconArchive size={18} style={{ marginRight: 10 }} /> Archived Chats
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                handleProfileMenuClose()
+                                navigate('/billing')
+                            }}
+                        >
+                            <IconCreditCard size={18} style={{ marginRight: 10 }} /> Billing & Subscription
+                        </MenuItem>
+                        <Divider sx={{ my: 1 }} />
+                        <MenuItem
+                            onClick={() => {
+                                handleProfileMenuClose()
+                                signOutClicked()
+                            }}
+                            sx={{ color: theme.palette.error.main }}
+                        >
+                            <IconLogout size={18} style={{ marginRight: 10 }} /> Sign Out
+                        </MenuItem>
+                    </Menu>
                 </Box>
             </Box>
         </>

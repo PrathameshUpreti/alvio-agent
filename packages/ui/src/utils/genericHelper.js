@@ -843,6 +843,7 @@ export const removeLocalStorageChatHistory = (chatflowid) => {
 }
 
 export const unshiftFiles = (configData) => {
+    if (!Array.isArray(configData)) return []
     const filesConfig = configData.find((config) => config.name === 'files')
     if (filesConfig) {
         configData = configData.filter((config) => config.name !== 'files')

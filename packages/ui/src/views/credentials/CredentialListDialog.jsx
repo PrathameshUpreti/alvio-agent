@@ -11,7 +11,7 @@ import { baseURL } from '@/store/constant'
 import { HIDE_CANVAS_DIALOG, SHOW_CANVAS_DIALOG } from '@/store/actions'
 import keySVG from '@/assets/images/key.svg'
 
-const CredentialListDialog = ({ show, dialogProps, onCancel, onCredentialSelected }) => {
+const CredentialListDialog = ({ show, dialogProps, onCancel, onCredentialSelected = () => {} }) => {
     const portalElement = document.getElementById('portal')
     const dispatch = useDispatch()
     const theme = useTheme()
@@ -51,22 +51,60 @@ const CredentialListDialog = ({ show, dialogProps, onCancel, onCredentialSelecte
             onClose={onCancel}
             aria-labelledby='alert-dialog-title'
             aria-describedby='alert-dialog-description'
+            PaperProps={{
+                sx: {
+                    borderRadius: 4,
+                    boxShadow: 24,
+                    background: (theme) => theme.palette.background.paper,
+                    p: 0
+                }
+            }}
         >
-            <DialogTitle sx={{ fontSize: '1rem', p: 3, pb: 0 }} id='alert-dialog-title'>
+            <DialogTitle sx={{ fontSize: '1.15rem', fontWeight: 700, pb: 0, pt: 3, px: 4 }} id='alert-dialog-title'>
                 {dialogProps.title}
             </DialogTitle>
-            <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxHeight: '75vh', position: 'relative', px: 3, pb: 3 }}>
+            <DialogContent
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    maxHeight: '75vh',
+                    position: 'relative',
+                    px: 4,
+                    pb: 3,
+                    pt: 2,
+                    // Custom scrollbar
+                    '&::-webkit-scrollbar': {
+                        width: 8
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        background: (theme) => (theme.palette.mode === 'dark' ? '#444' : '#ccc'),
+                        borderRadius: 4
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        background: 'transparent'
+                    }
+                }}
+            >
                 <Box
                     sx={{
-                        backgroundColor: theme.palette.background.paper,
-                        pt: 2,
+                        backgroundColor: 'transparent',
+                        pt: 0,
                         position: 'sticky',
                         top: 0,
-                        zIndex: 10
+                        zIndex: 10,
+                        mb: 2
                     }}
                 >
                     <OutlinedInput
-                        sx={{ width: '100%', pr: 2, pl: 2, position: 'sticky' }}
+                        sx={{
+                            width: '100%',
+                            pr: 2,
+                            pl: 2,
+                            borderRadius: 2,
+                            fontSize: 15,
+                            background: (theme) => (theme.palette.mode === 'dark' ? '#232323' : '#fafbfc')
+                        }}
                         id='input-search-credential'
                         value={searchValue}
                         onChange={(e) => filterSearch(e.target.value)}
@@ -122,25 +160,36 @@ const CredentialListDialog = ({ show, dialogProps, onCancel, onCredentialSelecte
                         <ListItemButton
                             alignItems='center'
                             key={componentCredential.name}
-                            onClick={() => onCredentialSelected(componentCredential)}
+                            onClick={() => typeof onCredentialSelected === 'function' && onCredentialSelected(componentCredential)}
                             sx={{
                                 border: 1,
-                                borderColor: theme.palette.grey[900] + 25,
-                                borderRadius: 2,
+                                borderColor: theme.palette.mode === 'dark' ? '#333' : theme.palette.grey[300],
+                                borderRadius: 3,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'start',
                                 textAlign: 'left',
-                                gap: 1,
-                                p: 2
+                                gap: 2,
+                                p: 2.5,
+                                background: (theme) => (theme.palette.mode === 'dark' ? '#181818' : '#fff'),
+                                boxShadow: '0 2px 8px 0 rgba(0,0,0,0.04)',
+                                transition: 'box-shadow 0.2s, border-color 0.2s',
+                                '&:hover': {
+                                    boxShadow: '0 4px 16px 0 rgba(0,0,0,0.10)',
+                                    borderColor: theme.palette.primary.main
+                                }
                             }}
                         >
-                            <div
-                                style={{
+                            <Box
+                                sx={{
                                     width: 50,
                                     height: 50,
                                     borderRadius: '50%',
-                                    backgroundColor: 'white'
+                                    backgroundColor: 'white',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    boxShadow: '0 1px 4px 0 rgba(0,0,0,0.06)'
                                 }}
                             >
                                 <img
@@ -159,8 +208,10 @@ const CredentialListDialog = ({ show, dialogProps, onCancel, onCredentialSelecte
                                         e.target.src = keySVG
                                     }}
                                 />
-                            </div>
-                            <Typography>{componentCredential.label}</Typography>
+                            </Box>
+                            <Typography fontWeight={600} fontSize={15}>
+                                {componentCredential.label}
+                            </Typography>
                         </ListItemButton>
                     ))}
                 </List>

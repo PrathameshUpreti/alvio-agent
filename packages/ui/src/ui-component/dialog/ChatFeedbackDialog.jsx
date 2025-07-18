@@ -33,6 +33,13 @@ const ChatFeedbackDialog = ({ show, dialogProps, onCancel }) => {
             maxWidth='sm'
             aria-labelledby='alert-dialog-title'
             aria-describedby='alert-dialog-description'
+            PaperProps={{
+                sx: {
+                    background: (theme) => theme.palette.background.paper,
+                    borderRadius: 4,
+                    boxShadow: 24
+                }
+            }}
         >
             <DialogTitle sx={{ fontSize: '1rem' }} id='alert-dialog-title'>
                 {dialogProps.title || 'Allowed Domains'}

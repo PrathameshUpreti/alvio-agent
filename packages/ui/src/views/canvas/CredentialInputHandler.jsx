@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 // material-ui
 import { IconButton } from '@mui/material'
 import { IconEdit } from '@tabler/icons-react'
+import { styled } from '@mui/material/styles'
 
 // project import
 import { AsyncDropdown } from '@/ui-component/dropdown/AsyncDropdown'
@@ -15,6 +16,18 @@ import credentialsApi from '@/api/credentials'
 import { FLOWISE_CREDENTIAL_ID } from '@/store/constant'
 
 // ===========================|| CredentialInputHandler ||=========================== //
+
+const CredentialBox = styled('div')(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    background: theme.palette.mode === 'dark' ? '#23272f' : '#f5f6fa',
+    borderRadius: 12,
+    padding: theme.spacing(1),
+    boxShadow: theme.palette.mode === 'dark' ? '0 2px 8px rgba(0,0,0,0.12)' : '0 2px 8px rgba(141,54,249,0.06)',
+    marginBottom: theme.spacing(1)
+}))
 
 const CredentialInputHandler = ({ inputParam, data, onSelect, disabled = false }) => {
     const ref = useRef(null)
@@ -98,7 +111,7 @@ const CredentialInputHandler = ({ inputParam, data, onSelect, disabled = false }
             {inputParam && (
                 <>
                     {inputParam.type === 'credential' && (
-                        <div key={reloadTimestamp} style={{ display: 'flex', flexDirection: 'row' }}>
+                        <CredentialBox>
                             <AsyncDropdown
                                 disabled={disabled}
                                 name={inputParam.name}
@@ -117,7 +130,7 @@ const CredentialInputHandler = ({ inputParam, data, onSelect, disabled = false }
                                     <IconEdit />
                                 </IconButton>
                             )}
-                        </div>
+                        </CredentialBox>
                     )}
                 </>
             )}

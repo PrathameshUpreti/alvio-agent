@@ -2,42 +2,38 @@ import { styled } from '@mui/material/styles'
 import { Dialog, DialogContent, DialogTitle, Box, Paper } from '@mui/material'
 
 // Styled components for dialog styling
-export const GradientDialog = styled(Dialog)(({ theme }) => ({
+export const ModernDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialog-paper': {
-        borderRadius: '16px',
+        borderRadius: '10px',
         overflow: 'hidden',
-        paddingBottom: '24px',
-        background:
-            theme.palette.mode === 'dark'
-                ? 'linear-gradient(to bottom right, rgb(40, 45, 50), rgb(30, 35, 40))'
-                : 'linear-gradient(to bottom right, #ffffff, #f8fafc)',
-        border: '1px solid',
-        borderColor: theme.palette.mode === 'dark' ? 'rgba(128, 128, 128, 0.2)' : 'rgba(14, 165, 233, 0.15)',
-        boxShadow: theme.palette.mode === 'dark' ? '0 8px 32px rgba(0, 0, 0, 0.3)' : '0 8px 32px rgba(0, 0, 0, 0.1)'
+        paddingBottom: '20px',
+        background: theme.palette.background.paper,
+        border: `1.5px solid ${theme.palette.divider}`,
+        boxShadow: theme.palette.mode === 'dark' ? '0 4px 24px rgba(0,0,0,0.25)' : '0 4px 24px rgba(141,54,249,0.10)'
     }
 }))
 
-export const GradientDialogTitle = styled(DialogTitle)(({ theme }) => ({
+export const ModernDialogTitle = styled(DialogTitle)(({ theme }) => ({
     position: 'relative',
     zIndex: 10,
-    fontWeight: 600,
-    padding: theme.spacing(3, 3, 2, 3),
-    color: theme.palette.mode === 'dark' ? '#f0f4f8' : '#0f172a'
+    fontWeight: 700,
+    padding: theme.spacing(2, 2, 1.5, 2),
+    color: theme.palette.text.primary
 }))
 
-export const GradientDialogContent = styled(DialogContent)(({ theme }) => ({
+export const ModernDialogContent = styled(DialogContent)(({ theme }) => ({
     position: 'relative',
     zIndex: 10,
-    padding: theme.spacing(1, 3, 0, 3),
+    padding: theme.spacing(1, 2, 0, 2),
     overflowY: 'auto',
     '&::-webkit-scrollbar': {
         display: 'none'
     },
-    msOverflowStyle: 'none' /* IE and Edge */,
-    scrollbarWidth: 'none' /* Firefox */
+    msOverflowStyle: 'none',
+    scrollbarWidth: 'none'
 }))
 
-export const GradientOverlay = styled(Box)(({ theme }) => ({
+export const ModernOverlay = styled(Box)(({ theme }) => ({
     width: '100%',
     height: '100%',
     position: 'absolute',
@@ -47,7 +43,7 @@ export const GradientOverlay = styled(Box)(({ theme }) => ({
     opacity: theme.palette.mode === 'dark' ? 0.8 : 0.5
 }))
 
-export const PinkBall = styled(Box)(({ theme }) => ({
+export const ModernPinkBall = styled(Box)(({ theme }) => ({
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -59,7 +55,7 @@ export const PinkBall = styled(Box)(({ theme }) => ({
     transform: 'translate(-20%, 25%)'
 }))
 
-export const OrangeBall = styled(Box)(({ theme }) => ({
+export const ModernOrangeBall = styled(Box)(({ theme }) => ({
     position: 'absolute',
     bottom: 0,
     right: 0,
@@ -71,20 +67,19 @@ export const OrangeBall = styled(Box)(({ theme }) => ({
     transform: 'translate(20%, 25%)'
 }))
 
-export const StyledPaper = styled(Paper)(({ theme }) => ({
-    borderRadius: '12px',
-    background: theme.palette.mode === 'dark' ? 'rgba(50, 55, 60, 0.8)' : 'rgba(255, 255, 255, 0.9)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid',
-    borderColor: theme.palette.mode === 'dark' ? 'rgba(128, 128, 128, 0.2)' : 'rgba(14, 165, 233, 0.15)'
+export const ModernStyledPaper = styled(Paper)(({ theme }) => ({
+    borderRadius: '8px',
+    background: theme.palette.background.paper,
+    border: `1.5px solid ${theme.palette.divider}`,
+    boxShadow: theme.palette.mode === 'dark' ? '0 2px 12px rgba(0,0,0,0.18)' : '0 2px 12px rgba(141,54,249,0.08)'
 }))
 
 export default {
-    GradientDialog,
-    GradientDialogTitle,
-    GradientDialogContent,
-    GradientOverlay,
-    PinkBall,
-    OrangeBall,
-    StyledPaper
+    ModernDialog,
+    ModernDialogTitle,
+    ModernDialogContent,
+    ModernOverlay,
+    ModernPinkBall,
+    ModernOrangeBall,
+    ModernStyledPaper
 }

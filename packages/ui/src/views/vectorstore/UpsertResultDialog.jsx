@@ -27,6 +27,13 @@ const UpsertResultDialog = ({ show, dialogProps, onCancel, onGoToRetrievalQuery 
             maxWidth='sm'
             aria-labelledby='upsert-result-dialog-title'
             aria-describedby='upsert-result-dialog-description'
+            PaperProps={{
+                sx: {
+                    background: (theme) => theme.palette.background.paper,
+                    borderRadius: 4,
+                    boxShadow: 24
+                }
+            }}
         >
             <DialogTitle sx={{ fontSize: '1rem' }} id='upsert-result-dialog-title'>
                 Upsert Record
@@ -85,9 +92,9 @@ const UpsertResultDialog = ({ show, dialogProps, onCancel, onGoToRetrievalQuery 
                             sx={{
                                 borderRadius: 2,
                                 height: '100%',
-                                backgroundImage: `linear-gradient(to right, #3f5efb, #fc466b)`,
+                                background: (theme) => theme.palette.primary.main,
                                 '&:hover': {
-                                    backgroundImage: `linear-gradient(to right, #2b4efb, #fe2752)`
+                                    background: (theme) => theme.palette.primary.dark
                                 },
                                 mb: 2
                             }}

@@ -14,7 +14,6 @@ import ConfirmDialog from '@/ui-component/dialog/ConfirmDialog'
 import { FlowListTable } from '@/ui-component/table/FlowListTable'
 import { StyledButton } from '@/ui-component/button/StyledButton'
 import ViewHeader from '@/layout/MainLayout/ViewHeader'
-import ErrorBoundary from '@/ErrorBoundary'
 
 // API
 import chatflowsApi from '@/api/chatflows'
@@ -26,7 +25,7 @@ import useApi from '@/hooks/useApi'
 import { baseURL } from '@/store/constant'
 
 // icons
-import { IconPlus, IconLayoutGrid, IconList, IconBolt, IconMessage2, IconDashboard, IconRobot } from '@tabler/icons-react'
+import { IconPlus, IconLayoutGrid, IconList, IconMessage2, IconDashboard, IconRobot } from '@tabler/icons-react'
 
 // ==============================|| CHATFLOWS ||============================== //
 
@@ -148,9 +147,10 @@ const SuggestionCard = styled(Box)(({ theme }) => ({
 const WelcomeSection = styled(Box)(({ theme }) => ({
     padding: theme.spacing(4),
     borderRadius: '24px',
-    background: theme.palette.mode === 'dark' 
-        ? 'linear-gradient(180deg, rgba(141, 54, 249, 0.1) 0%, rgba(200, 55, 171, 0.1) 100%)'
-        : 'linear-gradient(180deg, rgba(141, 54, 249, 0.05) 0%, rgba(200, 55, 171, 0.05) 100%)',
+    background:
+        theme.palette.mode === 'dark'
+            ? 'linear-gradient(180deg, rgba(141, 54, 249, 0.1) 0%, rgba(200, 55, 171, 0.1) 100%)'
+            : 'linear-gradient(180deg, rgba(141, 54, 249, 0.05) 0%, rgba(200, 55, 171, 0.05) 100%)',
     backdropFilter: 'blur(10px)',
     border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
     marginBottom: theme.spacing(4)
@@ -164,7 +164,7 @@ const FeatureGrid = styled(Box)(({ theme }) => ({
 }))
 
 const FeatureCard = styled(Box)(({ theme }) => ({
-    padding: theme.spacing(3),
+    padding: theme.spacing(1.5),
     borderRadius: '16px',
     border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
     background: theme.palette.mode === 'dark' ? theme.palette.darkLevel3 : theme.palette.background.paper,
@@ -344,28 +344,29 @@ const Chatflows = () => {
         <MainCard>
             {isLoading ? (
                 <Stack spacing={2}>
-                    <Skeleton variant="rectangular" height={200} />
-                    <Skeleton variant="rectangular" height={100} />
-                    <Skeleton variant="rectangular" height={100} />
+                    <Skeleton variant='rectangular' height={200} />
+                    <Skeleton variant='rectangular' height={100} />
+                    <Skeleton variant='rectangular' height={100} />
                 </Stack>
             ) : error ? (
-                <Typography color="error">{error}</Typography>
+                <Typography color='error'>{error}</Typography>
             ) : (
-                <Stack spacing={3}>
+                <Stack spacing={1.5}>
                     <Box
                         sx={{
-                            p: 4,
+                            p: 2,
                             borderRadius: '24px',
-                            background: theme.palette.mode === 'dark' 
-                                ? 'linear-gradient(180deg, rgba(141, 54, 249, 0.1) 0%, rgba(200, 55, 171, 0.1) 100%)'
-                                : 'linear-gradient(180deg, rgba(141, 54, 249, 0.05) 0%, rgba(200, 55, 171, 0.05) 100%)',
+                            background:
+                                theme.palette.mode === 'dark'
+                                    ? 'linear-gradient(180deg, rgba(141, 54, 249, 0.1) 0%, rgba(200, 55, 171, 0.1) 100%)'
+                                    : 'linear-gradient(180deg, rgba(141, 54, 249, 0.05) 0%, rgba(200, 55, 171, 0.05) 100%)',
                             backdropFilter: 'blur(10px)',
                             border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
                             mb: 4
                         }}
                     >
                         <Typography
-                            variant="h1"
+                            variant='h1'
                             sx={{
                                 fontSize: { xs: '36px', sm: '48px', md: '56px' },
                                 fontWeight: 800,
@@ -383,7 +384,7 @@ const Chatflows = () => {
                         </Typography>
 
                         <Typography
-                            variant="h6"
+                            variant='h6'
                             sx={{
                                 textAlign: 'center',
                                 mb: 4,
@@ -394,13 +395,13 @@ const Chatflows = () => {
                                 lineHeight: 1.6
                             }}
                         >
-                            Your AI-Powered Agent Builder platform. Create intelligent virtual agents for enterprise and tech-savvy
-                            users with our intuitive, futuristic interface.
+                            Your AI-Powered Agent Builder platform. Create intelligent virtual agents for enterprise and tech-savvy users
+                            with our intuitive, futuristic interface.
                         </Typography>
 
                         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
                             <StyledButton
-                                variant="contained"
+                                variant='contained'
                                 onClick={addNew}
                                 startIcon={<IconPlus />}
                                 sx={{
@@ -452,10 +453,10 @@ const Chatflows = () => {
                                     color: theme.palette.mode === 'dark' ? theme.palette.grey[400] : theme.palette.grey[700]
                                 }}
                             />
-                            <Typography variant="h6" gutterBottom>
+                            <Typography variant='h6' gutterBottom>
                                 Chatflows
                             </Typography>
-                            <Typography variant="body2" color="textSecondary">
+                            <Typography variant='body2' color='textSecondary'>
                                 Create and manage conversational AI flows with our intuitive interface
                             </Typography>
                         </Box>
@@ -483,10 +484,10 @@ const Chatflows = () => {
                                     color: theme.palette.mode === 'dark' ? theme.palette.grey[400] : theme.palette.grey[700]
                                 }}
                             />
-                            <Typography variant="h6" gutterBottom>
+                            <Typography variant='h6' gutterBottom>
                                 Agentflows
                             </Typography>
-                            <Typography variant="body2" color="textSecondary">
+                            <Typography variant='body2' color='textSecondary'>
                                 Build and deploy autonomous AI agents for complex tasks
                             </Typography>
                         </Box>
@@ -514,10 +515,10 @@ const Chatflows = () => {
                                     color: theme.palette.mode === 'dark' ? theme.palette.grey[400] : theme.palette.grey[700]
                                 }}
                             />
-                            <Typography variant="h6" gutterBottom>
+                            <Typography variant='h6' gutterBottom>
                                 Assistants
                             </Typography>
-                            <Typography variant="body2" color="textSecondary">
+                            <Typography variant='body2' color='textSecondary'>
                                 Create and customize AI assistants with advanced capabilities
                             </Typography>
                         </Box>
@@ -591,12 +592,7 @@ const Chatflows = () => {
                             ) : (
                                 <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
                                     {getAllChatflowsApi.data?.filter(filterFlows).map((data, index) => (
-                                        <ItemCard
-                                            key={index}
-                                            onClick={() => goToCanvas(data)}
-                                            data={data}
-                                            images={images[data.id]}
-                                        />
+                                        <ItemCard key={index} onClick={() => goToCanvas(data)} data={data} images={images[data.id]} />
                                     ))}
                                 </Box>
                             )}

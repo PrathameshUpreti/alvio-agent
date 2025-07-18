@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from 'react'
 
 // material-ui
 import { useTheme } from '@mui/material/styles'
-import { Avatar, Box, ButtonBase, Typography, Stack, Button, IconButton } from '@mui/material'
+import { Box, Typography, Stack, Button, IconButton } from '@mui/material'
 
 // icons
-import { IconSettings, IconChevronLeft, IconDeviceFloppy, IconPencil, IconX, IconCode } from '@tabler/icons-react'
+import { IconSettings, IconDeviceFloppy, IconPencil, IconX, IconCode, IconArrowLeft } from '@tabler/icons-react'
 
 // project imports
 import Settings from './Settings'
@@ -19,6 +19,7 @@ import CustomChatflowConfigurationDialog from './CustomChatflowConfigurationDial
 import UpsertHistoryDialog from '@/views/vectorstore/UpsertHistoryDialog'
 import ViewLeadsDialog from '@/ui-component/dialog/ViewLeadsDialog'
 import ExportAsTemplateDialog from '@/ui-component/dialog/ExportAsTemplateDialog'
+import { StyledFab } from '@/ui-component/button/StyledFab'
 
 // API
 import chatflowsApi from '@/api/chatflows'
@@ -249,24 +250,16 @@ const CanvasHeader = ({ chatflow, isAgentCanvas, isAgentflowV2, handleSaveFlow, 
             <Stack flexDirection='row' justifyContent='space-between' sx={{ width: '100%' }} className='canvas-header'>
                 <Stack flexDirection='row' sx={{ width: '100%', maxWidth: '50%' }} className='canvas-header-title'>
                     <Box>
-                        <ButtonBase title='Back' sx={{ borderRadius: '50%' }}>
-                            <Avatar
-                                variant='rounded'
-                                sx={{
-                                    ...theme.typography.commonAvatar,
-                                    ...theme.typography.mediumAvatar,
-                                    borderRadius: '8px',
-                                    color: theme.palette.dark.main,
-                                    background: theme.palette.mode === 'dark' ? 'rgb(255, 209, 102)' : 'rgb(244, 90, 141)',
-                                    '&:hover': {
-                                        background: theme.palette.mode === 'dark' ? 'rgb(244, 90, 141)' : 'rgb(255, 209, 102)'
-                                    }
-                                }}
-                                onClick={() => navigate(isAgentCanvas ? '/agentflows' : '/')}
-                            >
-                                <IconChevronLeft stroke={1.5} size='1.3rem' />
-                            </Avatar>
-                        </ButtonBase>
+                        <StyledFab
+                            size='small'
+                            color='secondary'
+                            aria-label='back'
+                            title='Back'
+                            sx={{ boxShadow: 'none', mr: 1 }}
+                            onClick={() => navigate(isAgentCanvas ? '/agentflows' : '/')}
+                        >
+                            <IconArrowLeft />
+                        </StyledFab>
                     </Box>
                     <Stack>
                         {!isEditingFlowName && (
@@ -290,66 +283,38 @@ const CanvasHeader = ({ chatflow, isAgentCanvas, isAgentflowV2, handleSaveFlow, 
                 </Stack>
                 <Box>
                     {chatflow?.id && (
-                        <ButtonBase title='API Endpoint' sx={{ borderRadius: '50%', mr: 2 }}>
-                            <Avatar
-                                variant='rounded'
-                                sx={{
-                                    ...theme.typography.commonAvatar,
-                                    ...theme.typography.mediumAvatar,
-                                    transition: 'all .2s ease-in-out',
-                                    background: theme.palette.canvasHeader.deployLight,
-                                    color: theme.palette.canvasHeader.deployDark,
-                                    '&:hover': {
-                                        background: theme.palette.canvasHeader.deployDark,
-                                        color: theme.palette.canvasHeader.deployLight
-                                    }
-                                }}
-                                color='inherit'
-                                onClick={onAPIDialogClick}
-                            >
-                                <IconCode stroke={1.5} size='1.3rem' />
-                            </Avatar>
-                        </ButtonBase>
+                        <StyledFab
+                            size='small'
+                            color='secondary'
+                            aria-label='api-endpoint'
+                            title='API Endpoint'
+                            sx={{ boxShadow: 'none', mr: 2 }}
+                            onClick={onAPIDialogClick}
+                        >
+                            <IconCode />
+                        </StyledFab>
                     )}
-                    <ButtonBase title={`Save ${title}`} sx={{ borderRadius: '50%', mr: 2 }}>
-                        <Avatar
-                            variant='rounded'
-                            sx={{
-                                ...theme.typography.commonAvatar,
-                                ...theme.typography.mediumAvatar,
-                                transition: 'all .2s ease-in-out',
-                                background: theme.palette.canvasHeader.saveLight,
-                                color: theme.palette.canvasHeader.saveDark,
-                                '&:hover': {
-                                    background: theme.palette.canvasHeader.saveDark,
-                                    color: theme.palette.canvasHeader.saveLight
-                                }
-                            }}
-                            color='inherit'
-                            onClick={onSaveChatflowClick}
-                        >
-                            <IconDeviceFloppy stroke={1.5} size='1.3rem' />
-                        </Avatar>
-                    </ButtonBase>
-                    <ButtonBase ref={settingsRef} title='Settings' sx={{ borderRadius: '50%' }}>
-                        <Avatar
-                            variant='rounded'
-                            sx={{
-                                ...theme.typography.commonAvatar,
-                                ...theme.typography.mediumAvatar,
-                                transition: 'all .2s ease-in-out',
-                                background: theme.palette.canvasHeader.settingsLight,
-                                color: theme.palette.canvasHeader.settingsDark,
-                                '&:hover': {
-                                    background: theme.palette.canvasHeader.settingsDark,
-                                    color: theme.palette.canvasHeader.settingsLight
-                                }
-                            }}
-                            onClick={() => setSettingsOpen(!isSettingsOpen)}
-                        >
-                            <IconSettings stroke={1.5} size='1.3rem' />
-                        </Avatar>
-                    </ButtonBase>
+                    <StyledFab
+                        size='small'
+                        color='primary'
+                        aria-label={`save-${title.toLowerCase()}`}
+                        title={`Save ${title}`}
+                        sx={{ boxShadow: 'none', mr: 2 }}
+                        onClick={onSaveChatflowClick}
+                    >
+                        <IconDeviceFloppy />
+                    </StyledFab>
+                    <StyledFab
+                        ref={settingsRef}
+                        size='small'
+                        color='default'
+                        aria-label='settings'
+                        title='Settings'
+                        sx={{ boxShadow: 'none' }}
+                        onClick={() => setSettingsOpen(!isSettingsOpen)}
+                    >
+                        <IconSettings />
+                    </StyledFab>
                 </Box>
             </Stack>
             <Settings

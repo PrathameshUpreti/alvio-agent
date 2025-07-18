@@ -10,7 +10,7 @@ import { StyledButton } from '@/ui-component/button/StyledButton'
 
 // custom components
 import GradientDialogWrapper from './GradientDialogWrapper'
-import { StyledPaper } from './DialogStyles'
+import { ModernStyledPaper as StyledPaper } from './DialogStyles'
 
 // Main component
 const CustomViewMessagesDialog = ({ show, dialogProps, onCancel }) => {

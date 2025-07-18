@@ -56,6 +56,13 @@ const TagDialog = ({ isOpen, dialogProps, onClose, onSubmit }) => {
             onClose={onClose}
             aria-labelledby='category-dialog-title'
             aria-describedby='category-dialog-description'
+            PaperProps={{
+                sx: {
+                    background: (theme) => theme.palette.background.paper,
+                    borderRadius: 4,
+                    boxShadow: 24
+                }
+            }}
         >
             <DialogTitle sx={{ fontSize: '1rem' }} id='alert-dialog-title'>
                 Set Chatflow Category Tags

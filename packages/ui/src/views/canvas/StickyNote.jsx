@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 
 // material-ui
 import { useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 // project imports
 import NodeCardWrapper from '@/ui-component/cards/NodeCardWrapper'
@@ -14,6 +15,20 @@ import { Input } from '@/ui-component/input/Input'
 
 // const
 import { flowContext } from '@/store/context/ReactFlowContext'
+
+const StickyNoteBox = styled(NodeCardWrapper)(({ theme, selected }) => ({
+    borderRadius: 18,
+    boxShadow: '0 2px 12px rgba(0,0,0,0.18)',
+    backgroundColor: selected
+        ? theme.palette.mode === 'dark'
+            ? '#FFD600'
+            : '#FFEB3B'
+        : theme.palette.mode === 'dark'
+        ? '#FFE066'
+        : '#FFF9C4',
+    border: 'none',
+    padding: 0
+}))
 
 const StickyNote = ({ data }) => {
     const theme = useTheme()
@@ -39,7 +54,7 @@ const StickyNote = ({ data }) => {
 
     return (
         <>
-            <NodeCardWrapper
+            <StickyNoteBox
                 content={false}
                 sx={{
                     padding: 0,
@@ -97,7 +112,7 @@ const StickyNote = ({ data }) => {
                         />
                     </Box>
                 </NodeTooltip>
-            </NodeCardWrapper>
+            </StickyNoteBox>
         </>
     )
 }

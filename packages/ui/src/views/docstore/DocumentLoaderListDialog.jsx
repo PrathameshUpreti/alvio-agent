@@ -64,14 +64,33 @@ const DocumentLoaderListDialog = ({ show, dialogProps, onCancel, onDocLoaderSele
             onClose={onCancel}
             aria-labelledby='alert-dialog-title'
             aria-describedby='alert-dialog-description'
+            PaperProps={{
+                sx: {
+                    background: (theme) => theme.palette.background.paper,
+                    borderRadius: 4,
+                    boxShadow: 24,
+                    p: 0
+                }
+            }}
         >
             <DialogTitle sx={{ fontSize: '1rem', p: 3, pb: 0 }} id='alert-dialog-title'>
                 {dialogProps.title}
             </DialogTitle>
-            <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxHeight: '75vh', position: 'relative', px: 3, pb: 3 }}>
+            <DialogContent
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 2,
+                    maxHeight: '75vh',
+                    position: 'relative',
+                    px: 3,
+                    pb: 3,
+                    background: (theme) => theme.palette.background.paper
+                }}
+            >
                 <Box
                     sx={{
-                        backgroundColor: theme.palette.background.paper,
+                        backgroundColor: (theme) => theme.palette.background.paper,
                         pt: 2,
                         position: 'sticky',
                         top: 0,

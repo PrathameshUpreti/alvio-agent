@@ -107,7 +107,9 @@ const SuggestionList = forwardRef((props, ref) => {
             elevation={5}
             sx={{
                 maxHeight: '300px',
-                overflowY: 'auto'
+                overflowY: 'auto',
+                background: theme.palette.background.paper,
+                border: `1px solid ${theme.palette.divider}`
             }}
         >
             <List

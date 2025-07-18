@@ -6,7 +6,7 @@ import { enqueueSnackbar as enqueueSnackbarAction, closeSnackbar as closeSnackba
 import parser from 'html-react-parser'
 
 // Material
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, Stack, OutlinedInput, Typography } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, OutlinedInput, Typography } from '@mui/material'
 
 // Project imports
 import { StyledButton } from '@/ui-component/button/StyledButton'
@@ -215,17 +215,28 @@ const AddEditCredentialDialog = ({ show, dialogProps, onCancel, onConfirm, setEr
             onClose={onCancel}
             aria-labelledby='alert-dialog-title'
             aria-describedby='alert-dialog-description'
+            PaperProps={{
+                sx: {
+                    borderRadius: 4,
+                    boxShadow: 24,
+                    background: (theme) => theme.palette.background.paper,
+                    p: 0
+                }
+            }}
         >
-            <DialogTitle sx={{ fontSize: '1rem' }} id='alert-dialog-title'>
+            <DialogTitle sx={{ fontSize: '1.15rem', fontWeight: 700, pb: 0, pt: 3, px: 4 }} id='alert-dialog-title'>
                 {componentCredential && componentCredential.label && (
-                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                        <div
-                            style={{
+                    <Box display='flex' alignItems='center'>
+                        <Box
+                            sx={{
                                 width: 50,
                                 height: 50,
-                                marginRight: 10,
+                                marginRight: 2,
                                 borderRadius: '50%',
-                                backgroundColor: 'white'
+                                backgroundColor: 'white',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                             }}
                         >
                             <img
@@ -244,37 +255,56 @@ const AddEditCredentialDialog = ({ show, dialogProps, onCancel, onConfirm, setEr
                                     e.target.src = keySVG
                                 }}
                             />
-                        </div>
-                        {componentCredential.label}
-                    </div>
+                        </Box>
+                        <Typography fontWeight={700} fontSize={18}>
+                            {componentCredential.label}
+                        </Typography>
+                    </Box>
                 )}
             </DialogTitle>
-            <DialogContent>
+            <DialogContent
+                sx={{
+                    px: 4,
+                    pt: 2,
+                    pb: 1,
+                    minHeight: 180,
+                    maxHeight: 400,
+                    overflowY: 'auto',
+                    // Custom scrollbar
+                    '&::-webkit-scrollbar': {
+                        width: 8
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        background: (theme) => (theme.palette.mode === 'dark' ? '#444' : '#ccc'),
+                        borderRadius: 4
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        background: 'transparent'
+                    }
+                }}
+            >
                 {componentCredential && componentCredential.description && (
-                    <Box sx={{ pl: 2, pr: 2 }}>
-                        <div
-                            style={{
+                    <Box sx={{ pl: 0, pr: 0, mb: 2 }}>
+                        <Box
+                            sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
-                                borderRadius: 10,
+                                borderRadius: 2,
                                 background: 'rgb(254,252,191)',
-                                padding: 10,
-                                marginTop: 10,
-                                marginBottom: 10
+                                padding: 1.5,
+                                mt: 1,
+                                mb: 2
                             }}
                         >
-                            <span style={{ color: 'rgb(116,66,16)' }}>{parser(componentCredential.description)}</span>
-                        </div>
+                            <Typography sx={{ color: 'rgb(116,66,16)' }}>{parser(componentCredential.description)}</Typography>
+                        </Box>
                     </Box>
                 )}
                 {componentCredential && componentCredential.label && (
-                    <Box sx={{ p: 2 }}>
-                        <Stack sx={{ position: 'relative' }} direction='row'>
-                            <Typography variant='overline'>
-                                Credential Name
-                                <span style={{ color: 'red' }}>&nbsp;*</span>
-                            </Typography>
-                        </Stack>
+                    <Box sx={{ mb: 2 }}>
+                        <Typography fontWeight={600} fontSize={15} mb={0.5}>
+                            Credential Name<span style={{ color: 'red' }}>&nbsp;*</span>
+                        </Typography>
                         <OutlinedInput
                             id='credName'
                             type='string'
@@ -282,6 +312,12 @@ const AddEditCredentialDialog = ({ show, dialogProps, onCancel, onConfirm, setEr
                             placeholder={componentCredential.label}
                             value={name}
                             name='name'
+                            sx={{
+                                mt: 0.5,
+                                fontSize: 15,
+                                borderRadius: 2,
+                                background: (theme) => (theme.palette.mode === 'dark' ? '#232323' : '#fafbfc')
+                            }}
                             onChange={(e) => setName(e.target.value)}
                         />
                     </Box>
@@ -292,10 +328,18 @@ const AddEditCredentialDialog = ({ show, dialogProps, onCancel, onConfirm, setEr
                         <CredentialInputHandler key={index} inputParam={inputParam} data={credentialData} />
                     ))}
             </DialogContent>
-            <DialogActions>
+            <DialogActions sx={{ px: 4, pb: 3, pt: 1 }}>
                 <StyledButton
                     disabled={!name}
                     variant='contained'
+                    sx={{
+                        fontWeight: 700,
+                        fontSize: 15,
+                        borderRadius: 2,
+                        px: 4,
+                        py: 1.2,
+                        boxShadow: '0 2px 8px 0 rgba(0,0,0,0.08)'
+                    }}
                     onClick={() => (dialogProps.type === 'ADD' ? addNewCredential() : saveCredential())}
                 >
                     {dialogProps.confirmButtonName}

@@ -184,25 +184,54 @@ const AddEditVariableDialog = ({ show, dialogProps, onCancel, onConfirm, setErro
             onClose={onCancel}
             aria-labelledby='alert-dialog-title'
             aria-describedby='alert-dialog-description'
+            PaperProps={{
+                sx: {
+                    borderRadius: 4,
+                    boxShadow: 24,
+                    background: (theme) => theme.palette.background.paper,
+                    p: 0
+                }
+            }}
         >
-            <DialogTitle sx={{ fontSize: '1rem' }} id='alert-dialog-title'>
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                    <IconVariable style={{ marginRight: '10px' }} />
+            <DialogTitle sx={{ fontSize: '1.15rem', fontWeight: 700, pb: 0, pt: 3, px: 4 }} id='alert-dialog-title'>
+                <Box display='flex' alignItems='center'>
+                    <IconVariable style={{ marginRight: '10px', fontSize: 28 }} />
                     {dialogProps.type === 'ADD' ? 'Add Variable' : 'Edit Variable'}
-                </div>
+                </Box>
             </DialogTitle>
-            <DialogContent>
-                <Box sx={{ p: 2 }}>
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                        <Typography>
-                            Variable Name<span style={{ color: 'red' }}>&nbsp;*</span>
-                        </Typography>
-
-                        <div style={{ flexGrow: 1 }}></div>
-                    </div>
+            <DialogContent
+                sx={{
+                    px: 4,
+                    pt: 2,
+                    pb: 1,
+                    minHeight: 220,
+                    maxHeight: 400,
+                    overflowY: 'auto',
+                    // Custom scrollbar
+                    '&::-webkit-scrollbar': {
+                        width: 8
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        background: (theme) => (theme.palette.mode === 'dark' ? '#444' : '#ccc'),
+                        borderRadius: 4
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        background: 'transparent'
+                    }
+                }}
+            >
+                <Box sx={{ mb: 2 }}>
+                    <Typography fontWeight={600} fontSize={15} mb={0.5}>
+                        Variable Name<span style={{ color: 'red' }}>&nbsp;*</span>
+                    </Typography>
                     <OutlinedInput
-                        size='small'
-                        sx={{ mt: 1 }}
+                        size='medium'
+                        sx={{
+                            mt: 0.5,
+                            fontSize: 15,
+                            borderRadius: 2,
+                            background: (theme) => (theme.palette.mode === 'dark' ? '#232323' : '#fafbfc')
+                        }}
                         type='string'
                         fullWidth
                         key='variableName'
@@ -211,13 +240,10 @@ const AddEditVariableDialog = ({ show, dialogProps, onCancel, onConfirm, setErro
                         id='txtInput_variableName'
                     />
                 </Box>
-                <Box sx={{ p: 2 }}>
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                        <Typography>
-                            Type<span style={{ color: 'red' }}>&nbsp;*</span>
-                        </Typography>
-                        <div style={{ flexGrow: 1 }}></div>
-                    </div>
+                <Box sx={{ mb: 2 }}>
+                    <Typography fontWeight={600} fontSize={15} mb={0.5}>
+                        Type<span style={{ color: 'red' }}>&nbsp;*</span>
+                    </Typography>
                     <Dropdown
                         key={variableType}
                         name='variableType'
@@ -228,16 +254,18 @@ const AddEditVariableDialog = ({ show, dialogProps, onCancel, onConfirm, setErro
                     />
                 </Box>
                 {variableType === 'static' && (
-                    <Box sx={{ p: 2 }}>
-                        <div style={{ display: 'flex', flexDirection: 'row' }}>
-                            <Typography>
-                                Value<span style={{ color: 'red' }}>&nbsp;*</span>
-                            </Typography>
-                            <div style={{ flexGrow: 1 }}></div>
-                        </div>
+                    <Box sx={{ mb: 2 }}>
+                        <Typography fontWeight={600} fontSize={15} mb={0.5}>
+                            Value<span style={{ color: 'red' }}>&nbsp;*</span>
+                        </Typography>
                         <OutlinedInput
-                            size='small'
-                            sx={{ mt: 1 }}
+                            size='medium'
+                            sx={{
+                                mt: 0.5,
+                                fontSize: 15,
+                                borderRadius: 2,
+                                background: (theme) => (theme.palette.mode === 'dark' ? '#232323' : '#fafbfc')
+                            }}
                             type='string'
                             fullWidth
                             key='variableValue'
@@ -248,10 +276,18 @@ const AddEditVariableDialog = ({ show, dialogProps, onCancel, onConfirm, setErro
                     </Box>
                 )}
             </DialogContent>
-            <DialogActions>
+            <DialogActions sx={{ px: 4, pb: 3, pt: 1 }}>
                 <StyledButton
                     disabled={!variableName || !variableType || (variableType === 'static' && !variableValue)}
                     variant='contained'
+                    sx={{
+                        fontWeight: 700,
+                        fontSize: 15,
+                        borderRadius: 2,
+                        px: 4,
+                        py: 1.2,
+                        boxShadow: '0 2px 8px 0 rgba(0,0,0,0.08)'
+                    }}
                     onClick={() => (dialogType === 'ADD' ? addNewVariable() : saveVariable())}
                     id='btn_confirmAddingNewVariable'
                 >

@@ -252,6 +252,14 @@ const PromptLangsmithHubDialog = ({ promptType, show, onCancel, onSubmit }) => {
             maxWidth={'lg'}
             aria-labelledby='prompt-dialog-title'
             aria-describedby='prompt-dialog-description'
+            PaperProps={{
+                sx: {
+                    background: (theme) => theme.palette.background.paper,
+                    borderRadius: 4,
+                    boxShadow: 24,
+                    p: 0
+                }
+            }}
         >
             <DialogTitle sx={{ fontSize: '1rem' }} id='prompt-dialog-title'>
                 Langchain Hub ({promptType === 'template' ? 'PromptTemplate' : 'ChatPromptTemplate'})

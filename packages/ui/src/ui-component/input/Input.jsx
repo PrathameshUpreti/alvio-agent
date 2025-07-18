@@ -72,13 +72,13 @@ export const Input = ({ inputParam, value, nodes, edges, nodeId, onChange, disab
                             step: inputParam.step ?? 1,
                             style: {
                                 border: 'none',
-                                background: 'none',
+                                background: theme.palette.background.paper,
                                 color: 'inherit'
                             }
                         }}
                         sx={{
                             border: 'none',
-                            background: 'none',
+                            background: theme.palette.background.paper,
                             padding: '10px 14px',
                             textarea: {
                                 '&::placeholder': {
@@ -107,10 +107,12 @@ export const Input = ({ inputParam, value, nodes, edges, nodeId, onChange, disab
                         inputProps={{
                             step: inputParam.step ?? 1,
                             style: {
-                                height: inputParam.rows ? '90px' : 'inherit'
+                                height: inputParam.rows ? '90px' : 'inherit',
+                                background: theme.palette.background.paper
                             }
                         }}
                         sx={{
+                            background: theme.palette.background.paper,
                             '& .MuiOutlinedInput-notchedOutline': {
                                 borderColor: theme.palette.grey[900] + 25
                             }

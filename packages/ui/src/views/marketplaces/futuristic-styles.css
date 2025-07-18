@@ -64,8 +64,11 @@
 
 /* Particle effect background */
 .futuristic-bg {
+    background: repeating-linear-gradient(0deg, #f5f5fa, #f5f5fa 23px, #eaeaf5 24px, #eaeaf5 24px),
+        repeating-linear-gradient(90deg, #f5f5fa, #f5f5fa 23px, #eaeaf5 24px, #eaeaf5 24px);
+    min-height: 100vh;
+    width: 100%;
     position: relative;
-    overflow: hidden;
 }
 
 .futuristic-bg::before {
@@ -90,10 +93,11 @@
 
 /* Glassmorphism effects */
 .glass-card {
-    backdrop-filter: blur(15px);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 143, 0, 0.2);
-    border-radius: 20px;
+    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.85);
+    border: 1.5px solid #ff8f00;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(171, 2, 201, 0.06);
 }
 
 /* Hover effects for cards */
@@ -192,4 +196,23 @@
         background: rgba(138, 1, 161, 0.1);
         border-color: rgba(255, 143, 0, 0.3);
     }
+}
+
+/* Marketplace Header Accent Bar */
+.marketplace-header-bar {
+    width: 6px;
+    height: 40px;
+    background: linear-gradient(180deg, #ff8f00 0%, #ab02c9 100%);
+    border-radius: 4px;
+    margin-right: 18px;
+    display: inline-block;
+}
+
+/* Marketplace Node Accent */
+.marketplace-node-accent {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #ff8f00 0%, #ab02c9 100%);
+    border-radius: 4px 4px 0 0;
+    margin-bottom: 8px;
 }

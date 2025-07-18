@@ -406,6 +406,13 @@ formData.append("openAIApiKey[openAIEmbeddings_0]", "sk-my-openai-2nd-key")`
             aria-labelledby='alert-dialog-title'
             aria-describedby='alert-dialog-description'
             sx={{ overflow: 'visible' }}
+            PaperProps={{
+                sx: {
+                    background: (theme) => theme.palette.background.paper,
+                    borderRadius: 4,
+                    boxShadow: 24
+                }
+            }}
         >
             <DialogTitle sx={{ fontSize: '1rem' }} id='alert-dialog-title'>
                 {dialogProps.title}

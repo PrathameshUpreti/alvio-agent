@@ -16,6 +16,7 @@ import { omit, cloneDeep } from 'lodash'
 // material-ui
 import { Toolbar, Box, AppBar, Button, Fab } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { styled, keyframes } from '@mui/material/styles'
 
 // project imports
 import CanvasNode from './CanvasNode'
@@ -27,6 +28,7 @@ import ConfirmDialog from '@/ui-component/dialog/ConfirmDialog'
 import ChatPopUp from '@/views/chatmessage/ChatPopUp'
 import VectorStorePopUp from '@/views/vectorstore/VectorStorePopUp'
 import { flowContext } from '@/store/context/ReactFlowContext'
+import { StyledFab } from '@/ui-component/button/StyledFab'
 
 // API
 import nodesApi from '@/api/nodes'
@@ -56,6 +58,26 @@ import { FLOWISE_CREDENTIAL_ID } from '@/store/constant'
 
 const nodeTypes = { customNode: CanvasNode, stickyNote: StickyNote }
 const edgeTypes = { buttonedge: ButtonEdge }
+
+const pulse = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(244,90,141,0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(244,90,141,0); }
+  100% { box-shadow: 0 0 0 0 rgba(244,90,141,0); }
+`
+const FloatingAddButton = styled(Fab)(({ theme }) => ({
+    position: 'absolute',
+    top: 24,
+    left: 24,
+    zIndex: 10,
+    background: theme.palette.primary.main,
+    color: '#fff',
+    fontWeight: 700,
+    animation: `${pulse} 1.8s infinite`,
+    boxShadow: theme.shadows[4],
+    '&:hover': {
+        background: theme.palette.primary.dark
+    }
+}))
 
 // ==============================|| CANVAS ||============================== //
 
@@ -536,61 +558,75 @@ const Canvas = () => {
                     </Toolbar>
                 </AppBar>
                 <Box sx={{ pt: '70px', height: '100vh', width: '100%' }}>
-                    <div className='reactflow-parent-wrapper'>
-                        <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-                            <ReactFlow
-                                nodes={nodes}
-                                edges={edges}
-                                onNodesChange={onNodesChange}
-                                onNodeClick={onNodeClick}
-                                onEdgesChange={onEdgesChange}
-                                onDrop={onDrop}
-                                onDragOver={onDragOver}
-                                onNodeDragStop={setDirty}
-                                nodeTypes={nodeTypes}
-                                edgeTypes={edgeTypes}
-                                onConnect={onConnect}
-                                onInit={setReactFlowInstance}
-                                fitView
-                                deleteKeyCode={canvas.canvasDialogShow ? null : ['Delete']}
-                                minZoom={0.1}
-                                className='chatflow-canvas'
-                            >
-                                <Controls
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%)'
+                    <Box
+                        ref={reactFlowWrapper}
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            position: 'relative',
+                            background: theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.grey[100],
+                            border: `2px solid ${theme.palette.divider}`,
+                            borderRadius: 18,
+                            boxShadow: theme.palette.mode === 'dark' ? '0 4px 32px rgba(0,0,0,0.25)' : '0 4px 32px rgba(141,54,249,0.10)',
+                            margin: 16,
+                            overflow: 'hidden'
+                        }}
+                    >
+                        <ReactFlow
+                            nodes={nodes}
+                            edges={edges}
+                            onNodesChange={onNodesChange}
+                            onNodeClick={onNodeClick}
+                            onEdgesChange={onEdgesChange}
+                            onDrop={onDrop}
+                            onDragOver={onDragOver}
+                            onNodeDragStop={setDirty}
+                            nodeTypes={nodeTypes}
+                            edgeTypes={edgeTypes}
+                            onConnect={onConnect}
+                            onInit={setReactFlowInstance}
+                            fitView
+                            deleteKeyCode={canvas.canvasDialogShow ? null : ['Delete']}
+                            minZoom={0.1}
+                            className='chatflow-canvas'
+                        >
+                            <Controls
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)'
+                                }}
+                            />
+                            <Background color='#aaa' gap={16} />
+                            <AddNodes isAgentCanvas={isAgentCanvas} nodesData={getNodesApi.data} node={selectedNode} />
+                            {isSyncNodesButtonEnabled && (
+                                <StyledFab
+                                    sx={{
+                                        left: 40,
+                                        top: 20,
+                                        color: 'white',
+                                        backgroundColor: 'orange',
+                                        boxShadow: 'none',
+                                        position: 'absolute',
+                                        zIndex: 10,
+                                        '&:hover': {
+                                            backgroundColor: 'orange',
+                                            backgroundImage: `linear-gradient(rgb(0 0 0/10%) 0 0)`
+                                        }
                                     }}
-                                />
-                                <Background color='#aaa' gap={16} />
-                                <AddNodes isAgentCanvas={isAgentCanvas} nodesData={getNodesApi.data} node={selectedNode} />
-                                {isSyncNodesButtonEnabled && (
-                                    <Fab
-                                        sx={{
-                                            left: 40,
-                                            top: 20,
-                                            color: 'white',
-                                            background: 'orange',
-                                            '&:hover': {
-                                                background: 'orange',
-                                                backgroundImage: `linear-gradient(rgb(0 0 0/10%) 0 0)`
-                                            }
-                                        }}
-                                        size='small'
-                                        aria-label='sync'
-                                        title='Sync Nodes'
-                                        onClick={() => syncNodes()}
-                                    >
-                                        <IconRefreshAlert />
-                                    </Fab>
-                                )}
-                                {isUpsertButtonEnabled && <VectorStorePopUp chatflowid={chatflowId} />}
-                                <ChatPopUp isAgentCanvas={isAgentCanvas} chatflowid={chatflowId} />
-                            </ReactFlow>
-                        </div>
-                    </div>
+                                    size='small'
+                                    aria-label='sync'
+                                    title='Sync Nodes'
+                                    onClick={() => syncNodes()}
+                                >
+                                    <IconRefreshAlert />
+                                </StyledFab>
+                            )}
+                            {isUpsertButtonEnabled && <VectorStorePopUp chatflowid={chatflowId} />}
+                            <ChatPopUp isAgentCanvas={isAgentCanvas} chatflowid={chatflowId} />
+                        </ReactFlow>
+                    </Box>
                 </Box>
                 <ConfirmDialog />
             </Box>

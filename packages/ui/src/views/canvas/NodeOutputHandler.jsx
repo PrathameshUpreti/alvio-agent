@@ -16,6 +16,15 @@ const CustomWidthTooltip = styled(({ className, ...props }) => <Tooltip {...prop
     }
 })
 
+const OutputContainer = styled('div')(({ theme }) => ({
+    background: theme.palette.mode === 'dark' ? 'rgba(30,32,36,0.92)' : '#f8fafc',
+    borderRadius: 14,
+    boxShadow: theme.palette.mode === 'dark' ? '0 2px 12px rgba(0,0,0,0.18)' : '0 2px 12px rgba(141,54,249,0.08)',
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    border: `1.5px solid ${theme.palette.mode === 'dark' ? '#35373b' : '#e0e0e0'}`
+}))
+
 // ===========================|| NodeOutputHandler ||=========================== //
 
 const NodeOutputHandler = ({ outputAnchor, data, disabled = false }) => {

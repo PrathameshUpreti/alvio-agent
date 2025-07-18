@@ -318,6 +318,14 @@ const UpsertHistoryDialog = ({ show, dialogProps, onCancel }) => {
             maxWidth='lg'
             aria-labelledby='upsert-history-dialog-title'
             aria-describedby='upsert-history-dialog-description'
+            PaperProps={{
+                sx: {
+                    background: (theme) => theme.palette.background.paper,
+                    borderRadius: 4,
+                    boxShadow: 24,
+                    p: 0
+                }
+            }}
         >
             <DialogTitle sx={{ fontSize: '1rem' }} id='upsert-history-dialog-title'>
                 {dialogProps.title}
@@ -374,8 +382,16 @@ const UpsertHistoryDialog = ({ show, dialogProps, onCancel }) => {
                         </Stack>
                     )}
                     {chatflowUpsertHistory.length > 0 && (
-                        <TableContainer component={Paper}>
-                            <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+                        <TableContainer
+                            component={Paper}
+                            sx={{
+                                background: (theme) => theme.palette.background.paper,
+                                borderRadius: 2,
+                                boxShadow: 2,
+                                border: `1px solid ${theme.palette.divider}`
+                            }}
+                        >
+                            <Table sx={{ minWidth: 650, background: (theme) => theme.palette.background.paper }} aria-label='simple table'>
                                 <TableHead>
                                     <TableRow>
                                         <TableCell padding='checkbox'>

@@ -37,21 +37,57 @@ import {
 
 // project imports
 import { SET_DARKMODE } from '@/store/actions'
+import PropTypes from 'prop-types'
 
-const SettingsDialog = styled(Dialog)(({ theme }) => ({
+// 1. Add/adjust styled components for glassy dialog, pill tabs, and modern search bar
+const GlassySettingsDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialog-paper': {
-        borderRadius: '12px',
+        borderRadius: 18,
         overflowY: 'auto',
         overflowX: 'hidden',
-        '&::-webkit-scrollbar': {
-            display: 'none'
-        },
-        msOverflowStyle: 'none' /* IE and Edge */,
-        scrollbarWidth: 'none' /* Firefox */,
-        maxWidth: '600px',
+        maxWidth: 700,
         width: '100%',
         height: '100vh',
-        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : '#ffffff'
+        background: theme.palette.background.paper,
+        boxShadow: theme.shadows[24],
+        border: `1px solid ${theme.palette.divider}`,
+        transition: 'background 0.3s'
+    }
+}))
+const PillTabButton = styled(Button, { shouldForwardProp: (prop) => prop !== 'selected' })(({ theme, selected }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    textAlign: 'left',
+    padding: theme.spacing(1.2, 2),
+    marginBottom: theme.spacing(0.5),
+    borderRadius: 999,
+    fontWeight: 600,
+    color: selected ? theme.palette.primary.main : theme.palette.mode === 'dark' ? theme.palette.grey[400] : theme.palette.grey[600],
+    background: selected ? (theme.palette.mode === 'dark' ? 'rgba(59,129,246,0.12)' : 'rgba(59,129,246,0.08)') : 'transparent',
+    boxShadow: selected ? theme.shadows[1] : 'none',
+    transition: 'background 0.2s, color 0.2s',
+    '&:hover': {
+        background: theme.palette.mode === 'dark' ? 'rgba(59,129,246,0.18)' : 'rgba(59,129,246,0.13)',
+        color: theme.palette.primary.main
+    },
+    [theme.breakpoints.down('md')]: {
+        minWidth: 'fit-content',
+        marginRight: theme.spacing(1),
+        marginBottom: 0
+    }
+}))
+const ModernSearchBar = styled(TextField)(({ theme }) => ({
+    borderRadius: 999,
+    background: theme.palette.mode === 'dark' ? 'rgba(40,45,50,0.7)' : 'rgba(245,245,245,0.8)',
+    boxShadow: theme.shadows[1],
+    '& .MuiInputBase-root': {
+        borderRadius: 999,
+        paddingLeft: theme.spacing(2),
+        fontSize: '0.95rem'
+    },
+    '& input': {
+        padding: theme.spacing(1.2, 0)
     }
 }))
 
@@ -261,7 +297,7 @@ const Settings = ({ open, onClose }) => {
     ]
 
     return (
-        <SettingsDialog open={open} onClose={onClose} fullWidth maxWidth='md'>
+        <GlassySettingsDialog open={open} onClose={onClose} fullWidth maxWidth='md'>
             <DialogContent sx={{ padding: 3, overflowY: 'auto' }}>
                 <GradientCard elevation={0} sx={{ height: '100%' }}>
                     <GradientOverlay>
@@ -280,7 +316,7 @@ const Settings = ({ open, onClose }) => {
                                 pb: 0.5
                             }}
                         >
-                            <Typography variant='h4' sx={{ fontWeight: 500 }}>
+                            <Typography variant='h4' sx={{ fontWeight: 600, letterSpacing: 0.5 }}>
                                 Settings
                             </Typography>
                             <IconButton onClick={onClose} size='small'>
@@ -309,22 +345,26 @@ const Settings = ({ open, onClose }) => {
                                     }}
                                 >
                                     <IconSearch size={16} />
-                                    <TextField
-                                        placeholder='Search'
+                                    <ModernSearchBar
+                                        placeholder='Search settings...'
                                         variant='standard'
                                         fullWidth
                                         InputProps={{ disableUnderline: true }}
-                                        sx={{ '& input': { py: 0.75, fontSize: '0.875rem' } }}
                                     />
                                 </Box>
 
                                 {tabs.map((tab) => (
-                                    <TabItem key={tab.id} selected={activeTab === tab.id} onClick={() => handleTabChange(tab.id)} fullWidth>
+                                    <PillTabButton
+                                        key={tab.id}
+                                        selected={activeTab === tab.id}
+                                        onClick={() => handleTabChange(tab.id)}
+                                        fullWidth
+                                    >
                                         <Box sx={{ mr: 1.5, display: 'flex' }}>{tab.icon}</Box>
-                                        <Typography variant='body2' sx={{ fontWeight: 500 }}>
+                                        <Typography variant='body2' sx={{ fontWeight: 600 }}>
                                             {tab.label}
                                         </Typography>
-                                    </TabItem>
+                                    </PillTabButton>
                                 ))}
                             </TabContainer>
 
@@ -1066,8 +1106,13 @@ const Settings = ({ open, onClose }) => {
                     </Box>
                 </GradientCard>
             </DialogContent>
-        </SettingsDialog>
+        </GlassySettingsDialog>
     )
+}
+
+Settings.propTypes = {
+    open: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired
 }
 
 export default Settings

@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Typography, Box, Dialog, DialogContent, DialogTitle, Button, Tooltip } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { IconCopy, IconX, IconLink } from '@tabler/icons-react'
+import { styled } from '@mui/material/styles'
 
 // Constants
 import { enqueueSnackbar as enqueueSnackbarAction, closeSnackbar as closeSnackbarAction } from '@/store/actions'
@@ -14,6 +15,28 @@ import { enqueueSnackbar as enqueueSnackbarAction, closeSnackbar as closeSnackba
 // API
 import executionsApi from '@/api/executions'
 import useApi from '@/hooks/useApi'
+
+const GlassyDialogContent = styled(DialogContent)(({ theme }) => ({
+    background: theme.palette.background.paper,
+    borderRadius: 18,
+    boxShadow: theme.shadows[24],
+    border: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(3)
+}))
+const LinkPill = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    background: theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light,
+    color: theme.palette.getContrastText(theme.palette.primary.main),
+    borderRadius: 999,
+    padding: '10px 24px',
+    fontWeight: 600,
+    fontSize: 16,
+    boxShadow: theme.shadows[2],
+    marginRight: theme.spacing(2),
+    transition: 'background 0.2s',
+    overflow: 'hidden'
+}))
 
 const ShareExecutionDialog = ({ show, executionId, onClose, onUnshare }) => {
     const portalElement = document.getElementById('portal')
@@ -65,23 +88,11 @@ const ShareExecutionDialog = ({ show, executionId, onClose, onUnshare }) => {
             <DialogTitle id='share-dialog-title' sx={{ fontSize: '1.1rem', fontWeight: 600 }}>
                 Public Trace Link
             </DialogTitle>
-            <DialogContent>
+            <GlassyDialogContent>
                 <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
                     Anyone with the link below can view this execution trace.
                 </Typography>
-
-                {/* Link Display Box */}
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        mb: 3,
-                        p: 1,
-                        border: `1px solid ${theme.palette.divider}`,
-                        borderRadius: '8px',
-                        backgroundColor: customization.isDarkMode ? theme.palette.background.paper : theme.palette.grey[100]
-                    }}
-                >
+                <LinkPill>
                     <IconLink size={20} style={{ marginRight: '8px', color: theme.palette.text.secondary }} />
                     <Typography
                         variant='body2'
@@ -96,20 +107,26 @@ const ShareExecutionDialog = ({ show, executionId, onClose, onUnshare }) => {
                         {shareableLink}
                     </Typography>
                     <Tooltip title={copied ? 'Copied!' : 'Copy link'}>
-                        <Button variant='text' color='primary' onClick={copyToClipboard} startIcon={<IconCopy size={18} />}>
+                        <Button
+                            variant='text'
+                            color='primary'
+                            onClick={copyToClipboard}
+                            startIcon={<IconCopy size={18} />}
+                            sx={{ borderRadius: 999, fontWeight: 600 }}
+                        >
                             Copy
                         </Button>
                     </Tooltip>
-                </Box>
-
-                {/* Actions */}
+                </LinkPill>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button color='error' onClick={handleUnshare} sx={{ mr: 1 }}>
+                    <Button color='error' onClick={handleUnshare} sx={{ mr: 1, borderRadius: 999, fontWeight: 600 }}>
                         Unshare
                     </Button>
-                    <Button onClick={onClose}>Close</Button>
+                    <Button onClick={onClose} sx={{ borderRadius: 999, fontWeight: 600 }}>
+                        Close
+                    </Button>
                 </Box>
-            </DialogContent>
+            </GlassyDialogContent>
         </Dialog>
     ) : null
 

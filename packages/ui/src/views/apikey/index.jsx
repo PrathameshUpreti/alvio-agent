@@ -10,7 +10,6 @@ import {
     Box,
     Chip,
     Skeleton,
-    Stack,
     Table,
     TableBody,
     TableContainer,
@@ -20,17 +19,16 @@ import {
     IconButton,
     Popover,
     Collapse,
-    Typography
+    Typography,
+    OutlinedInput
 } from '@mui/material'
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import { useTheme, styled } from '@mui/material/styles'
 
 // project imports
-import MainCard from '@/ui-component/cards/MainCard'
 import { StyledButton } from '@/ui-component/button/StyledButton'
 import APIKeyDialog from './APIKeyDialog'
 import ConfirmDialog from '@/ui-component/dialog/ConfirmDialog'
-import ViewHeader from '@/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/ErrorBoundary'
 
 // API
@@ -56,8 +54,83 @@ import {
     IconEyeOff,
     IconFileUpload
 } from '@tabler/icons-react'
-import APIEmptySVG from '@/assets/images/api_empty.svg'
 import UploadJSONFileDialog from '@/views/apikey/UploadJSONFileDialog'
+
+// Add split layout styled components
+const SplitLayout = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    minHeight: 'calc(100vh - 56px)',
+    marginTop: 0,
+    background: theme.palette.background.default,
+    borderRadius: '8px',
+    boxShadow: 'none',
+    overflow: 'visible'
+}))
+
+const LeftPanel = styled(Box)(({ theme }) => ({
+    width: 300,
+    minWidth: 220,
+    maxWidth: 340,
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    borderRight: `1px solid ${theme.palette.divider}`,
+    background: theme.palette.mode === 'dark' ? '#181A1B' : '#f7f7fa',
+    [theme.breakpoints.down('md')]: {
+        width: '100%',
+        maxWidth: '100%',
+        borderRight: 'none',
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        alignItems: 'center',
+        padding: theme.spacing(1)
+    }
+}))
+
+const RightPanel = styled(Box)(({ theme }) => ({
+    flex: 1,
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    [theme.breakpoints.down('md')]: {
+        padding: theme.spacing(1)
+    }
+}))
+
+const EngagingEmptyState = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '30vh',
+    width: '100%',
+    padding: theme.spacing(6, 2),
+    color: theme.palette.text.secondary,
+    opacity: 0.9
+}))
+
+const PulseEmoji = styled('span')`
+    display: inline-block;
+    font-size: 3rem;
+    animation: pulse 1.5s infinite;
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+        50% {
+            transform: scale(1.12);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+    }
+`
 
 // ==============================|| APIKey ||============================== //
 
@@ -361,165 +434,178 @@ const APIKey = () => {
     }, [getAllAPIKeysApi.error])
 
     return (
-        <>
-            <MainCard>
+        <SplitLayout>
+            {/* Left Panel: Header + Actions */}
+            <LeftPanel>
+                <Box>
+                    <Box>
+                        <Box sx={{ fontWeight: 900, fontSize: '2rem', color: 'primary.main', mb: 0.5 }}>API Keys</Box>
+                        <Box sx={{ color: 'text.secondary', fontWeight: 500, mb: 2 }}>Flowise API & SDK authentication keys</Box>
+                    </Box>
+                    <Box sx={{ mt: 2, mb: 2, width: '100%' }}>
+                        <Button
+                            variant='outlined'
+                            sx={{ borderRadius: 2, height: 40, mr: 1 }}
+                            onClick={uploadDialog}
+                            startIcon={<IconFileUpload />}
+                            id='btn_importApiKeys'
+                        >
+                            Import
+                        </Button>
+                        <StyledButton
+                            variant='contained'
+                            sx={{ borderRadius: 2, height: 40 }}
+                            onClick={addNew}
+                            startIcon={<IconPlus />}
+                            id='btn_createApiKey'
+                        >
+                            Create Key
+                        </StyledButton>
+                    </Box>
+                </Box>
+                <Box sx={{ mt: 2, width: '100%' }}>
+                    <OutlinedInput
+                        fullWidth
+                        size='small'
+                        placeholder='Search API Keys'
+                        value={search}
+                        onChange={onSearchChange}
+                        sx={{ borderRadius: 8, background: theme.palette.background.default, fontSize: 16 }}
+                    />
+                </Box>
+            </LeftPanel>
+            {/* Right Panel: Content */}
+            <RightPanel>
                 {error ? (
                     <ErrorBoundary error={error} />
-                ) : (
-                    <Stack flexDirection='column' sx={{ gap: 3 }}>
-                        <ViewHeader
-                            onSearchChange={onSearchChange}
-                            search={true}
-                            searchPlaceholder='Search API Keys'
-                            title='API Keys'
-                            description='Flowise API & SDK authentication keys'
+                ) : !isLoading && apiKeys.length <= 0 ? (
+                    <EngagingEmptyState>
+                        <PulseEmoji>🔑</PulseEmoji>
+                        <Typography variant='h5' sx={{ fontWeight: 700, mb: 1, mt: 2 }}>
+                            You are just one click away from creating your first API key!
+                        </Typography>
+                        <Typography variant='body2' sx={{ color: 'text.secondary', mb: 3 }}>
+                            API Keys let you authenticate and secure your Flowise API & SDK usage. Add one now!
+                        </Typography>
+                        <StyledButton
+                            variant='contained'
+                            sx={{ borderRadius: 2, height: 44, fontWeight: 700 }}
+                            onClick={addNew}
+                            startIcon={<IconPlus />}
+                            id='btn_createApiKey'
                         >
-                            <Button
-                                variant='outlined'
-                                sx={{ borderRadius: 2, height: '100%' }}
-                                onClick={uploadDialog}
-                                startIcon={<IconFileUpload />}
-                                id='btn_importApiKeys'
+                            Create API Key
+                        </StyledButton>
+                    </EngagingEmptyState>
+                ) : (
+                    <TableContainer sx={{ border: 1, borderColor: theme.palette.grey[900] + 25, borderRadius: 2 }} component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+                            <TableHead
+                                sx={{
+                                    backgroundColor: customization.isDarkMode ? theme.palette.common.black : theme.palette.grey[100],
+                                    height: 56
+                                }}
                             >
-                                Import
-                            </Button>
-                            <StyledButton
-                                variant='contained'
-                                sx={{ borderRadius: 2, height: '100%' }}
-                                onClick={addNew}
-                                startIcon={<IconPlus />}
-                                id='btn_createApiKey'
-                            >
-                                Create Key
-                            </StyledButton>
-                        </ViewHeader>
-                        {!isLoading && apiKeys.length <= 0 ? (
-                            <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
-                                <Box sx={{ p: 2, height: 'auto' }}>
-                                    <img
-                                        style={{ objectFit: 'cover', height: '20vh', width: 'auto' }}
-                                        src={APIEmptySVG}
-                                        alt='APIEmptySVG'
-                                    />
-                                </Box>
-                                <div>No API Keys Yet</div>
-                            </Stack>
-                        ) : (
-                            <TableContainer
-                                sx={{ border: 1, borderColor: theme.palette.grey[900] + 25, borderRadius: 2 }}
-                                component={Paper}
-                            >
-                                <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-                                    <TableHead
-                                        sx={{
-                                            backgroundColor: customization.isDarkMode
-                                                ? theme.palette.common.black
-                                                : theme.palette.grey[100],
-                                            height: 56
-                                        }}
-                                    >
-                                        <TableRow>
-                                            <StyledTableCell>Key Name</StyledTableCell>
-                                            <StyledTableCell>API Key</StyledTableCell>
-                                            <StyledTableCell>Usage</StyledTableCell>
-                                            <StyledTableCell>Created</StyledTableCell>
-                                            <StyledTableCell> </StyledTableCell>
-                                            <StyledTableCell> </StyledTableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {isLoading ? (
-                                            <>
-                                                <StyledTableRow>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                </StyledTableRow>
-                                                <StyledTableRow>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                    <StyledTableCell>
-                                                        <Skeleton variant='text' />
-                                                    </StyledTableCell>
-                                                </StyledTableRow>
-                                            </>
-                                        ) : (
-                                            <>
-                                                {apiKeys.filter(filterKeys).map((key, index) => (
-                                                    <APIKeyRow
-                                                        key={index}
-                                                        apiKey={key}
-                                                        showApiKeys={showApiKeys}
-                                                        onCopyClick={(event) => {
-                                                            navigator.clipboard.writeText(key.apiKey)
-                                                            setAnchorEl(event.currentTarget)
-                                                            setTimeout(() => {
-                                                                handleClosePopOver()
-                                                            }, 1500)
-                                                        }}
-                                                        onShowAPIClick={() => onShowApiKeyClick(key.apiKey)}
-                                                        open={openPopOver}
-                                                        anchorEl={anchorEl}
-                                                        onClose={handleClosePopOver}
-                                                        theme={theme}
-                                                        onEditClick={() => edit(key)}
-                                                        onDeleteClick={() => deleteKey(key)}
-                                                    />
-                                                ))}
-                                            </>
-                                        )}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        )}
-                    </Stack>
+                                <TableRow>
+                                    <StyledTableCell>Key Name</StyledTableCell>
+                                    <StyledTableCell>API Key</StyledTableCell>
+                                    <StyledTableCell>Usage</StyledTableCell>
+                                    <StyledTableCell>Created</StyledTableCell>
+                                    <StyledTableCell> </StyledTableCell>
+                                    <StyledTableCell> </StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {isLoading ? (
+                                    <>
+                                        <StyledTableRow>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                        </StyledTableRow>
+                                        <StyledTableRow>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Skeleton variant='text' />
+                                            </StyledTableCell>
+                                        </StyledTableRow>
+                                    </>
+                                ) : (
+                                    <>
+                                        {apiKeys.filter(filterKeys).map((key, index) => (
+                                            <APIKeyRow
+                                                key={index}
+                                                apiKey={key}
+                                                showApiKeys={showApiKeys}
+                                                onCopyClick={(event) => {
+                                                    navigator.clipboard.writeText(key.apiKey)
+                                                    setAnchorEl(event.currentTarget)
+                                                    setTimeout(() => {
+                                                        handleClosePopOver()
+                                                    }, 1500)
+                                                }}
+                                                onShowAPIClick={() => onShowApiKeyClick(key.apiKey)}
+                                                open={openPopOver}
+                                                anchorEl={anchorEl}
+                                                onClose={handleClosePopOver}
+                                                theme={theme}
+                                                onEditClick={() => edit(key)}
+                                                onDeleteClick={() => deleteKey(key)}
+                                            />
+                                        ))}
+                                    </>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 )}
-            </MainCard>
+            </RightPanel>
             <APIKeyDialog
                 show={showDialog}
                 dialogProps={dialogProps}
                 onCancel={() => setShowDialog(false)}
                 onConfirm={onConfirm}
                 setError={setError}
-            ></APIKeyDialog>
+            />
             {showUploadDialog && (
                 <UploadJSONFileDialog
                     show={showUploadDialog}
                     dialogProps={uploadDialogProps}
                     onCancel={() => setShowUploadDialog(false)}
                     onConfirm={onConfirm}
-                ></UploadJSONFileDialog>
+                />
             )}
             <ConfirmDialog />
-        </>
+        </SplitLayout>
     )
 }
 

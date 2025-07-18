@@ -8,6 +8,7 @@ import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { TableViewOnly } from '@/ui-component/table/Table'
 import { IconBook2 } from '@tabler/icons-react'
 import { useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 // Store
 import { HIDE_CANVAS_DIALOG, SHOW_CANVAS_DIALOG } from '@/store/actions'
@@ -16,6 +17,17 @@ import { baseURL, AGENTFLOW_ICONS } from '@/store/constant'
 // API
 import configApi from '@/api/config'
 import useApi from '@/hooks/useApi'
+
+// Glassmorphism dialog wrapper
+const GlassDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiPaper-root': {
+        background: theme.palette.background.paper,
+        borderRadius: 22,
+        border: `2.5px solid ${theme.palette.primary.main}`,
+        boxShadow: theme.shadows[24],
+        transition: 'box-shadow 0.3s, border-color 0.3s'
+    }
+}))
 
 const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     const portalElement = document.getElementById('portal')
@@ -46,7 +58,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
     }, [show, dispatch])
 
     const component = show ? (
-        <Dialog
+        <GlassDialog
             onClose={onCancel}
             open={show}
             fullWidth
@@ -54,7 +66,10 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
             aria-labelledby='alert-dialog-title'
             aria-describedby='alert-dialog-description'
         >
-            <DialogTitle sx={{ fontSize: '1rem' }} id='alert-dialog-title'>
+            <DialogTitle
+                sx={{ fontSize: '1rem', background: 'transparent', borderRadius: '22px 22px 0 0', pb: 1.5 }}
+                id='alert-dialog-title'
+            >
                 {dialogProps.data && dialogProps.data.name && dialogProps.data.label && (
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         {dialogProps.data.color && !dialogProps.data.icon ? (
@@ -231,7 +246,7 @@ const NodeInfoDialog = ({ show, dialogProps, onCancel }) => {
                     />
                 )}
             </DialogContent>
-        </Dialog>
+        </GlassDialog>
     ) : null
 
     return createPortal(component, portalElement)

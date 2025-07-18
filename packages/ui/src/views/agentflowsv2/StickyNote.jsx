@@ -33,6 +33,24 @@ const StyledNodeToolbar = styled(NodeToolbar)(({ theme }) => ({
     boxShadow: '0 2px 14px 0 rgb(32 40 45 / 8%)'
 }))
 
+const GlassNoteCard = styled('div')(({ theme, selected }) => ({
+    background: theme.palette.mode === 'dark' ? 'rgba(30, 30, 40, 0.85)' : 'rgba(255,255,200,0.65)',
+    backdropFilter: 'blur(12px)',
+    WebkitBackdropFilter: 'blur(12px)',
+    borderRadius: 18,
+    border: selected ? `2.5px solid ${theme.palette.primary.main}` : '2px solid rgba(141,54,249,0.10)',
+    boxShadow: selected
+        ? '0 0 0 4px ' + theme.palette.primary.main + ', 0 8px 32px 0 rgba(141,54,249,0.18)'
+        : '0 4px 24px 0 rgba(141,54,249,0.10)',
+    minWidth: 180,
+    minHeight: 60,
+    padding: 16,
+    display: 'flex',
+    alignItems: 'center',
+    position: 'relative',
+    transition: 'box-shadow 0.3s, border-color 0.3s, transform 0.18s'
+}))
+
 const StickyNote = ({ data }) => {
     const theme = useTheme()
     const customization = useSelector((state) => state.customization)
@@ -95,24 +113,8 @@ const StickyNote = ({ data }) => {
                     </IconButton>
                 </ButtonGroup>
             </StyledNodeToolbar>
-            <CardWrapper
-                content={false}
-                sx={{
-                    borderColor: getStateColor(),
-                    borderWidth: '1px',
-                    boxShadow: data.selected ? `0 0 0 1px ${getStateColor()} !important` : 'none',
-                    minHeight: 60,
-                    height: 'auto',
-                    backgroundColor: getBackgroundColor(),
-                    display: 'flex',
-                    alignItems: 'center',
-                    '&:hover': {
-                        boxShadow: data.selected ? `0 0 0 1px ${getStateColor()} !important` : 'none'
-                    }
-                }}
-                border={false}
-            >
-                <Box>
+            <GlassNoteCard selected={data.selected}>
+                <Box sx={{ width: '100%' }}>
                     <Input
                         key={data.id}
                         placeholder={inputParam.placeholder}
@@ -124,7 +126,7 @@ const StickyNote = ({ data }) => {
                         nodeId={data.id}
                     />
                 </Box>
-            </CardWrapper>
+            </GlassNoteCard>
         </div>
     )
 }

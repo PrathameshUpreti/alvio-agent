@@ -9,8 +9,6 @@ import './futuristic-styles.css'
 // material-ui
 import {
     Box,
-    Stack,
-    Badge,
     ToggleButton,
     InputLabel,
     FormControl,
@@ -29,17 +27,14 @@ import {
     Paper
 } from '@mui/material'
 import { useTheme, styled } from '@mui/material/styles'
-import { IconLayoutGrid, IconList, IconX, IconSparkles, IconRocket, IconBolt } from '@tabler/icons-react'
+import { IconLayoutGrid, IconList, IconX, IconPlus } from '@tabler/icons-react'
 
 // project imports
 import MainCard from '@/ui-component/cards/MainCard'
 import ItemCard from '@/ui-component/cards/ItemCard'
-import WorkflowEmptySVG from '@/assets/images/workflow_empty.svg'
 import ToolDialog from '@/views/tools/ToolDialog'
 import { MarketplaceTable } from '@/ui-component/table/MarketplaceTable'
-import ViewHeader from '@/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/ErrorBoundary'
-import { TabPanel } from '@/ui-component/tabs/TabPanel'
 import { closeSnackbar as closeSnackbarAction, enqueueSnackbar as enqueueSnackbarAction } from '@/store/actions'
 import ConfirmDialog from '@/ui-component/dialog/ConfirmDialog'
 
@@ -60,11 +55,11 @@ const types = ['Chatflow', 'Agentflow', 'AgentflowV2', 'Tool']
 const framework = ['Langchain', 'LlamaIndex']
 const MenuProps = {
     PaperProps: {
-        style: {
+        sx: {
             width: 160,
-            background: 'linear-gradient(135deg, #8a01a1 0%, #ab02c9 100%)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 143, 0, 0.2)'
+            background: (theme) => theme.palette.background.paper,
+            border: '1px solid',
+            borderColor: (theme) => theme.palette.divider
         }
     }
 }
@@ -273,6 +268,447 @@ const PulsingIcon = styled(Box)(({ theme }) => ({
         '50%': {
             opacity: 0.5
         }
+    }
+}))
+
+// Add new styled components for advanced UI
+const AdvancedHero = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: theme.spacing(1),
+    padding: theme.spacing(3, 0, 2, 0),
+    borderBottom: `2px solid ${theme.palette.divider}`,
+    marginBottom: theme.spacing(2)
+}))
+
+const HeroTitleRow = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1.5)
+}))
+
+const HeroDivider = styled(Box)(({ theme }) => ({
+    width: 80,
+    height: 4,
+    borderRadius: 2,
+    background: 'linear-gradient(90deg, #ff8f00, #ffd700, #ab02c9)',
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
+}))
+
+const GlassyToolbar = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    background: theme.palette.mode === 'dark' ? 'rgba(138, 1, 161, 0.12)' : 'rgba(255,255,255,0.85)',
+    borderRadius: 32,
+    boxShadow: theme.palette.mode === 'dark' ? '0 2px 12px rgba(171,2,201,0.08)' : '0 2px 12px rgba(255,143,0,0.08)',
+    padding: theme.spacing(2, 3),
+    marginBottom: theme.spacing(2),
+    flexWrap: 'wrap'
+}))
+
+const EmojiEmptyState = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '30vh',
+    width: '100%',
+    padding: theme.spacing(6, 2),
+    background: 'none',
+    opacity: 0.8
+}))
+
+// Add new styled components for simple UI
+const SimpleHero = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: theme.spacing(1),
+    padding: theme.spacing(3, 0, 2, 0),
+    borderBottom: 'none', // Remove border
+    marginBottom: theme.spacing(2)
+}))
+
+const SimpleToolbar = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    background: theme.palette.background.paper,
+    borderRadius: 16,
+    boxShadow: 'none',
+    padding: theme.spacing(2, 3),
+    marginBottom: theme.spacing(2),
+    flexWrap: 'wrap',
+    border: 'none' // Remove border
+}))
+
+const SimpleCard = styled(Paper)(({ theme }) => ({
+    background: theme.palette.background.paper,
+    borderRadius: 12,
+    boxShadow: theme.shadows[1],
+    border: 'none', // Remove border
+    padding: theme.spacing(2)
+}))
+
+const SimpleTab = styled(Tab)(({ theme }) => ({
+    textTransform: 'none',
+    fontWeight: 600,
+    fontSize: '1rem',
+    color: theme.palette.text.primary,
+    '&.Mui-selected': {
+        color: theme.palette.primary.main
+    }
+}))
+
+const SimpleTabs = styled(Tabs)(({ theme }) => ({
+    minHeight: 36,
+    '& .MuiTabs-indicator': {
+        background: theme.palette.primary.main,
+        height: 3,
+        borderRadius: 2
+    }
+}))
+
+const SimpleChip = styled(Box)(({ theme }) => ({
+    display: 'inline-block',
+    background: theme.palette.background.paper,
+    border: 'none', // Remove border
+    borderRadius: 16,
+    padding: '6px 16px',
+    fontSize: '0.95rem',
+    fontWeight: 500,
+    color: theme.palette.text.primary,
+    margin: theme.spacing(0.5, 0.5, 0.5, 0)
+}))
+
+const SimpleEmptyState = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '30vh',
+    width: '100%',
+    padding: theme.spacing(6, 2),
+    color: theme.palette.text.secondary,
+    opacity: 0.8
+}))
+
+// Add new styled components for magazine/editorial style
+const EditorialHero = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: theme.spacing(3),
+    padding: theme.spacing(4, 0, 2, 0),
+    position: 'relative'
+}))
+
+// Update styled components for better light theme contrast
+const HeroAccentBar = styled(Box)(({ theme }) => ({
+    width: 8,
+    height: 72,
+    borderRadius: 8,
+    background:
+        theme.palette.mode === 'dark'
+            ? 'linear-gradient(180deg, #ff8f00 0%, #ab02c9 100%)'
+            : 'linear-gradient(180deg, #ff9800 0%, #8d36f9 100%)',
+    marginRight: theme.spacing(2),
+    flexShrink: 0
+}))
+
+const EditorialHeadline = styled(Typography)(({ theme }) => ({
+    fontWeight: 900,
+    fontSize: '2.5rem',
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+    color: theme.palette.primary.main,
+    lineHeight: 1.1
+}))
+
+const EditorialSubtitle = styled(Typography)(({ theme }) => ({
+    fontWeight: 500,
+    fontSize: '1.1rem',
+    color: theme.palette.text.secondary,
+    background: theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.04)' : '#f7f7fa',
+    borderRadius: 8,
+    padding: theme.spacing(1.5, 2),
+    marginTop: theme.spacing(1)
+}))
+
+const FloatingFilterPanel = styled(Box)(({ theme }) => ({
+    position: 'relative',
+    top: -32,
+    left: 0,
+    width: '100%',
+    background: theme.palette.mode === 'dark' ? theme.palette.background.paper : '#fff',
+    borderRadius: 24,
+    boxShadow: theme.shadows[3],
+    padding: theme.spacing(2, 3),
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    flexWrap: 'wrap',
+    zIndex: 2,
+    border: theme.palette.mode === 'dark' ? 'none' : '1px solid #ececec'
+}))
+
+const BlockyTabButton = styled(Button)(({ theme, $active }) => ({
+    borderRadius: 16,
+    fontWeight: 700,
+    fontSize: '1.1rem',
+    padding: theme.spacing(1.2, 3),
+    marginRight: theme.spacing(2),
+    background: $active
+        ? theme.palette.mode === 'dark'
+            ? 'linear-gradient(90deg, #ff8f00 60%, #ab02c9 100%)'
+            : 'linear-gradient(90deg, #ff9800 60%, #8d36f9 100%)'
+        : theme.palette.mode === 'dark'
+        ? theme.palette.background.paper
+        : '#fff',
+    color: $active ? '#fff' : theme.palette.text.primary,
+    boxShadow: $active ? theme.shadows[2] : theme.palette.mode === 'dark' ? 'none' : theme.shadows[1],
+    border: $active ? 'none' : theme.palette.mode === 'dark' ? 'none' : '1px solid #ececec',
+    transition: 'all 0.2s',
+    '&:hover': {
+        background: $active
+            ? theme.palette.mode === 'dark'
+                ? 'linear-gradient(90deg, #ff8f00 60%, #ab02c9 100%)'
+                : 'linear-gradient(90deg, #ff9800 60%, #8d36f9 100%)'
+            : theme.palette.mode === 'dark'
+            ? 'rgba(255,143,0,0.08)'
+            : '#f7f7fa'
+    }
+}))
+
+const TagCloud = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: theme.spacing(1.5),
+    margin: theme.spacing(2, 0, 2, 0)
+}))
+
+const TagCloudChip = styled(Box)(({ theme }) => ({
+    display: 'inline-block',
+    borderRadius: 20,
+    padding: '8px 20px',
+    fontWeight: 600,
+    fontSize: `${Math.random() * 0.3 + 1}rem`,
+    color: theme.palette.primary.main,
+    background:
+        theme.palette.mode === 'dark'
+            ? 'linear-gradient(90deg, #fffbe6 60%, #ffe0f7 100%)'
+            : 'linear-gradient(90deg, #fff3e0 60%, #ede7f6 100%)',
+    boxShadow: theme.palette.mode === 'dark' ? theme.shadows[1] : theme.shadows[0],
+    border: theme.palette.mode === 'dark' ? 'none' : '1px solid #ececec',
+    cursor: 'pointer',
+    transition: 'box-shadow 0.2s, background 0.2s',
+    '&:hover': {
+        boxShadow: theme.shadows[4],
+        background:
+            theme.palette.mode === 'dark'
+                ? 'linear-gradient(90deg, #ffecb3 60%, #f3e5f5 100%)'
+                : 'linear-gradient(90deg, #ffe0b2 60%, #d1c4e9 100%)'
+    }
+}))
+
+const MasonryGrid = styled(Box)(({ theme }) => ({
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+    gap: theme.spacing(3),
+    marginTop: theme.spacing(2)
+}))
+
+const EditorialCard = styled(Paper)(({ theme }) => ({
+    borderRadius: 20,
+    boxShadow: theme.palette.mode === 'dark' ? theme.shadows[3] : theme.shadows[1],
+    background: theme.palette.mode === 'dark' ? theme.palette.background.paper : '#fff',
+    position: 'relative',
+    overflow: 'visible',
+    minHeight: 180 + Math.random() * 60,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    padding: theme.spacing(3),
+    transition: 'box-shadow 0.2s, transform 0.2s',
+    border: theme.palette.mode === 'dark' ? 'none' : '1px solid #ececec',
+    '&:hover': {
+        boxShadow: theme.shadows[6],
+        transform: 'translateY(-6px) scale(1.03)'
+    }
+}))
+
+const CardAccentBar = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 6,
+    height: '100%',
+    borderRadius: 8,
+    background:
+        theme.palette.mode === 'dark'
+            ? 'linear-gradient(180deg, #ff8f00 0%, #ab02c9 100%)'
+            : 'linear-gradient(180deg, #ff9800 0%, #8d36f9 100%)'
+}))
+
+const FloatingAction = styled(Button)(({ theme }) => ({
+    position: 'absolute',
+    bottom: 18,
+    right: 18,
+    borderRadius: 20,
+    background:
+        theme.palette.mode === 'dark'
+            ? 'linear-gradient(90deg, #ff8f00 60%, #ab02c9 100%)'
+            : 'linear-gradient(90deg, #ff9800 60%, #8d36f9 100%)',
+    color: '#fff',
+    fontWeight: 700,
+    boxShadow: theme.shadows[3],
+    padding: theme.spacing(1, 2),
+    zIndex: 2,
+    '&:hover': {
+        background:
+            theme.palette.mode === 'dark'
+                ? 'linear-gradient(90deg, #ab02c9 60%, #ff8f00 100%)'
+                : 'linear-gradient(90deg, #8d36f9 60%, #ff9800 100%)'
+    }
+}))
+
+const PlayfulEmptyState = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '30vh',
+    width: '100%',
+    padding: theme.spacing(6, 2),
+    color: theme.palette.primary.main,
+    fontWeight: 700,
+    fontSize: '2rem',
+    opacity: 0.9
+}))
+
+// Add styled empty state for Marketplace
+const EngagingEmptyState = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '30vh',
+    width: '100%',
+    padding: theme.spacing(6, 2),
+    color: theme.palette.text.secondary,
+    opacity: 0.9
+}))
+const PulseEmoji = styled('span')`
+    display: inline-block;
+    font-size: 3rem;
+    animation: pulse 1.5s infinite;
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+        50% {
+            transform: scale(1.12);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+    }
+`
+
+// Split layout styled-components (from Agentflows)
+const SplitLayout = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    minHeight: 'calc(100vh - 56px)',
+    marginTop: 0,
+    background:
+        theme.palette.mode === 'dark'
+            ? 'linear-gradient(90deg, #181A1B 60%, #232627 100%)'
+            : 'linear-gradient(90deg, #f7f7fa 60%, #fff 100%)',
+    borderRadius: '8px',
+    boxShadow: 'none',
+    overflow: 'visible',
+    [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        minHeight: 'auto'
+    }
+}))
+
+const LeftPanel = styled(Box)(({ theme }) => ({
+    width: 300,
+    minWidth: 220,
+    maxWidth: 340,
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    borderRight: `1px solid ${theme.palette.divider}`,
+    background: theme.palette.mode === 'dark' ? '#181A1B' : '#f7f7fa',
+    [theme.breakpoints.down('md')]: {
+        width: '100%',
+        maxWidth: '100%',
+        borderRight: 'none',
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        alignItems: 'center',
+        padding: theme.spacing(1)
+    },
+    [theme.breakpoints.down('sm')]: {
+        width: '100%',
+        minWidth: 0,
+        maxWidth: '100%',
+        borderRight: 'none',
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        alignItems: 'stretch',
+        padding: theme.spacing(1)
+    }
+}))
+
+const RightPanel = styled(Box)(({ theme }) => ({
+    flex: 1,
+    padding: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    [theme.breakpoints.down('md')]: {
+        padding: theme.spacing(1)
+    },
+    [theme.breakpoints.down('sm')]: {
+        width: '100%',
+        padding: theme.spacing(1)
+    }
+}))
+
+const TopFiltersCard = styled(Box)(({ theme }) => ({
+    background: theme.palette.background.paper,
+    borderRadius: 16,
+    boxShadow: theme.shadows[1],
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(1),
+        gap: theme.spacing(1)
+    }
+}))
+
+const ViewToggleButton = styled(ToggleButton)(({ theme, selected }) => ({
+    borderRadius: '20px',
+    marginBottom: 4,
+    background: selected ? theme.palette.primary.main + '22' : 'none',
+    boxShadow: selected ? `0 0 8px 2px ${theme.palette.primary.main}44` : 'none',
+    color: selected ? theme.palette.primary.main : theme.palette.text.primary,
+    fontWeight: selected ? 700 : 500,
+    transition: 'all 0.2s',
+    '&:hover': {
+        background: theme.palette.primary.main + '11'
     }
 }))
 
@@ -529,6 +965,28 @@ const Marketplace = () => {
         }
     }
 
+    const addNew = () => {
+        // Adjust this navigation as needed for your app's template creation route
+        navigate('/marketplace/create')
+    }
+
+    // Add handler for clicking a popular tag
+    const handlePopularTagClick = (tag) => {
+        if (activeTabValue === 0) {
+            if (selectedUsecases.length === 1 && selectedUsecases[0] === tag) {
+                setSelectedUsecases([])
+            } else {
+                setSelectedUsecases([tag])
+            }
+        } else {
+            if (selectedTemplateUsecases.length === 1 && selectedTemplateUsecases[0] === tag) {
+                setSelectedTemplateUsecases([])
+            } else {
+                setSelectedTemplateUsecases([tag])
+            }
+        }
+    }
+
     useEffect(() => {
         getAllTemplatesMarketplacesApi.request()
     }, [])
@@ -633,270 +1091,206 @@ const Marketplace = () => {
     }, [getAllCustomTemplatesApi.error])
 
     return (
-        <FuturisticContainer>
-            <GlassmorphismCard>
+        <Box sx={{ minHeight: '100vh', background: theme.palette.background.default, p: { xs: 1, md: 3 } }}>
+            <Box sx={{ maxWidth: 1400, mx: 'auto', mt: 3 }}>
                 {error ? (
                     <ErrorBoundary error={error} />
                 ) : (
-                    <Stack flexDirection='column' spacing={3}>
-                        {/* Hero Section */}
-                        <Box sx={{ textAlign: 'center', py: 4 }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
-                                <PulsingIcon sx={{ mr: 2 }}>
-                                    <IconRocket size={48} color='#ff8f00' />
-                                </PulsingIcon>
-                                <NeonHeader variant='h1'>AI Marketplace</NeonHeader>
-                                <PulsingIcon sx={{ ml: 2 }}>
-                                    <IconSparkles size={48} color='#ffd700' />
-                                </PulsingIcon>
-                            </Box>
+                    <SplitLayout>
+                        <LeftPanel>
                             <Typography
-                                variant='h6'
+                                variant='h4'
+                                sx={{ fontWeight: 800, mb: 0.5, fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' } }}
+                            >
+                                AI Marketplace
+                            </Typography>
+                            <Typography
+                                variant='subtitle1'
                                 sx={{
-                                    color: theme.palette.mode === 'dark' ? '#e0e0e0' : '#666',
-                                    fontWeight: 500,
-                                    mb: 3
+                                    color: 'text.secondary',
+                                    fontWeight: 400,
+                                    mb: 2,
+                                    fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' }
                                 }}
                             >
                                 Discover cutting-edge AI workflows and unleash your creativity
-                                <IconBolt size={20} style={{ marginLeft: 8, verticalAlign: 'middle', color: '#ffd700' }} />
                             </Typography>
-                        </Box>
-
-                        <ViewHeader
-                            filters={
-                                <Stack direction='row' spacing={2}>
-                                    <FormControl sx={{ minWidth: 120 }}>
-                                        <InputLabel size='small' id='filter-badge-label' sx={{ color: '#ff8f00' }}>
-                                            Tag
-                                        </InputLabel>
-                                        <FuturisticSelect
-                                            labelId='filter-badge-label'
-                                            id='filter-badge-checkbox'
-                                            size='small'
-                                            multiple
-                                            value={badgeFilter}
-                                            onChange={handleBadgeFilterChange}
-                                            input={<OutlinedInput label='Tag' />}
-                                            renderValue={(selected) => selected.join(', ')}
-                                            MenuProps={MenuProps}
-                                        >
-                                            {badges.map((name) => (
-                                                <MenuItem
-                                                    key={name}
-                                                    value={name}
-                                                    sx={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: 1,
-                                                        p: 1,
-                                                        color: 'white',
-                                                        '&:hover': {
-                                                            background: 'rgba(255, 143, 0, 0.2)'
-                                                        }
-                                                    }}
-                                                >
-                                                    <Checkbox
-                                                        checked={badgeFilter.indexOf(name) > -1}
-                                                        sx={{
-                                                            p: 0,
-                                                            color: '#ffd700',
-                                                            '&.Mui-checked': {
-                                                                color: '#ffd700'
-                                                            }
-                                                        }}
-                                                    />
-                                                    <ListItemText primary={name} />
-                                                </MenuItem>
-                                            ))}
-                                        </FuturisticSelect>
-                                    </FormControl>
-                                    <FormControl sx={{ minWidth: 120 }}>
-                                        <InputLabel size='small' id='type-badge-label' sx={{ color: '#ff8f00' }}>
-                                            Type
-                                        </InputLabel>
-                                        <FuturisticSelect
-                                            size='small'
-                                            labelId='type-badge-label'
-                                            id='type-badge-checkbox'
-                                            multiple
-                                            value={typeFilter}
-                                            onChange={handleTypeFilterChange}
-                                            input={<OutlinedInput label='Type' />}
-                                            renderValue={(selected) => selected.join(', ')}
-                                            MenuProps={MenuProps}
-                                        >
-                                            {types.map((name) => (
-                                                <MenuItem
-                                                    key={name}
-                                                    value={name}
-                                                    sx={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: 1,
-                                                        p: 1,
-                                                        color: 'white',
-                                                        '&:hover': {
-                                                            background: 'rgba(255, 143, 0, 0.2)'
-                                                        }
-                                                    }}
-                                                >
-                                                    <Checkbox
-                                                        checked={typeFilter.indexOf(name) > -1}
-                                                        sx={{
-                                                            p: 0,
-                                                            color: '#ffd700',
-                                                            '&.Mui-checked': {
-                                                                color: '#ffd700'
-                                                            }
-                                                        }}
-                                                    />
-                                                    <ListItemText primary={name} />
-                                                </MenuItem>
-                                            ))}
-                                        </FuturisticSelect>
-                                    </FormControl>
-                                    <FormControl sx={{ minWidth: 120 }}>
-                                        <InputLabel size='small' id='type-fw-label' sx={{ color: '#ff8f00' }}>
-                                            Framework
-                                        </InputLabel>
-                                        <FuturisticSelect
-                                            size='small'
-                                            labelId='type-fw-label'
-                                            id='type-fw-checkbox'
-                                            multiple
-                                            value={frameworkFilter}
-                                            onChange={handleFrameworkFilterChange}
-                                            input={<OutlinedInput label='Framework' />}
-                                            renderValue={(selected) => selected.join(', ')}
-                                            MenuProps={MenuProps}
-                                        >
-                                            {framework.map((name) => (
-                                                <MenuItem
-                                                    key={name}
-                                                    value={name}
-                                                    sx={{
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        gap: 1,
-                                                        p: 1,
-                                                        color: 'white',
-                                                        '&:hover': {
-                                                            background: 'rgba(255, 143, 0, 0.2)'
-                                                        }
-                                                    }}
-                                                >
-                                                    <Checkbox
-                                                        checked={frameworkFilter.indexOf(name) > -1}
-                                                        sx={{
-                                                            p: 0,
-                                                            color: '#ffd700',
-                                                            '&.Mui-checked': {
-                                                                color: '#ffd700'
-                                                            }
-                                                        }}
-                                                    />
-                                                    <ListItemText primary={name} />
-                                                </MenuItem>
-                                            ))}
-                                        </FuturisticSelect>
-                                    </FormControl>
-                                </Stack>
-                            }
-                            onSearchChange={onSearchChange}
-                            search={true}
-                            searchPlaceholder='Search Name/Description/Node'
-                        >
-                            <ToggleButtonGroup
-                                sx={{ borderRadius: '15px', height: '100%' }}
-                                value={view}
-                                color='primary'
-                                exclusive
-                                onChange={handleViewChange}
-                            >
-                                <AnimatedToggleButton variant='contained' value='card' title='Card View'>
-                                    <IconLayoutGrid />
-                                </AnimatedToggleButton>
-                                <AnimatedToggleButton variant='contained' value='list' title='List View'>
-                                    <IconList />
-                                </AnimatedToggleButton>
-                            </ToggleButtonGroup>
-                        </ViewHeader>
-
-                        <GlowingTabs value={activeTabValue} onChange={handleTabChange} textColor='primary' aria-label='tabs' centered>
-                            <Tab value={0} label='Community Templates'></Tab>
-                            <Tab value={1} label='My Templates' />
-                        </GlowingTabs>
-
-                        <TabPanel value={activeTabValue} index={0}>
-                            <Stack direction='row' sx={{ gap: 1, my: 3, alignItems: 'center', flexWrap: 'wrap' }}>
-                                {usecases.map((usecase, index) => (
-                                    <FloatingUsecaseChip
-                                        key={index}
-                                        size='small'
-                                        disabled={eligibleUsecases.length === 0 ? true : !eligibleUsecases.includes(usecase)}
-                                        control={
-                                            <Checkbox
-                                                disabled={eligibleUsecases.length === 0 ? true : !eligibleUsecases.includes(usecase)}
-                                                color='success'
-                                                checked={selectedUsecases.includes(usecase)}
-                                                onChange={(event) => {
-                                                    setSelectedUsecases(
-                                                        event.target.checked
-                                                            ? [...selectedUsecases, usecase]
-                                                            : selectedUsecases.filter((item) => item !== usecase)
-                                                    )
-                                                }}
-                                            />
-                                        }
-                                        label={usecase}
-                                    />
-                                ))}
-                            </Stack>
-                            {selectedUsecases.length > 0 && (
-                                <FuturisticButton
-                                    sx={{ width: 'max-content', mb: 3 }}
-                                    variant='outlined'
-                                    onClick={() => clearAllUsecases()}
-                                    startIcon={<IconX />}
+                            <TopFiltersCard>
+                                <FormControl fullWidth size='small' sx={{ mb: 2 }}>
+                                    <InputLabel id='filter-badge-label' sx={{ color: '#ff8f00' }} shrink>
+                                        Tag
+                                    </InputLabel>
+                                    <FuturisticSelect
+                                        labelId='filter-badge-label'
+                                        id='filter-badge-checkbox'
+                                        multiple
+                                        value={badgeFilter}
+                                        onChange={handleBadgeFilterChange}
+                                        input={<OutlinedInput label='Tag' />}
+                                        renderValue={(selected) => selected.join(', ')}
+                                        sx={{ minWidth: 120 }}
+                                    >
+                                        {badges.map((name) => (
+                                            <MenuItem key={name} value={name}>
+                                                <Checkbox checked={badgeFilter.indexOf(name) > -1} sx={{ color: '#ff8f00' }} />
+                                                <ListItemText primary={name} />
+                                            </MenuItem>
+                                        ))}
+                                    </FuturisticSelect>
+                                </FormControl>
+                                <FormControl fullWidth size='small' sx={{ mb: 2 }}>
+                                    <InputLabel id='type-badge-label' sx={{ color: '#ff8f00' }} shrink>
+                                        Type
+                                    </InputLabel>
+                                    <FuturisticSelect
+                                        labelId='type-badge-label'
+                                        id='type-badge-checkbox'
+                                        multiple
+                                        value={typeFilter}
+                                        onChange={handleTypeFilterChange}
+                                        input={<OutlinedInput label='Type' />}
+                                        renderValue={(selected) => selected.join(', ')}
+                                        sx={{ minWidth: 120 }}
+                                    >
+                                        {types.map((name) => (
+                                            <MenuItem key={name} value={name}>
+                                                <Checkbox checked={typeFilter.indexOf(name) > -1} sx={{ color: '#ff8f00' }} />
+                                                <ListItemText primary={name} />
+                                            </MenuItem>
+                                        ))}
+                                    </FuturisticSelect>
+                                </FormControl>
+                                <FormControl fullWidth size='small' sx={{ mb: 2 }}>
+                                    <InputLabel id='type-fw-label' sx={{ color: '#ff8f00' }} shrink>
+                                        Framework
+                                    </InputLabel>
+                                    <FuturisticSelect
+                                        labelId='type-fw-label'
+                                        id='type-fw-checkbox'
+                                        multiple
+                                        value={frameworkFilter}
+                                        onChange={handleFrameworkFilterChange}
+                                        input={<OutlinedInput label='Framework' />}
+                                        renderValue={(selected) => selected.join(', ')}
+                                        sx={{ minWidth: 120 }}
+                                    >
+                                        {framework.map((name) => (
+                                            <MenuItem key={name} value={name}>
+                                                <Checkbox checked={frameworkFilter.indexOf(name) > -1} sx={{ color: '#ff8f00' }} />
+                                                <ListItemText primary={name} />
+                                            </MenuItem>
+                                        ))}
+                                    </FuturisticSelect>
+                                </FormControl>
+                                <OutlinedInput
+                                    fullWidth
+                                    size='small'
+                                    placeholder='Search Name/Description/Node'
+                                    value={search}
+                                    onChange={onSearchChange}
+                                    sx={{ borderRadius: 8, background: theme.palette.background.default, fontSize: 16, mb: 2 }}
+                                />
+                                <ToggleButtonGroup
+                                    sx={{ borderRadius: '8px', height: '100%', mt: 1 }}
+                                    value={view}
+                                    color='primary'
+                                    exclusive
+                                    onChange={handleViewChange}
                                 >
-                                    Clear All
-                                </FuturisticButton>
-                            )}
-
+                                    <ViewToggleButton value='card' selected={view === 'card'} title='Card View'>
+                                        <IconLayoutGrid />
+                                    </ViewToggleButton>
+                                    <ViewToggleButton value='list' selected={view === 'list'} title='List View'>
+                                        <IconList />
+                                    </ViewToggleButton>
+                                </ToggleButtonGroup>
+                            </TopFiltersCard>
+                            {/* Tag Cloud */}
+                            <Box sx={{ mt: 2 }}>
+                                <Typography variant='subtitle2' sx={{ fontWeight: 600, mb: 1 }}>
+                                    Popular Tags
+                                </Typography>
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                    {usecases.map((usecase, index) => {
+                                        const isSelected =
+                                            activeTabValue === 0
+                                                ? selectedUsecases.includes(usecase)
+                                                : selectedTemplateUsecases.includes(usecase)
+                                        return (
+                                            <Box
+                                                key={index}
+                                                onClick={() => handlePopularTagClick(usecase)}
+                                                sx={{
+                                                    px: 2,
+                                                    py: 0.5,
+                                                    borderRadius: 12,
+                                                    background: isSelected
+                                                        ? theme.palette.mode === 'dark'
+                                                            ? theme.palette.primary.dark
+                                                            : theme.palette.primary.light
+                                                        : theme.palette.background.paper,
+                                                    color: isSelected
+                                                        ? theme.palette.getContrastText(theme.palette.primary.main)
+                                                        : theme.palette.text.secondary,
+                                                    fontWeight: 600,
+                                                    fontSize: 14,
+                                                    cursor: 'pointer',
+                                                    border: isSelected
+                                                        ? `2px solid ${theme.palette.primary.main}`
+                                                        : `1px solid ${theme.palette.divider}`,
+                                                    boxShadow: isSelected ? theme.shadows[2] : 'none',
+                                                    transition: 'all 0.18s',
+                                                    userSelect: 'none',
+                                                    '&:hover': {
+                                                        background: isSelected
+                                                            ? theme.palette.mode === 'dark'
+                                                                ? theme.palette.primary.main
+                                                                : theme.palette.primary.dark
+                                                            : theme.palette.action.hover,
+                                                        color: isSelected
+                                                            ? theme.palette.getContrastText(theme.palette.primary.main)
+                                                            : theme.palette.text.primary
+                                                    }
+                                                }}
+                                            >
+                                                {usecase}
+                                            </Box>
+                                        )
+                                    })}
+                                </Box>
+                            </Box>
+                        </LeftPanel>
+                        <RightPanel>
+                            {/* Blocky Tabs */}
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                                <Button
+                                    variant={activeTabValue === 0 ? 'contained' : 'outlined'}
+                                    color='primary'
+                                    onClick={() => handleTabChange(null, 0)}
+                                    startIcon={<IconLayoutGrid />}
+                                >
+                                    Community Templates
+                                </Button>
+                                <Button
+                                    variant={activeTabValue === 1 ? 'contained' : 'outlined'}
+                                    color='primary'
+                                    onClick={() => handleTabChange(null, 1)}
+                                    startIcon={<IconList />}
+                                >
+                                    My Templates
+                                </Button>
+                            </Box>
+                            {/* Masonry Cards or Table */}
                             {!view || view === 'card' ? (
                                 <>
                                     {isLoading ? (
-                                        <Box display='grid' gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))' gap={3}>
+                                        <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
                                             {[...Array(6)].map((_, index) => (
-                                                <Paper
-                                                    key={index}
-                                                    sx={{
-                                                        background:
-                                                            theme.palette.mode === 'dark'
-                                                                ? 'rgba(138, 1, 161, 0.1)'
-                                                                : 'rgba(255, 255, 255, 0.9)',
-                                                        backdropFilter: 'blur(15px)',
-                                                        borderRadius: '20px',
-                                                        p: 2,
-                                                        height: '200px'
-                                                    }}
-                                                >
-                                                    <Skeleton
-                                                        variant='rounded'
-                                                        height='100%'
-                                                        animation='wave'
-                                                        sx={{
-                                                            borderRadius: '15px',
-                                                            background:
-                                                                'linear-gradient(90deg, rgba(255, 143, 0, 0.1) 0%, rgba(171, 2, 201, 0.1) 50%, rgba(255, 215, 0, 0.1) 100%)'
-                                                        }}
-                                                    />
-                                                </Paper>
+                                                <Skeleton key={index} variant='rounded' height={180} />
                                             ))}
                                         </Box>
                                     ) : (
-                                        <Box display='grid' gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))' gap={3}>
+                                        <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
                                             {getAllTemplatesMarketplacesApi.data
                                                 ?.filter(filterByBadge)
                                                 .filter(filterByType)
@@ -904,58 +1298,7 @@ const Marketplace = () => {
                                                 .filter(filterByFramework)
                                                 .filter(filterByUsecases)
                                                 .map((data, index) => (
-                                                    <Box key={index} sx={{ transition: 'all 0.3s ease' }}>
-                                                        {data.badge && (
-                                                            <Badge
-                                                                sx={{
-                                                                    width: '100%',
-                                                                    height: '100%',
-                                                                    '& .MuiBadge-badge': {
-                                                                        right: 20,
-                                                                        background:
-                                                                            data.badge === 'POPULAR'
-                                                                                ? 'linear-gradient(45deg, #ff8f00, #ffd700)'
-                                                                                : 'linear-gradient(45deg, #ab02c9, #8a01a1)',
-                                                                        color: 'white',
-                                                                        fontWeight: 'bold',
-                                                                        fontSize: '0.75rem',
-                                                                        borderRadius: '15px',
-                                                                        padding: '4px 8px',
-                                                                        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)'
-                                                                    }
-                                                                }}
-                                                                badgeContent={data.badge}
-                                                            >
-                                                                {(data.type === 'Chatflow' ||
-                                                                    data.type === 'Agentflow' ||
-                                                                    data.type === 'AgentflowV2') && (
-                                                                    <ItemCard
-                                                                        onClick={() => goToCanvas(data)}
-                                                                        data={data}
-                                                                        images={images[data.id]}
-                                                                        icons={icons[data.id]}
-                                                                    />
-                                                                )}
-                                                                {data.type === 'Tool' && (
-                                                                    <ItemCard data={data} onClick={() => goToTool(data)} />
-                                                                )}
-                                                            </Badge>
-                                                        )}
-                                                        {!data.badge &&
-                                                            (data.type === 'Chatflow' ||
-                                                                data.type === 'Agentflow' ||
-                                                                data.type === 'AgentflowV2') && (
-                                                                <ItemCard
-                                                                    onClick={() => goToCanvas(data)}
-                                                                    data={data}
-                                                                    images={images[data.id]}
-                                                                    icons={icons[data.id]}
-                                                                />
-                                                            )}
-                                                        {!data.badge && data.type === 'Tool' && (
-                                                            <ItemCard data={data} onClick={() => goToTool(data)} />
-                                                        )}
-                                                    </Box>
+                                                    <ItemCard key={index} data={data} onClick={() => goToCanvas(data)} />
                                                 ))}
                                         </Box>
                                     )}
@@ -974,215 +1317,34 @@ const Marketplace = () => {
                                     setError={setError}
                                 />
                             )}
-
+                            {/* Playful Empty State */}
                             {!isLoading && (!getAllTemplatesMarketplacesApi.data || getAllTemplatesMarketplacesApi.data.length === 0) && (
-                                <Stack sx={{ alignItems: 'center', justifyContent: 'center', py: 8 }} flexDirection='column'>
-                                    <Box sx={{ p: 2, height: 'auto', opacity: 0.7 }}>
-                                        <img
-                                            style={{ objectFit: 'cover', height: '25vh', width: 'auto', filter: 'hue-rotate(30deg)' }}
-                                            src={WorkflowEmptySVG}
-                                            alt='WorkflowEmptySVG'
-                                        />
-                                    </Box>
-                                    <Typography
-                                        variant='h6'
-                                        sx={{
-                                            color: theme.palette.mode === 'dark' ? '#e0e0e0' : '#666',
-                                            fontWeight: 500
-                                        }}
-                                    >
-                                        No Marketplace Templates Yet
+                                <EngagingEmptyState>
+                                    <PulseEmoji>🤖</PulseEmoji>
+                                    <Typography variant='h5' sx={{ fontWeight: 700, mb: 1, mt: 2 }}>
+                                        You are just one click away from creating your first agent!
                                     </Typography>
-                                </Stack>
-                            )}
-                        </TabPanel>
-
-                        <TabPanel value={activeTabValue} index={1}>
-                            <Stack direction='row' sx={{ gap: 1, my: 3, alignItems: 'center', flexWrap: 'wrap' }}>
-                                {templateUsecases.map((usecase, index) => (
-                                    <FloatingUsecaseChip
-                                        key={index}
-                                        size='small'
-                                        disabled={
-                                            eligibleTemplateUsecases.length === 0 ? true : !eligibleTemplateUsecases.includes(usecase)
-                                        }
-                                        control={
-                                            <Checkbox
-                                                disabled={
-                                                    eligibleTemplateUsecases.length === 0
-                                                        ? true
-                                                        : !eligibleTemplateUsecases.includes(usecase)
-                                                }
-                                                color='success'
-                                                checked={selectedTemplateUsecases.includes(usecase)}
-                                                onChange={(event) => {
-                                                    setSelectedTemplateUsecases(
-                                                        event.target.checked
-                                                            ? [...selectedTemplateUsecases, usecase]
-                                                            : selectedTemplateUsecases.filter((item) => item !== usecase)
-                                                    )
-                                                }}
-                                            />
-                                        }
-                                        label={usecase}
-                                    />
-                                ))}
-                            </Stack>
-                            {selectedTemplateUsecases.length > 0 && (
-                                <FuturisticButton
-                                    sx={{ width: 'max-content', mb: 3 }}
-                                    variant='outlined'
-                                    onClick={() => clearAllUsecases()}
-                                    startIcon={<IconX />}
-                                >
-                                    Clear All
-                                </FuturisticButton>
-                            )}
-
-                            {!view || view === 'card' ? (
-                                <>
-                                    {isLoading ? (
-                                        <Box display='grid' gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))' gap={3}>
-                                            {[...Array(6)].map((_, index) => (
-                                                <Paper
-                                                    key={index}
-                                                    sx={{
-                                                        background:
-                                                            theme.palette.mode === 'dark'
-                                                                ? 'rgba(138, 1, 161, 0.1)'
-                                                                : 'rgba(255, 255, 255, 0.9)',
-                                                        backdropFilter: 'blur(15px)',
-                                                        borderRadius: '20px',
-                                                        p: 2,
-                                                        height: '200px'
-                                                    }}
-                                                >
-                                                    <Skeleton
-                                                        variant='rounded'
-                                                        height='100%'
-                                                        animation='wave'
-                                                        sx={{
-                                                            borderRadius: '15px',
-                                                            background:
-                                                                'linear-gradient(90deg, rgba(255, 143, 0, 0.1) 0%, rgba(171, 2, 201, 0.1) 50%, rgba(255, 215, 0, 0.1) 100%)'
-                                                        }}
-                                                    />
-                                                </Paper>
-                                            ))}
-                                        </Box>
-                                    ) : (
-                                        <Box display='grid' gridTemplateColumns='repeat(auto-fit, minmax(300px, 1fr))' gap={3}>
-                                            {getAllCustomTemplatesApi.data
-                                                ?.filter(filterByBadge)
-                                                .filter(filterByType)
-                                                .filter(filterFlows)
-                                                .filter(filterByFramework)
-                                                .filter(filterByUsecases)
-                                                .map((data, index) => (
-                                                    <Box key={index} sx={{ transition: 'all 0.3s ease' }}>
-                                                        {data.badge && (
-                                                            <Badge
-                                                                sx={{
-                                                                    width: '100%',
-                                                                    height: '100%',
-                                                                    '& .MuiBadge-badge': {
-                                                                        right: 20,
-                                                                        background:
-                                                                            data.badge === 'POPULAR'
-                                                                                ? 'linear-gradient(45deg, #ff8f00, #ffd700)'
-                                                                                : 'linear-gradient(45deg, #ab02c9, #8a01a1)',
-                                                                        color: 'white',
-                                                                        fontWeight: 'bold',
-                                                                        fontSize: '0.75rem',
-                                                                        borderRadius: '15px',
-                                                                        padding: '4px 8px',
-                                                                        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)'
-                                                                    }
-                                                                }}
-                                                                badgeContent={data.badge}
-                                                            >
-                                                                {(data.type === 'Chatflow' ||
-                                                                    data.type === 'Agentflow' ||
-                                                                    data.type === 'AgentflowV2') && (
-                                                                    <ItemCard
-                                                                        onClick={() => goToCanvas(data)}
-                                                                        data={data}
-                                                                        images={templateImages[data.id]}
-                                                                        icons={templateIcons[data.id]}
-                                                                    />
-                                                                )}
-                                                                {data.type === 'Tool' && (
-                                                                    <ItemCard data={data} onClick={() => goToTool(data)} />
-                                                                )}
-                                                            </Badge>
-                                                        )}
-                                                        {!data.badge &&
-                                                            (data.type === 'Chatflow' ||
-                                                                data.type === 'Agentflow' ||
-                                                                data.type === 'AgentflowV2') && (
-                                                                <ItemCard
-                                                                    onClick={() => goToCanvas(data)}
-                                                                    data={data}
-                                                                    images={templateImages[data.id]}
-                                                                    icons={templateIcons[data.id]}
-                                                                />
-                                                            )}
-                                                        {!data.badge && data.type === 'Tool' && (
-                                                            <ItemCard data={data} onClick={() => goToTool(data)} />
-                                                        )}
-                                                    </Box>
-                                                ))}
-                                        </Box>
-                                    )}
-                                </>
-                            ) : (
-                                <MarketplaceTable
-                                    data={getAllCustomTemplatesApi.data}
-                                    filterFunction={filterFlows}
-                                    filterByType={filterByType}
-                                    filterByBadge={filterByBadge}
-                                    filterByFramework={filterByFramework}
-                                    filterByUsecases={filterByUsecases}
-                                    goToTool={goToTool}
-                                    goToCanvas={goToCanvas}
-                                    isLoading={isLoading}
-                                    setError={setError}
-                                    onDelete={onDeleteCustomTemplate}
-                                />
-                            )}
-                            {!isLoading && (!getAllCustomTemplatesApi.data || getAllCustomTemplatesApi.data.length === 0) && (
-                                <Stack sx={{ alignItems: 'center', justifyContent: 'center', py: 8 }} flexDirection='column'>
-                                    <Box sx={{ p: 2, height: 'auto', opacity: 0.7 }}>
-                                        <img
-                                            style={{ objectFit: 'cover', height: '25vh', width: 'auto', filter: 'hue-rotate(30deg)' }}
-                                            src={WorkflowEmptySVG}
-                                            alt='WorkflowEmptySVG'
-                                        />
-                                    </Box>
-                                    <Typography
-                                        variant='h6'
-                                        sx={{
-                                            color: theme.palette.mode === 'dark' ? '#e0e0e0' : '#666',
-                                            fontWeight: 500
-                                        }}
-                                    >
-                                        No Saved Custom Templates
+                                    <Typography variant='body2' sx={{ color: 'text.secondary', mb: 3 }}>
+                                        Marketplace lets you discover and share powerful AI workflows. Get started now!
                                     </Typography>
-                                </Stack>
+                                    <Button
+                                        variant='contained'
+                                        color='primary'
+                                        onClick={addNew}
+                                        startIcon={<IconPlus />}
+                                        sx={{ borderRadius: 2, height: 44, fontWeight: 700 }}
+                                    >
+                                        Create Marketplace Template
+                                    </Button>
+                                </EngagingEmptyState>
                             )}
-                        </TabPanel>
-                    </Stack>
+                        </RightPanel>
+                    </SplitLayout>
                 )}
-            </GlassmorphismCard>
-            <ToolDialog
-                show={showToolDialog}
-                dialogProps={toolDialogProps}
-                onCancel={() => setShowToolDialog(false)}
-                onConfirm={() => setShowToolDialog(false)}
-                onUseTemplate={(tool) => onUseTemplate(tool)}
-            ></ToolDialog>
-            <ConfirmDialog />
-        </FuturisticContainer>
+                <ToolDialog show={showToolDialog} toolDialogProps={toolDialogProps} onClose={() => setShowToolDialog(false)}></ToolDialog>
+                <ConfirmDialog />
+            </Box>
+        </Box>
     )
 }
 

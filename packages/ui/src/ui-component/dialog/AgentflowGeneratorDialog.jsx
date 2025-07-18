@@ -18,6 +18,7 @@ import { baseURL } from '@/store/constant'
 import { initNode } from '@/utils/genericHelper'
 import DocStoreInputHandler from '@/views/docstore/DocStoreInputHandler'
 import useApi from '@/hooks/useApi'
+import { styled } from '@mui/material/styles'
 
 const defaultInstructions = [
     {
@@ -33,6 +34,36 @@ const defaultInstructions = [
         text: 'A team of agents that can handle all customer queries'
     }
 ]
+
+// Glassmorphism dialog and input styles
+const GlassDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialog-paper': {
+        background: theme.palette.background.paper,
+        borderRadius: 18,
+        boxShadow: theme.shadows[24],
+        border: `1.5px solid ${theme.palette.mode === 'dark' ? '#35373b' : '#e0e0e0'}`,
+        padding: 0
+    }
+}))
+const GlassInput = styled(OutlinedInput)(({ theme }) => ({
+    background: theme.palette.mode === 'dark' ? '#23272f' : '#f8fafc',
+    color: theme.palette.mode === 'dark' ? '#fff' : '#23272f',
+    border: `1.5px solid ${theme.palette.mode === 'dark' ? '#35373b' : '#e0e0e0'}`,
+    borderRadius: 12,
+    padding: 18,
+    fontSize: 18,
+    marginBottom: 24,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+    '::placeholder': {
+        color: theme.palette.mode === 'dark' ? '#b0b3b8' : '#888'
+    }
+}))
+const GlassDropdownBox = styled(Box)(({ theme }) => ({
+    background: theme.palette.mode === 'dark' ? '#23272f' : '#f8fafc',
+    borderRadius: 12,
+    padding: 8,
+    marginBottom: 24
+}))
 
 const AgentflowGeneratorDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
     const portalElement = document.getElementById('portal')
@@ -165,7 +196,7 @@ const AgentflowGeneratorDialog = ({ show, dialogProps, onCancel, onConfirm }) =>
 
     const component = show ? (
         <>
-            <Dialog
+            <GlassDialog
                 fullWidth
                 maxWidth={loading ? 'sm' : 'md'}
                 open={show}
@@ -245,7 +276,7 @@ const AgentflowGeneratorDialog = ({ show, dialogProps, onCancel, onConfirm }) =>
                                 })}
                             </div>
                             {!generatedInstruction && (
-                                <OutlinedInput
+                                <GlassInput
                                     sx={{ mt: 2, width: '100%' }}
                                     type={'text'}
                                     multiline={true}
@@ -257,7 +288,7 @@ const AgentflowGeneratorDialog = ({ show, dialogProps, onCancel, onConfirm }) =>
                                 />
                             )}
                             {generatedInstruction && (
-                                <OutlinedInput
+                                <GlassInput
                                     sx={{ mt: 2, width: '100%' }}
                                     type={'text'}
                                     multiline={true}
@@ -272,25 +303,29 @@ const AgentflowGeneratorDialog = ({ show, dialogProps, onCancel, onConfirm }) =>
                                         Select model to generate agentflow<span style={{ color: 'red' }}>&nbsp;*</span>
                                     </Typography>
                                 </div>
-                                <Dropdown
-                                    key={JSON.stringify(selectedChatModel)}
-                                    name={'chatModel'}
-                                    options={chatModelsOptions ?? []}
-                                    onSelect={(newValue) => {
-                                        if (!newValue) {
-                                            setSelectedChatModel({})
-                                        } else {
-                                            const foundChatComponent = chatModelsComponents.find((chatModel) => chatModel.name === newValue)
-                                            if (foundChatComponent) {
-                                                const chatModelId = `${foundChatComponent.name}_0`
-                                                const clonedComponent = cloneDeep(foundChatComponent)
-                                                const initChatModelData = initNode(clonedComponent, chatModelId)
-                                                setSelectedChatModel(initChatModelData)
+                                <GlassDropdownBox>
+                                    <Dropdown
+                                        key={JSON.stringify(selectedChatModel)}
+                                        name={'chatModel'}
+                                        options={chatModelsOptions ?? []}
+                                        onSelect={(newValue) => {
+                                            if (!newValue) {
+                                                setSelectedChatModel({})
+                                            } else {
+                                                const foundChatComponent = chatModelsComponents.find(
+                                                    (chatModel) => chatModel.name === newValue
+                                                )
+                                                if (foundChatComponent) {
+                                                    const chatModelId = `${foundChatComponent.name}_0`
+                                                    const clonedComponent = cloneDeep(foundChatComponent)
+                                                    const initChatModelData = initNode(clonedComponent, chatModelId)
+                                                    setSelectedChatModel(initChatModelData)
+                                                }
                                             }
-                                        }
-                                    }}
-                                    value={selectedChatModel ? selectedChatModel?.name : 'choose an option'}
-                                />
+                                        }}
+                                        value={selectedChatModel ? selectedChatModel?.name : 'choose an option'}
+                                    />
+                                </GlassDropdownBox>
                             </Box>
                             {selectedChatModel && Object.keys(selectedChatModel).length > 0 && (
                                 <Box
@@ -325,7 +360,15 @@ const AgentflowGeneratorDialog = ({ show, dialogProps, onCancel, onConfirm }) =>
                                     }}
                                     sx={{
                                         background: 'linear-gradient(45deg, #FF6B6B 30%, #FF8E53 90%)',
-                                        '&:hover': { background: 'linear-gradient(45deg, #FF8E53 30%, #FF6B6B 90%)' }
+                                        borderRadius: 12,
+                                        fontWeight: 700,
+                                        fontSize: 18,
+                                        boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
+                                        padding: '12px 32px',
+                                        '&:hover': {
+                                            background: 'linear-gradient(45deg, #FF8E53 30%, #FF6B6B 90%)',
+                                            filter: 'brightness(1.08)'
+                                        }
                                     }}
                                     startIcon={<IconSparkles size={20} />}
                                     disabled={
@@ -352,7 +395,7 @@ const AgentflowGeneratorDialog = ({ show, dialogProps, onCancel, onConfirm }) =>
                         </>
                     )}
                 </DialogActions>
-            </Dialog>
+            </GlassDialog>
         </>
     ) : null
 

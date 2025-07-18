@@ -1,5 +1,11 @@
 export default function componentStyleOverrides(theme) {
     const bgColor = theme.colors?.grey50
+    // Fallbacks for palette/colors
+    const primaryColor = theme.palette?.primary?.main || theme.colors?.primaryMain || '#1976d2'
+    const textPrimary = theme.palette?.text?.primary || theme.colors?.textDark || '#222'
+    const textSecondary = theme.palette?.text?.secondary || theme.colors?.grey500 || '#888'
+    // Unified background for all
+    const unifiedBg = 'transparent'
     return {
         MuiCssBaseline: {
             styleOverrides: {
@@ -71,7 +77,7 @@ export default function componentStyleOverrides(theme) {
                 root: {
                     backgroundImage: 'none',
                     borderRadius: '12px',
-                    backgroundColor: theme?.customization?.isDarkMode ? theme.colors?.darkPaper : theme.colors?.paper,
+                    backgroundColor: 'transparent',
                     transition: 'all 0.2s ease-in-out'
                 },
                 rounded: {
@@ -170,17 +176,18 @@ export default function componentStyleOverrides(theme) {
         MuiOutlinedInput: {
             styleOverrides: {
                 root: {
-                    background: theme?.customization?.isDarkMode ? theme.colors?.darkPrimary800 : bgColor,
+                    background: theme?.customization?.isDarkMode ? '#232627' : '#fff',
                     borderRadius: '8px',
                     '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: theme.colors?.grey400
+                        borderColor: theme?.customization?.isDarkMode ? '#888' : '#888',
+                        borderWidth: '1.5px'
                     },
-                    '&:hover $notchedOutline': {
-                        borderColor: theme.colors?.primaryLight
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: primaryColor
                     },
                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        borderColor: theme.colors?.primaryMain,
-                        borderWidth: '1px'
+                        borderColor: primaryColor,
+                        borderWidth: '2px'
                     },
                     '&.MuiInputBase-multiline': {
                         padding: 1
@@ -188,7 +195,8 @@ export default function componentStyleOverrides(theme) {
                 },
                 input: {
                     fontWeight: 500,
-                    background: theme?.customization?.isDarkMode ? theme.colors?.darkPrimary800 : bgColor,
+                    background: theme?.customization?.isDarkMode ? '#232627' : '#fff',
+                    color: textPrimary,
                     padding: '15.5px 14px',
                     borderRadius: '8px',
                     '&.MuiInputBase-inputSizeSmall': {
@@ -196,6 +204,14 @@ export default function componentStyleOverrides(theme) {
                         '&.MuiInputBase-inputAdornedStart': {
                             paddingLeft: 0
                         }
+                    },
+                    '&::placeholder': {
+                        color: textSecondary,
+                        opacity: 1
+                    },
+                    '&.Mui-disabled': {
+                        WebkitTextFillColor: theme?.customization?.isDarkMode ? '#aaa' : '#888',
+                        opacity: 1
                     }
                 },
                 inputAdornedStart: {

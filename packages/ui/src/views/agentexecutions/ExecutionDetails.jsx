@@ -290,6 +290,39 @@ const MIN_DRAWER_WIDTH = 400
 const DEFAULT_DRAWER_WIDTH = window.innerWidth - 400
 const MAX_DRAWER_WIDTH = window.innerWidth
 
+const GlassyDrawerPaper = styled('div')(({ theme }) => ({
+    background: theme.palette.mode === 'dark' ? 'rgba(30,34,44,0.92)' : 'rgba(255,255,255,0.92)',
+    backdropFilter: 'blur(16px)',
+    borderRadius: '18px 0 0 18px',
+    boxShadow: theme.shadows[24],
+    border: `1px solid ${theme.palette.divider}`,
+    transition: 'background 0.3s',
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column'
+}))
+const GlassySidebar = styled(Box)(({ theme }) => ({
+    background: theme.palette.mode === 'dark' ? 'rgba(40,45,50,0.85)' : 'rgba(245,245,245,0.85)',
+    borderRadius: 14,
+    boxShadow: theme.shadows[2],
+    border: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(2),
+    margin: theme.spacing(1, 0),
+    transition: 'background 0.2s'
+}))
+const ModernChip = styled(Chip)(({ theme }) => ({
+    borderRadius: 999,
+    fontWeight: 600,
+    fontSize: 14,
+    background: theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light,
+    color: theme.palette.getContrastText(theme.palette.primary.main),
+    boxShadow: theme.shadows[1],
+    marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    transition: 'background 0.2s'
+}))
+
 export const ExecutionDetails = ({ open, isPublic, execution, metadata, onClose, onProceedSuccess, onUpdateSharing, onRefresh }) => {
     const [drawerWidth, setDrawerWidth] = useState(Math.min(DEFAULT_DRAWER_WIDTH, MAX_DRAWER_WIDTH))
     const [executionTree, setExecution] = useState([])
@@ -936,14 +969,19 @@ export const ExecutionDetails = ({ open, isPublic, execution, metadata, onClose,
                     flexShrink: 0,
                     '& .MuiDrawer-paper': {
                         width: drawerWidth,
-                        height: '100%'
+                        height: '100%',
+                        padding: 0,
+                        background: 'none',
+                        boxShadow: 'none'
                     }
                 }}
                 open={open}
                 onClose={onClose}
             >
-                {resizeHandle}
-                {contentComponent}
+                <GlassyDrawerPaper>
+                    {resizeHandle}
+                    {contentComponent}
+                </GlassyDrawerPaper>
             </Drawer>
             <ShareExecutionDialog
                 show={showShareDialog}

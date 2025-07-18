@@ -2,7 +2,7 @@ import { memo, useState, useRef, useEffect, useContext } from 'react'
 import { useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { ClickAwayListener, Paper, Popper, Button } from '@mui/material'
+import { ClickAwayListener, Paper, Popper, Button, IconButton } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { IconMessage, IconX, IconEraser, IconArrowsMaximize } from '@tabler/icons-react'
 
@@ -12,6 +12,7 @@ import MainCard from '@/ui-component/cards/MainCard'
 import Transitions from '@/ui-component/extended/Transitions'
 import ChatMessage from './ChatMessage'
 import ChatExpandDialog from './ChatExpandDialog'
+import { styled } from '@mui/material/styles'
 
 // api
 import chatmessageApi from '@/api/chatmessage'
@@ -26,6 +27,45 @@ import { enqueueSnackbar as enqueueSnackbarAction, closeSnackbar as closeSnackba
 
 // Utils
 import { getLocalStorageChatflow, removeLocalStorageChatHistory } from '@/utils/genericHelper'
+
+// Gradient header for popup
+const GradientHeader = styled('div')(({ theme }) => ({
+    width: '100%',
+    padding: '18px 28px 10px 28px',
+    background: 'linear-gradient(135deg, #4f8cff 0%, #7b2ff2 50%, #f357a8 100%)',
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14
+}))
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+    borderRadius: 14,
+    background: theme.palette.background.paper,
+    boxShadow: '0 8px 32px 0 rgba(0,0,0,0.18)',
+    minWidth: 400,
+    maxWidth: 520
+}))
+
+const ScrollableMainCard = styled(MainCard)(({ theme }) => ({
+    borderRadius: 0,
+    background: 'transparent',
+    maxHeight: '60vh',
+    overflowY: 'auto',
+    // Custom scrollbar
+    '&::-webkit-scrollbar': {
+        width: 8
+    },
+    '&::-webkit-scrollbar-thumb': {
+        background: theme.palette.mode === 'dark' ? '#444' : '#ccc',
+        borderRadius: 4
+    },
+    '&::-webkit-scrollbar-track': {
+        background: 'transparent'
+    }
+}))
 
 const ChatPopUp = ({ chatflowid, isAgentCanvas, onOpenChange }) => {
     const theme = useTheme()
@@ -199,15 +239,20 @@ const ChatPopUp = ({ chatflowid, isAgentCanvas, onOpenChange }) => {
             >
                 {({ TransitionProps }) => (
                     <Transitions in={open} {...TransitionProps}>
-                        <Paper>
+                        <StyledPaper>
+                            <GradientHeader>
+                                <span style={{ fontWeight: 700, fontSize: 18, letterSpacing: 0.5 }}>Chat</span>
+                                <IconButton onClick={handleToggle} size='small' sx={{ color: '#fff' }}>
+                                    <IconX size={22} />
+                                </IconButton>
+                            </GradientHeader>
                             <ClickAwayListener onClickAway={handleClose}>
-                                <MainCard
+                                <ScrollableMainCard
                                     border={false}
                                     className='cloud-wrapper'
-                                    elevation={16}
+                                    elevation={0}
                                     content={false}
-                                    boxShadow
-                                    shadow={theme.shadows[16]}
+                                    boxShadow={false}
                                 >
                                     <ChatMessage
                                         isAgentCanvas={isAgentCanvas}
@@ -216,9 +261,9 @@ const ChatPopUp = ({ chatflowid, isAgentCanvas, onOpenChange }) => {
                                         previews={previews}
                                         setPreviews={setPreviews}
                                     />
-                                </MainCard>
+                                </ScrollableMainCard>
                             </ClickAwayListener>
-                        </Paper>
+                        </StyledPaper>
                     </Transitions>
                 )}
             </Popper>

@@ -36,6 +36,9 @@ import { CodeEditor } from '@/ui-component/editor/CodeEditor'
 
 import predictionApi from '@/api/prediction'
 
+// 1. Import styled from @mui/material/styles
+import { styled } from '@mui/material/styles'
+
 export const NodeExecutionDetails = ({ data, label, status, metadata, isPublic, onProceedSuccess }) => {
     const [dataView, setDataView] = useState('rendered')
     const [openFeedbackDialog, setOpenFeedbackDialog] = useState(false)
@@ -46,6 +49,40 @@ export const NodeExecutionDetails = ({ data, label, status, metadata, isPublic, 
     const customization = useSelector((state) => state.customization)
     const theme = useTheme()
     const { enqueueSnackbar } = useSnackbar()
+
+    // 2. Add styled components for glassy header, cards, and toggle buttons
+    const GlassyHeader = styled(Box)(({ theme }) => ({
+        background: theme.palette.mode === 'dark' ? 'rgba(30,34,44,0.92)' : 'rgba(255,255,255,0.92)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: 14,
+        boxShadow: theme.shadows[2],
+        border: `1px solid ${theme.palette.divider}`,
+        padding: theme.spacing(2),
+        marginBottom: theme.spacing(2),
+        display: 'flex',
+        alignItems: 'center',
+        gap: theme.spacing(2)
+    }))
+    const PillToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+        borderRadius: 999,
+        background: theme.palette.background.paper,
+        boxShadow: theme.shadows[1],
+        '& .MuiToggleButtonGroup-grouped': {
+            borderRadius: 999,
+            margin: theme.spacing(0.5),
+            fontWeight: 600,
+            fontSize: 15,
+            transition: 'background 0.2s, color 0.2s'
+        }
+    }))
+    const GlassyCard = styled(Card)(({ theme }) => ({
+        background: theme.palette.mode === 'dark' ? 'rgba(40,45,50,0.85)' : 'rgba(245,245,245,0.85)',
+        borderRadius: 14,
+        boxShadow: theme.shadows[2],
+        border: `1px solid ${theme.palette.divider}`,
+        marginBottom: theme.spacing(2),
+        transition: 'background 0.2s'
+    }))
 
     // Function to get role-based colors
     const getRoleColors = (role) => {
@@ -221,13 +258,8 @@ export const NodeExecutionDetails = ({ data, label, status, metadata, isPublic, 
 
     return (
         <Box sx={{ position: 'relative' }}>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                }}
-            >
+            {/* 3. Use GlassyHeader for the header, PillToggleButtonGroup for toggle buttons, and GlassyCard for cards/accordions */}
+            <GlassyHeader>
                 <Box item style={{ width: 50 }}>
                     {(() => {
                         const nodeName = data?.name || data?.id?.split('_')[0]
@@ -296,41 +328,39 @@ export const NodeExecutionDetails = ({ data, label, status, metadata, isPublic, 
                         sx={{ ml: 1, '& .MuiChip-icon': { mr: 0.2, ml: 1 } }}
                     />
                 )}
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
-                <ToggleButtonGroup
-                    sx={{ borderRadius: 2, maxHeight: 40 }}
-                    value={dataView}
-                    color='primary'
-                    exclusive
-                    onChange={handleDataViewChange}
+            </GlassyHeader>
+            <PillToggleButtonGroup
+                sx={{ borderRadius: 2, maxHeight: 40 }}
+                value={dataView}
+                color='primary'
+                exclusive
+                onChange={handleDataViewChange}
+            >
+                <ToggleButton
+                    sx={{
+                        borderColor: theme.palette.grey[900] + 25,
+                        borderRadius: 2,
+                        color: theme?.customization?.isDarkMode ? 'white' : 'inherit'
+                    }}
+                    variant='contained'
+                    value='rendered'
+                    title='Rendered'
                 >
-                    <ToggleButton
-                        sx={{
-                            borderColor: theme.palette.grey[900] + 25,
-                            borderRadius: 2,
-                            color: theme?.customization?.isDarkMode ? 'white' : 'inherit'
-                        }}
-                        variant='contained'
-                        value='rendered'
-                        title='Rendered'
-                    >
-                        Rendered
-                    </ToggleButton>
-                    <ToggleButton
-                        sx={{
-                            borderColor: theme.palette.grey[900] + 25,
-                            borderRadius: 2,
-                            color: theme?.customization?.isDarkMode ? 'white' : 'inherit'
-                        }}
-                        variant='contained'
-                        value='raw'
-                        title='Raw'
-                    >
-                        Raw
-                    </ToggleButton>
-                </ToggleButtonGroup>
-            </Box>
+                    Rendered
+                </ToggleButton>
+                <ToggleButton
+                    sx={{
+                        borderColor: theme.palette.grey[900] + 25,
+                        borderRadius: 2,
+                        color: theme?.customization?.isDarkMode ? 'white' : 'inherit'
+                    }}
+                    variant='contained'
+                    value='raw'
+                    title='Raw'
+                >
+                    Raw
+                </ToggleButton>
+            </PillToggleButtonGroup>
 
             {dataView === 'rendered' && (
                 <Box>

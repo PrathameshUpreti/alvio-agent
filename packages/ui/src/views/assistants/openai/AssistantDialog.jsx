@@ -18,7 +18,8 @@ import {
     DialogContent,
     DialogTitle,
     Stack,
-    OutlinedInput
+    OutlinedInput,
+    styled
 } from '@mui/material'
 
 import { StyledButton } from '@/ui-component/button/StyledButton'
@@ -115,6 +116,30 @@ const assistantAvailableModels = [
         name: 'gpt-3.5-turbo-16k-0613'
     }
 ]
+
+// Glassmorphism dialog and input styles
+const GlassDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialog-paper': {
+        background: theme.palette.background.paper,
+        borderRadius: 18,
+        boxShadow: theme.shadows[24],
+        border: `1.5px solid ${theme.palette.mode === 'dark' ? '#35373b' : '#e0e0e0'}`,
+        padding: 0
+    }
+}))
+const GlassInput = styled(OutlinedInput)(({ theme }) => ({
+    background: theme.palette.mode === 'dark' ? '#23272f' : '#f8fafc',
+    color: theme.palette.mode === 'dark' ? '#fff' : '#23272f',
+    border: `1.5px solid ${theme.palette.mode === 'dark' ? '#35373b' : '#e0e0e0'}`,
+    borderRadius: 12,
+    padding: 18,
+    fontSize: 18,
+    marginBottom: 24,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+    '::placeholder': {
+        color: theme.palette.mode === 'dark' ? '#b0b3b8' : '#888'
+    }
+}))
 
 const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) => {
     const portalElement = document.getElementById('portal')
@@ -684,7 +709,7 @@ const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) =
     }
 
     const component = show ? (
-        <Dialog
+        <GlassDialog
             fullWidth
             maxWidth='md'
             open={show}
@@ -739,7 +764,7 @@ const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) =
                             <Typography variant='overline'>Assistant Name</Typography>
                             <TooltipWithParser title={'The name of the assistant. The maximum length is 256 characters.'} />
                         </Stack>
-                        <OutlinedInput
+                        <GlassInput
                             id='assistantName'
                             type='string'
                             size='small'
@@ -755,7 +780,7 @@ const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) =
                             <Typography variant='overline'>Assistant Description</Typography>
                             <TooltipWithParser title={'The description of the assistant. The maximum length is 512 characters.'} />
                         </Stack>
-                        <OutlinedInput
+                        <GlassInput
                             id='assistantDesc'
                             type='string'
                             size='small'
@@ -792,7 +817,7 @@ const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) =
                                 src={assistantIcon}
                             />
                         </div>
-                        <OutlinedInput
+                        <GlassInput
                             id='assistantIcon'
                             type='string'
                             size='small'
@@ -810,7 +835,7 @@ const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) =
                                 title={'The system instructions that the assistant uses. The maximum length is 32768 characters.'}
                             />
                         </Stack>
-                        <OutlinedInput
+                        <GlassInput
                             id='assistantInstructions'
                             type='string'
                             size='small'
@@ -832,7 +857,7 @@ const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) =
                                 }
                             />
                         </Stack>
-                        <OutlinedInput
+                        <GlassInput
                             id='assistantTemp'
                             type='number'
                             size='small'
@@ -851,7 +876,7 @@ const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) =
                                 }
                             />
                         </Stack>
-                        <OutlinedInput
+                        <GlassInput
                             id='assistantTopP'
                             type='number'
                             fullWidth
@@ -1089,7 +1114,7 @@ const AssistantDialog = ({ show, dialogProps, onCancel, onConfirm, setError }) =
                 setError={setError}
             />
             {loading && <BackdropLoader open={loading} />}
-        </Dialog>
+        </GlassDialog>
     ) : null
 
     return createPortal(component, portalElement)

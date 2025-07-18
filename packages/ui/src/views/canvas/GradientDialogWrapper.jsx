@@ -5,7 +5,14 @@ import { createPortal } from 'react-dom'
 import { Box } from '@mui/material'
 
 // Custom styles
-import { GradientDialog, GradientDialogTitle, GradientDialogContent, GradientOverlay, PinkBall, OrangeBall } from './DialogStyles'
+import {
+    ModernDialog as GradientDialog,
+    ModernDialogTitle as GradientDialogTitle,
+    ModernDialogContent as GradientDialogContent,
+    ModernOverlay as GradientOverlay,
+    ModernPinkBall as PinkBall,
+    ModernOrangeBall as OrangeBall
+} from './DialogStyles'
 
 /**
  * A wrapper component that applies gradient styling to dialogs

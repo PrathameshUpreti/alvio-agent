@@ -13,6 +13,7 @@ import useApi from '@/hooks/useApi'
 import { Box, Card, Stack, Typography, useTheme } from '@mui/material'
 import { IconCircleXFilled } from '@tabler/icons-react'
 import { alpha } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 // ==============================|| PublicExecutionDetails ||============================== //
 
@@ -46,6 +47,16 @@ const PublicExecutionDetails = () => {
         setLoading(getExecutionByIdPublicApi.loading)
     }, [getExecutionByIdPublicApi.loading])
 
+    const GlassyErrorCard = styled(Card)(({ theme }) => ({
+        background: theme.palette.mode === 'dark' ? 'rgba(44,0,0,0.92)' : 'rgba(255,230,230,0.92)',
+        backdropFilter: 'blur(10px)',
+        borderRadius: 18,
+        boxShadow: theme.shadows[24],
+        border: `1px solid ${theme.palette.error.main}`,
+        padding: '20px',
+        transition: 'background 0.3s'
+    }))
+
     return (
         <>
             {!isLoading ? (
@@ -53,7 +64,7 @@ const PublicExecutionDetails = () => {
                     {!execution || getExecutionByIdPublicApi.error ? (
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
                             <Box sx={{ maxWidth: '500px', width: '100%' }}>
-                                <Card
+                                <GlassyErrorCard
                                     variant='outlined'
                                     sx={{
                                         border: `1px solid ${theme.palette.error.main}`,
@@ -71,7 +82,7 @@ const PublicExecutionDetails = () => {
                                             {`The execution you're looking for doesn't exist or you don't have permission to view it.`}
                                         </Typography>
                                     </Stack>
-                                </Card>
+                                </GlassyErrorCard>
                             </Box>
                         </Box>
                     ) : (

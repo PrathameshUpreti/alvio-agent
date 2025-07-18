@@ -46,6 +46,37 @@ const StyledNodeToolbar = styled(NodeToolbar)(({ theme }) => ({
     boxShadow: '0 2px 14px 0 rgb(32 40 45 / 8%)'
 }))
 
+const GlassNodeCard = styled('div')(({ theme, selected }) => ({
+    background: theme.palette.background.paper,
+    borderRadius: 24,
+    border: selected ? `2.5px solid ${theme.palette.primary.main}` : `1.5px solid ${theme.palette.divider}`,
+    boxShadow: selected
+        ? '0 0 0 4px ' + theme.palette.primary.main + ', 0 8px 32px 0 rgba(141,54,249,0.18)'
+        : '0 4px 24px 0 rgba(141,54,249,0.10)',
+    transition: 'box-shadow 0.3s, border-color 0.3s, transform 0.18s',
+    minWidth: 220,
+    minHeight: 80,
+    padding: 18,
+    display: 'flex',
+    alignItems: 'center',
+    position: 'relative',
+    animation: 'fadeInScale 0.4s cubic-bezier(.4,2,.6,1)'
+}))
+
+const GlassAvatar = styled('div')(({ theme, islight }) => ({
+    width: 56,
+    height: 56,
+    borderRadius: '50%',
+    background: theme.palette.background.default,
+    border: `2.5px solid ${theme.palette.primary.light}`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 2px 12px rgba(141,54,249,0.10)',
+    marginRight: theme.spacing(2),
+    transition: 'background 0.2s'
+}))
+
 // ===========================|| CANVAS NODE ||=========================== //
 
 const AgentFlowNode = ({ data }) => {
@@ -118,9 +149,16 @@ const AgentFlowNode = ({ data }) => {
 
     const renderIcon = (node) => {
         const foundIcon = AGENTFLOW_ICONS.find((icon) => icon.name === node.name)
-
         if (!foundIcon) return null
-        return <foundIcon.icon size={24} color={'white'} />
+        // Use accent color in light mode, white in dark mode
+        const iconColor = theme.palette.mode === 'dark' ? '#fff' : foundIcon.color || theme.palette.primary.dark
+        return (
+            <foundIcon.icon
+                size={28}
+                color={iconColor}
+                style={{ filter: theme.palette.mode === 'dark' ? '' : 'drop-shadow(0 1px 2px rgba(0,0,0,0.10))' }}
+            />
+        )
     }
 
     useEffect(() => {
@@ -186,23 +224,7 @@ const AgentFlowNode = ({ data }) => {
                     </IconButton>
                 </ButtonGroup>
             </StyledNodeToolbar>
-            <CardWrapper
-                content={false}
-                sx={{
-                    borderColor: getStateColor(),
-                    borderWidth: '1px',
-                    boxShadow: data.selected ? `0 0 0 1px ${getStateColor()} !important` : 'none',
-                    minHeight: getMinimumHeight(),
-                    height: 'auto',
-                    backgroundColor: getBackgroundColor(),
-                    display: 'flex',
-                    alignItems: 'center',
-                    '&:hover': {
-                        boxShadow: data.selected ? `0 0 0 1px ${getStateColor()} !important` : 'none'
-                    }
-                }}
-                border={false}
-            >
+            <GlassNodeCard selected={data.selected}>
                 {data && data.status && (
                     <Tooltip title={data.status === 'ERROR' ? data.error || 'Error' : ''}>
                         <Avatar
@@ -218,7 +240,8 @@ const AgentFlowNode = ({ data }) => {
                                 ml: 2,
                                 position: 'absolute',
                                 top: -10,
-                                right: -10
+                                right: -10,
+                                boxShadow: '0 2px 8px rgba(141,54,249,0.10)'
                             }}
                         >
                             {data.status === 'INPROGRESS' ? (
@@ -235,7 +258,6 @@ const AgentFlowNode = ({ data }) => {
                         </Avatar>
                     </Tooltip>
                 )}
-
                 <Box sx={{ width: '100%' }}>
                     {!data.hideInput && (
                         <Handle
@@ -266,48 +288,25 @@ const AgentFlowNode = ({ data }) => {
                     )}
 
                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                        <Box item style={{ width: 50 }}>
+                        <GlassAvatar islight={theme.palette.mode === 'light'}>
                             {data.color && !data.icon ? (
-                                <div
-                                    style={{
-                                        ...theme.typography.commonAvatar,
-                                        ...theme.typography.largeAvatar,
-                                        borderRadius: '15px',
-                                        backgroundColor: data.color,
-                                        cursor: 'grab',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        background: data.color
-                                    }}
-                                >
-                                    {renderIcon(data)}
-                                </div>
+                                renderIcon(data)
                             ) : (
-                                <div
+                                <img
                                     style={{
-                                        ...theme.typography.commonAvatar,
-                                        ...theme.typography.largeAvatar,
+                                        width: 36,
+                                        height: 36,
+                                        objectFit: 'contain',
                                         borderRadius: '50%',
-                                        backgroundColor: 'white',
-                                        cursor: 'grab'
+                                        filter: theme.palette.mode === 'dark' ? '' : 'drop-shadow(0 1px 2px rgba(0,0,0,0.10))'
                                     }}
-                                >
-                                    <img
-                                        style={{ width: '100%', height: '100%', padding: 5, objectFit: 'contain' }}
-                                        src={`${baseURL}/api/v1/node-icon/${data.name}`}
-                                        alt={data.name}
-                                    />
-                                </div>
+                                    src={`${baseURL}/api/v1/node-icon/${data.name}`}
+                                    alt={data.name}
+                                />
                             )}
-                        </Box>
+                        </GlassAvatar>
                         <Box>
-                            <Typography
-                                sx={{
-                                    fontSize: '0.85rem',
-                                    fontWeight: 500
-                                }}
-                            >
+                            <Typography sx={{ fontWeight: 800, fontSize: '1.12rem', color: theme.palette.text.primary }}>
                                 {data.label}
                             </Typography>
 
@@ -471,7 +470,7 @@ const AgentFlowNode = ({ data }) => {
                         )
                     })}
                 </Box>
-            </CardWrapper>
+            </GlassNodeCard>
             <NodeInfoDialog show={showInfoDialog} dialogProps={infoDialogProps} onCancel={() => setShowInfoDialog(false)}></NodeInfoDialog>
         </div>
     )

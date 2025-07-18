@@ -12,28 +12,17 @@ import {
     ClickAwayListener,
     Divider,
     InputAdornment,
-    List,
-    ListItemButton,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
     OutlinedInput,
-    Paper,
     Popper,
-    Stack,
-    Typography,
-    Chip,
-    Tab,
-    Tabs
+    Typography
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { styled } from '@mui/material/styles'
+import Fade from '@mui/material/Fade'
 
 // third-party
-import PerfectScrollbar from 'react-perfect-scrollbar'
 
 // project imports
-import MainCard from '@/ui-component/cards/MainCard'
-import Transitions from '@/ui-component/extended/Transitions'
 import { StyledFab } from '@/ui-component/button/StyledFab'
 import AgentflowGeneratorDialog from '@/ui-component/dialog/AgentflowGeneratorDialog'
 
@@ -44,8 +33,82 @@ import LangChainPNG from '@/assets/images/langchain.png'
 import utilNodesPNG from '@/assets/images/utilNodes.png'
 
 // const
-import { baseURL, AGENTFLOW_ICONS } from '@/store/constant'
+import { AGENTFLOW_ICONS } from '@/store/constant'
 import { SET_COMPONENT_NODES } from '@/store/actions'
+
+// Remove GlassPanel, GlassAccordion, GlassAccordionSummary, GlassListItemButton, GlassAvatar, GlassSearch, GlassTabs styles and replace with new styles for a clean dark mode look
+
+const PanelBox = styled(Box)(({ theme }) => ({
+    background: theme.palette.background.paper,
+    borderRadius: 16,
+    padding: '24px 20px',
+    color: theme.palette.mode === 'dark' ? '#fff' : '#23272f',
+    width: 350,
+    boxShadow: theme.palette.mode === 'dark' ? '0 4px 32px rgba(0,0,0,0.25)' : '0 4px 32px rgba(141,54,249,0.10)'
+}))
+
+const SearchBar = styled(OutlinedInput)(({ theme }) => ({
+    borderRadius: 10,
+    background: theme.palette.mode === 'dark' ? '#181b20' : '#fff',
+    color: theme.palette.mode === 'dark' ? '#fff' : '#23272f',
+    border: `1.5px solid ${theme.palette.primary.main}`,
+    fontWeight: 500,
+    paddingLeft: 12,
+    paddingRight: 12,
+    marginBottom: 18,
+    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+    '& input': {
+        color: theme.palette.mode === 'dark' ? '#fff' : '#23272f',
+        '::placeholder': { color: theme.palette.mode === 'dark' ? '#b0b3b8' : '#888' }
+    }
+}))
+
+const SectionHeader = styled(Typography)(({ theme }) => ({
+    fontWeight: 700,
+    fontSize: '1.1rem',
+    color: theme.palette.mode === 'dark' ? '#f3f4f6' : '#23272f',
+    marginBottom: 8,
+    marginTop: 18
+}))
+
+const DividerLine = styled(Divider)(({ theme }) => ({
+    borderBottom: `1px solid ${theme.palette.mode === 'dark' ? '#35373b' : '#e0e0e0'}`,
+    margin: '16px 0'
+}))
+
+const NodeListItem = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 14,
+    padding: '14px 0',
+    borderBottom: `1px solid ${theme.palette.mode === 'dark' ? '#35373b' : '#e0e0e0'}`,
+    cursor: 'pointer',
+    transition: 'background 0.15s',
+    '&:last-child': { borderBottom: 'none' },
+    '&:hover': {
+        background: theme.palette.mode === 'dark' ? '#262a31' : '#f0f0f0'
+    }
+}))
+
+const NodeIcon = styled('span')(({ theme }) => ({
+    fontSize: '1.7rem',
+    marginTop: 2,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+}))
+
+const NodeTitle = styled('div')(({ theme }) => ({
+    fontWeight: 600,
+    color: theme.palette.mode === 'dark' ? '#fff' : '#23272f',
+    fontSize: '1rem'
+}))
+
+const NodeDesc = styled('div')(({ theme }) => ({
+    color: theme.palette.mode === 'dark' ? '#b0b3b8' : '#555',
+    fontSize: '0.95rem',
+    marginTop: 2
+}))
 
 // ==============================|| ADD NODES||============================== //
 function a11yProps(index) {
@@ -378,287 +441,88 @@ const AddNodes = ({ nodesData, node, isAgentCanvas, isAgentflowv2, onFlowGenerat
                 sx={{ zIndex: 1000 }}
             >
                 {({ TransitionProps }) => (
-                    <Transitions in={open} {...TransitionProps}>
-                        <Paper>
+                    <Fade {...TransitionProps} timeout={220}>
+                        <PanelBox>
                             <ClickAwayListener onClickAway={handleClose}>
-                                <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
-                                    <Box sx={{ p: 2 }}>
-                                        <Stack>
-                                            <Typography variant='h4'>Add Nodes</Typography>
-                                        </Stack>
-                                        <OutlinedInput
-                                            // eslint-disable-next-line
-                                            autoFocus
-                                            sx={{ width: '100%', pr: 2, pl: 2, my: 2 }}
-                                            id='input-search-node'
-                                            value={searchValue}
-                                            onChange={(e) => filterSearch(e.target.value)}
-                                            placeholder='Search nodes'
-                                            startAdornment={
-                                                <InputAdornment position='start'>
-                                                    <IconSearch stroke={1.5} size='1rem' color={theme.palette.grey[500]} />
-                                                </InputAdornment>
-                                            }
-                                            endAdornment={
-                                                <InputAdornment
-                                                    position='end'
-                                                    sx={{
-                                                        cursor: 'pointer',
-                                                        color: theme.palette.grey[500],
-                                                        '&:hover': {
-                                                            color: theme.palette.grey[900]
-                                                        }
-                                                    }}
-                                                    title='Clear Search'
-                                                >
-                                                    <IconX
-                                                        stroke={1.5}
-                                                        size='1rem'
-                                                        onClick={() => filterSearch('')}
-                                                        style={{
-                                                            cursor: 'pointer'
-                                                        }}
-                                                    />
-                                                </InputAdornment>
-                                            }
-                                            aria-describedby='search-helper-text'
-                                            inputProps={{
-                                                'aria-label': 'weight'
-                                            }}
-                                        />
-                                        {!isAgentCanvas && (
-                                            <Tabs
-                                                sx={{ position: 'relative', minHeight: '50px', height: '50px' }}
-                                                variant='fullWidth'
-                                                value={tabValue}
-                                                onChange={handleTabChange}
-                                                aria-label='tabs'
-                                            >
-                                                {['LangChain', 'LlamaIndex', 'Utilities'].map((item, index) => (
-                                                    <Tab
-                                                        icon={
-                                                            <div
-                                                                style={{
-                                                                    borderRadius: '50%'
-                                                                }}
-                                                            >
-                                                                <img
-                                                                    style={{
-                                                                        width: '20px',
-                                                                        height: '20px',
-                                                                        borderRadius: '50%',
-                                                                        objectFit: 'contain'
-                                                                    }}
-                                                                    src={getImage(index)}
-                                                                    alt={item}
-                                                                />
-                                                            </div>
-                                                        }
-                                                        iconPosition='start'
-                                                        sx={{ minHeight: '50px', height: '50px' }}
-                                                        key={index}
-                                                        label={item}
-                                                        {...a11yProps(index)}
-                                                    ></Tab>
-                                                ))}
-                                            </Tabs>
-                                        )}
-
-                                        <Divider />
-                                    </Box>
-                                    <PerfectScrollbar
-                                        containerRef={(el) => {
-                                            ps.current = el
-                                        }}
-                                        style={{
-                                            height: '100%',
-                                            maxHeight: `calc(100vh - ${isAgentCanvas ? '300' : '380'}px)`,
-                                            overflowX: 'hidden'
-                                        }}
-                                    >
-                                        <Box sx={{ p: 2, pt: 0 }}>
-                                            <List
+                                <Box>
+                                    <Typography variant='h5' sx={{ fontWeight: 800, mb: 2 }}>
+                                        Add Nodes
+                                    </Typography>
+                                    <SearchBar
+                                        fullWidth
+                                        id='input-search-node'
+                                        value={searchValue}
+                                        onChange={(e) => filterSearch(e.target.value)}
+                                        placeholder='Search nodes'
+                                        startAdornment={
+                                            <InputAdornment position='start'>
+                                                <IconSearch stroke={1.5} size='1rem' color={theme.palette.grey[500]} />
+                                            </InputAdornment>
+                                        }
+                                        endAdornment={
+                                            <InputAdornment
+                                                position='end'
                                                 sx={{
-                                                    width: '100%',
-                                                    maxWidth: 370,
-                                                    py: 0,
-                                                    borderRadius: '10px',
-                                                    [theme.breakpoints.down('md')]: {
-                                                        maxWidth: 370
-                                                    },
-                                                    '& .MuiListItemSecondaryAction-root': {
-                                                        top: 22
-                                                    },
-                                                    '& .MuiDivider-root': {
-                                                        my: 0
-                                                    },
-                                                    '& .list-container': {
-                                                        pl: 7
-                                                    }
+                                                    cursor: 'pointer',
+                                                    color: theme.palette.grey[500],
+                                                    '&:hover': { color: theme.palette.grey[900] }
                                                 }}
+                                                title='Clear Search'
                                             >
-                                                {Object.keys(nodes)
-                                                    .sort()
-                                                    .map((category) => (
-                                                        <Accordion
-                                                            expanded={categoryExpanded[category] || false}
-                                                            onChange={handleAccordionChange(category)}
-                                                            key={category}
-                                                            disableGutters
-                                                        >
-                                                            <AccordionSummary
-                                                                expandIcon={<ExpandMoreIcon />}
-                                                                aria-controls={`nodes-accordian-${category}`}
-                                                                id={`nodes-accordian-header-${category}`}
+                                                <IconX
+                                                    stroke={1.5}
+                                                    size='1rem'
+                                                    onClick={() => filterSearch('')}
+                                                    style={{ cursor: 'pointer' }}
+                                                />
+                                            </InputAdornment>
+                                        }
+                                        aria-describedby='search-helper-text'
+                                        inputProps={{ 'aria-label': 'search nodes' }}
+                                    />
+                                    <DividerLine />
+                                    <Box sx={{ maxHeight: '55vh', overflowY: 'auto', pr: 1 }}>
+                                        {Object.keys(nodes)
+                                            .sort()
+                                            .map((category) => (
+                                                <Accordion
+                                                    key={category}
+                                                    expanded={!!categoryExpanded[category]}
+                                                    onChange={handleAccordionChange(category)}
+                                                    sx={{
+                                                        background: (theme) => theme.palette.background.paper,
+                                                        borderRadius: 2,
+                                                        boxShadow: 'none',
+                                                        mb: 1,
+                                                        '&:before': { display: 'none' },
+                                                        border: `1px solid ${(theme) => theme.palette.divider}`
+                                                    }}
+                                                >
+                                                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                                        <SectionHeader>{category}</SectionHeader>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails sx={{ p: 0 }}>
+                                                        {nodes[category].map((node) => (
+                                                            <NodeListItem
+                                                                key={node.name}
+                                                                onDragStart={(event) => onDragStart(event, node)}
+                                                                draggable
                                                             >
-                                                                {category.split(';').length > 1 ? (
-                                                                    <div
-                                                                        style={{
-                                                                            display: 'flex',
-                                                                            flexDirection: 'row',
-                                                                            alignItems: 'center'
-                                                                        }}
-                                                                    >
-                                                                        <Typography variant='h5'>{category.split(';')[0]}</Typography>
-                                                                        &nbsp;
-                                                                        <Chip
-                                                                            sx={{
-                                                                                width: 'max-content',
-                                                                                fontWeight: 700,
-                                                                                fontSize: '0.65rem',
-                                                                                background:
-                                                                                    category.split(';')[1] === 'DEPRECATING'
-                                                                                        ? theme.palette.warning.main
-                                                                                        : theme.palette.teal.main,
-                                                                                color:
-                                                                                    category.split(';')[1] !== 'DEPRECATING'
-                                                                                        ? 'white'
-                                                                                        : 'inherit'
-                                                                            }}
-                                                                            size='small'
-                                                                            label={category.split(';')[1]}
-                                                                        />
-                                                                    </div>
-                                                                ) : (
-                                                                    <Typography variant='h5'>{category}</Typography>
-                                                                )}
-                                                            </AccordionSummary>
-                                                            <AccordionDetails>
-                                                                {nodes[category].map((node, index) => (
-                                                                    <div
-                                                                        key={node.name}
-                                                                        onDragStart={(event) => onDragStart(event, node)}
-                                                                        draggable
-                                                                    >
-                                                                        <ListItemButton
-                                                                            sx={{
-                                                                                p: 0,
-                                                                                borderRadius: `${customization.borderRadius}px`,
-                                                                                cursor: 'move'
-                                                                            }}
-                                                                        >
-                                                                            <ListItem alignItems='center'>
-                                                                                {node.color && !node.icon ? (
-                                                                                    <ListItemAvatar>
-                                                                                        <div
-                                                                                            style={{
-                                                                                                width: 50,
-                                                                                                height: 'auto',
-                                                                                                display: 'flex',
-                                                                                                alignItems: 'center',
-                                                                                                justifyContent: 'center'
-                                                                                            }}
-                                                                                        >
-                                                                                            {renderIcon(node)}
-                                                                                        </div>
-                                                                                    </ListItemAvatar>
-                                                                                ) : (
-                                                                                    <ListItemAvatar>
-                                                                                        <div
-                                                                                            style={{
-                                                                                                width: 50,
-                                                                                                height: 50,
-                                                                                                borderRadius: '50%',
-                                                                                                backgroundColor: 'white'
-                                                                                            }}
-                                                                                        >
-                                                                                            <img
-                                                                                                style={{
-                                                                                                    width: '100%',
-                                                                                                    height: '100%',
-                                                                                                    padding: 10,
-                                                                                                    objectFit: 'contain'
-                                                                                                }}
-                                                                                                alt={node.name}
-                                                                                                src={`${baseURL}/api/v1/node-icon/${node.name}`}
-                                                                                            />
-                                                                                        </div>
-                                                                                    </ListItemAvatar>
-                                                                                )}
-                                                                                <ListItemText
-                                                                                    sx={{ ml: 1 }}
-                                                                                    primary={
-                                                                                        <>
-                                                                                            <div
-                                                                                                style={{
-                                                                                                    display: 'flex',
-                                                                                                    flexDirection: 'row',
-                                                                                                    alignItems: 'center'
-                                                                                                }}
-                                                                                            >
-                                                                                                <span>{node.label}</span>
-                                                                                                &nbsp;
-                                                                                                {node.badge && (
-                                                                                                    <Chip
-                                                                                                        sx={{
-                                                                                                            width: 'max-content',
-                                                                                                            fontWeight: 700,
-                                                                                                            fontSize: '0.65rem',
-                                                                                                            background:
-                                                                                                                node.badge === 'DEPRECATING'
-                                                                                                                    ? theme.palette.warning
-                                                                                                                          .main
-                                                                                                                    : theme.palette.teal
-                                                                                                                          .main,
-                                                                                                            color:
-                                                                                                                node.badge !== 'DEPRECATING'
-                                                                                                                    ? 'white'
-                                                                                                                    : 'inherit'
-                                                                                                        }}
-                                                                                                        size='small'
-                                                                                                        label={node.badge}
-                                                                                                    />
-                                                                                                )}
-                                                                                            </div>
-                                                                                            {node.author && (
-                                                                                                <span
-                                                                                                    style={{
-                                                                                                        fontSize: '0.65rem',
-                                                                                                        fontWeight: 700
-                                                                                                    }}
-                                                                                                >
-                                                                                                    By {node.author}
-                                                                                                </span>
-                                                                                            )}
-                                                                                        </>
-                                                                                    }
-                                                                                    secondary={node.description}
-                                                                                />
-                                                                            </ListItem>
-                                                                        </ListItemButton>
-                                                                        {index === nodes[category].length - 1 ? null : <Divider />}
-                                                                    </div>
-                                                                ))}
-                                                            </AccordionDetails>
-                                                        </Accordion>
-                                                    ))}
-                                            </List>
-                                        </Box>
-                                    </PerfectScrollbar>
-                                </MainCard>
+                                                                <NodeIcon style={{ color: node.color }}>{renderIcon(node)}</NodeIcon>
+                                                                <div>
+                                                                    <NodeTitle>{node.label}</NodeTitle>
+                                                                    <NodeDesc>{node.description}</NodeDesc>
+                                                                </div>
+                                                            </NodeListItem>
+                                                        ))}
+                                                    </AccordionDetails>
+                                                </Accordion>
+                                            ))}
+                                    </Box>
+                                </Box>
                             </ClickAwayListener>
-                        </Paper>
-                    </Transitions>
+                        </PanelBox>
+                    </Fade>
                 )}
             </Popper>
         </>

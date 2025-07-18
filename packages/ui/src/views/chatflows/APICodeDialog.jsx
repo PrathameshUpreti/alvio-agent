@@ -4,23 +4,10 @@ import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import {
-    Tabs,
-    Tab,
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    Box,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    Typography,
-    Stack,
-    Card
-} from '@mui/material'
+import { Tabs, Tab, Dialog, DialogContent, DialogTitle, Box, Typography, Stack, Card, IconButton, styled } from '@mui/material'
 import { CopyBlock, atomOneDark } from 'react-code-blocks'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useTheme } from '@mui/material/styles'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 
 // Project import
 import { Dropdown } from '@/ui-component/dropdown/Dropdown'
@@ -38,7 +25,7 @@ import cURLSVG from '@/assets/images/cURL.svg'
 import EmbedSVG from '@/assets/images/embed.svg'
 import ShareChatbotSVG from '@/assets/images/sharing.png'
 import settingsSVG from '@/assets/images/settings.svg'
-import { IconBulb, IconBox, IconVariable, IconExclamationCircle } from '@tabler/icons-react'
+import { IconVariable, IconExclamationCircle } from '@tabler/icons-react'
 
 // API
 import apiKeyApi from '@/api/apikey'
@@ -50,6 +37,7 @@ import variablesApi from '@/api/variables'
 import useApi from '@/hooks/useApi'
 import { CheckboxInput } from '@/ui-component/checkbox/Checkbox'
 import { TableViewOnly } from '@/ui-component/table/Table'
+import { useRef } from 'react'
 
 // Helpers
 import { unshiftFiles, getConfigExamplesForJS, getConfigExamplesForPython, getConfigExamplesForCurl } from '@/utils/genericHelper'
@@ -82,6 +70,62 @@ function a11yProps(index) {
     }
 }
 
+const GlassyDialogContent = styled(DialogContent)(({ theme }) => ({
+    background: theme.palette.background.paper,
+    borderRadius: 18,
+    boxShadow: theme.shadows[24],
+    border: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(3)
+}))
+
+const PillTabs = styled(Tabs)(({ theme }) => ({
+    borderRadius: 999,
+    minHeight: 40,
+    background: theme.palette.background.paper,
+    boxShadow: theme.shadows[1],
+    '& .MuiTabs-indicator': {
+        height: 4,
+        borderRadius: 2,
+        background: theme.palette.primary.main
+    }
+}))
+
+const PillTab = styled(Tab)(({ theme }) => ({
+    borderRadius: 999,
+    minHeight: 36,
+    minWidth: 90,
+    fontWeight: 600,
+    color: theme.palette.text.secondary,
+    '&.Mui-selected': {
+        color: theme.palette.primary.main,
+        background: theme.palette.action.selected
+    },
+    transition: 'background 0.2s, color 0.2s'
+}))
+
+const CodeBlockContainer = styled('div')(({ theme }) => ({
+    position: 'relative',
+    borderRadius: 12,
+    background: theme.palette.mode === 'dark' ? '#23272f' : '#f5f7fa',
+    border: `1px solid ${theme.palette.divider}`,
+    margin: '16px 0',
+    boxShadow: theme.shadows[1],
+    overflow: 'auto'
+}))
+
+const CopyButton = styled(IconButton)(({ theme }) => ({
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 2,
+    background: theme.palette.background.paper,
+    borderRadius: 8,
+    boxShadow: theme.shadows[2],
+    '&:hover': {
+        background: theme.palette.primary.light
+    }
+}))
+
 const APICodeDialog = ({ show, dialogProps, onCancel }) => {
     const portalElement = document.getElementById('portal')
     const navigate = useNavigate()
@@ -102,6 +146,8 @@ const APICodeDialog = ({ show, dialogProps, onCancel }) => {
     const [nodeConfigExpanded, setNodeConfigExpanded] = useState({})
     const [nodeOverrides, setNodeOverrides] = useState(apiConfig?.overrideConfig?.nodes ?? null)
     const [variableOverrides, setVariableOverrides] = useState(apiConfig?.overrideConfig?.variables ?? [])
+    const [copySuccess, setCopySuccess] = useState(false)
+    const codeRef = useRef(null)
 
     const getAllAPIKeysApi = useApi(apiKeyApi.getAllAPIKeys)
     const updateChatflowApi = useApi(chatflowsApi.updateChatflow)
@@ -663,46 +709,59 @@ formData.append("openAIApiKey[openAIEmbeddings_0]", "sk-my-openai-2nd-key")`
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show])
 
+    const handleCopy = (text) => {
+        navigator.clipboard.writeText(text)
+        setCopySuccess(true)
+        setTimeout(() => setCopySuccess(false), 1200)
+    }
+
     const component = show ? (
         <Dialog
-            open={show}
             fullWidth
             maxWidth='md'
+            open={show}
             onClose={onCancel}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
+            aria-labelledby='api-code-dialog-title'
+            aria-describedby='api-code-dialog-description'
+            PaperProps={{
+                sx: {
+                    background: (theme) => theme.palette.background.paper,
+                    borderRadius: 4,
+                    boxShadow: 24
+                }
+            }}
         >
             <DialogTitle sx={{ fontSize: '1rem' }} id='alert-dialog-title'>
                 {dialogProps.title}
             </DialogTitle>
-            <DialogContent>
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                    <div style={{ flex: 80 }}>
-                        <Tabs value={value} onChange={handleChange} aria-label='tabs'>
+            <GlassyDialogContent>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', gap: 2 }}>
+                    <Box sx={{ flex: 80 }}>
+                        <PillTabs value={value} onChange={handleChange} aria-label='tabs'>
                             {codes.map((codeLang, index) => (
-                                <Tab
+                                <PillTab
                                     icon={
-                                        <img style={{ objectFit: 'cover', height: 15, width: 'auto' }} src={getSVG(codeLang)} alt='code' />
+                                        <img style={{ objectFit: 'cover', height: 18, width: 'auto' }} src={getSVG(codeLang)} alt='code' />
                                     }
                                     iconPosition='start'
                                     key={index}
                                     label={codeLang}
                                     {...a11yProps(index)}
-                                ></Tab>
+                                />
                             ))}
-                        </Tabs>
-                    </div>
-                    <div style={{ flex: 20 }}>
+                        </PillTabs>
+                    </Box>
+                    <Box sx={{ flex: 20, minWidth: 180 }}>
                         <Dropdown
                             name='SelectKey'
                             disableClearable={true}
                             options={keyOptions}
-                            onSelect={(newValue) => onApiKeySelected(newValue)}
+                            onSelect={onApiKeySelected}
                             value={dialogProps.chatflowApiKeyId ?? chatflowApiKeyId ?? 'Choose an API key'}
                         />
-                    </div>
-                </div>
-                <div style={{ marginTop: 10 }}></div>
+                    </Box>
+                </Box>
+                <Box sx={{ mt: 2 }} />
                 {codes.map((codeLang, index) => (
                     <TabPanel key={index} value={value} index={index}>
                         {(codeLang === 'Embed' || codeLang === 'Share Chatbot') && chatflowApiKeyId && (
@@ -715,7 +774,13 @@ formData.append("openAIApiKey[openAIEmbeddings_0]", "sk-my-openai-2nd-key")`
                         )}
                         {codeLang === 'Embed' && !chatflowApiKeyId && <EmbedChat chatflowid={dialogProps.chatflowid} />}
                         {codeLang !== 'Embed' && codeLang !== 'Share Chatbot' && codeLang !== 'Configuration' && (
-                            <>
+                            <CodeBlockContainer>
+                                <CopyButton
+                                    onClick={() => handleCopy(chatflowApiKeyId ? getCodeWithAuthorization(codeLang) : getCode(codeLang))}
+                                    size='small'
+                                >
+                                    <ContentCopyIcon fontSize='small' />
+                                </CopyButton>
                                 <CopyBlock
                                     theme={atomOneDark}
                                     text={chatflowApiKeyId ? getCodeWithAuthorization(codeLang) : getCode(codeLang)}
@@ -723,191 +788,80 @@ formData.append("openAIApiKey[openAIEmbeddings_0]", "sk-my-openai-2nd-key")`
                                     showLineNumbers={false}
                                     wrapLines
                                 />
-                                <CheckboxInput label='Show Override Config' value={checkboxVal} onChange={onCheckBoxChanged} />
-                                {checkboxVal && getConfigApi.data && getConfigApi.data.length > 0 && (
-                                    <>
-                                        <Typography sx={{ mt: 2 }}>
-                                            You can override existing input configuration of the chatflow with overrideConfig property.
-                                        </Typography>
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                borderRadius: 10,
-                                                background: 'rgb(254,252,191)',
-                                                padding: 10,
-                                                marginTop: 10,
-                                                marginBottom: 10
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    flexDirection: 'row',
-                                                    alignItems: 'center'
-                                                }}
-                                            >
-                                                <IconExclamationCircle size={30} color='rgb(116,66,16)' />
-                                                <span style={{ color: 'rgb(116,66,16)', marginLeft: 10, fontWeight: 500 }}>
-                                                    {
-                                                        'For security reason, override config is disabled by default. You can change this by going into Chatflow Configuration -> Security tab, and enable the property you want to override.'
-                                                    }
-                                                    &nbsp;Refer{' '}
-                                                    <a
-                                                        rel='noreferrer'
-                                                        target='_blank'
-                                                        href='https://docs.flowiseai.com/using-flowise/api#override-config'
-                                                    >
-                                                        here
-                                                    </a>{' '}
-                                                    for more details
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <Stack direction='column' spacing={2} sx={{ width: '100%', my: 2 }}>
-                                            <Card sx={{ borderColor: theme.palette.primary[200] + 75, p: 2 }} variant='outlined'>
-                                                <Stack sx={{ mt: 1, mb: 2, ml: 1, alignItems: 'center' }} direction='row' spacing={2}>
-                                                    <IconBox />
-                                                    <Typography variant='h4'>Nodes</Typography>
-                                                </Stack>
-                                                {Object.keys(nodeConfig)
-                                                    .sort()
-                                                    .map((nodeLabel) => (
-                                                        <Accordion
-                                                            expanded={nodeConfigExpanded[nodeLabel] || false}
-                                                            onChange={handleAccordionChange(nodeLabel)}
-                                                            key={nodeLabel}
-                                                            disableGutters
-                                                        >
-                                                            <AccordionSummary
-                                                                expandIcon={<ExpandMoreIcon />}
-                                                                aria-controls={`nodes-accordian-${nodeLabel}`}
-                                                                id={`nodes-accordian-header-${nodeLabel}`}
-                                                            >
-                                                                <Stack
-                                                                    flexDirection='row'
-                                                                    sx={{ gap: 2, alignItems: 'center', flexWrap: 'wrap' }}
-                                                                >
-                                                                    <Typography variant='h5'>{nodeLabel}</Typography>
-                                                                    {nodeConfig[nodeLabel].nodeIds.length > 0 &&
-                                                                        nodeConfig[nodeLabel].nodeIds.map((nodeId, index) => (
-                                                                            <div
-                                                                                key={index}
-                                                                                style={{
-                                                                                    display: 'flex',
-                                                                                    flexDirection: 'row',
-                                                                                    width: 'max-content',
-                                                                                    borderRadius: 15,
-                                                                                    background: 'rgb(254,252,191)',
-                                                                                    padding: 5,
-                                                                                    paddingLeft: 10,
-                                                                                    paddingRight: 10
-                                                                                }}
-                                                                            >
-                                                                                <span
-                                                                                    style={{
-                                                                                        color: 'rgb(116,66,16)',
-                                                                                        fontSize: '0.825rem'
-                                                                                    }}
-                                                                                >
-                                                                                    {nodeId}
-                                                                                </span>
-                                                                            </div>
-                                                                        ))}
-                                                                </Stack>
-                                                            </AccordionSummary>
-                                                            <AccordionDetails>
-                                                                <TableViewOnly
-                                                                    rows={nodeOverrides[nodeLabel]}
-                                                                    columns={
-                                                                        nodeOverrides[nodeLabel].length > 0
-                                                                            ? Object.keys(nodeOverrides[nodeLabel][0])
-                                                                            : []
-                                                                    }
-                                                                />
-                                                            </AccordionDetails>
-                                                        </Accordion>
-                                                    ))}
-                                            </Card>
-                                            <Card sx={{ borderColor: theme.palette.primary[200] + 75, p: 2 }} variant='outlined'>
-                                                <Stack sx={{ mt: 1, mb: 2, ml: 1, alignItems: 'center' }} direction='row' spacing={2}>
-                                                    <IconVariable />
-                                                    <Typography variant='h4'>Variables</Typography>
-                                                </Stack>
-                                                <TableViewOnly rows={variableOverrides} columns={['name', 'type', 'enabled']} />
-                                            </Card>
-                                        </Stack>
-                                        <CopyBlock
-                                            theme={atomOneDark}
-                                            text={
-                                                chatflowApiKeyId
-                                                    ? dialogProps.isFormDataRequired
-                                                        ? getConfigCodeWithFormDataWithAuth(codeLang, getConfigApi.data)
-                                                        : getConfigCodeWithAuthorization(codeLang, getConfigApi.data)
-                                                    : dialogProps.isFormDataRequired
-                                                    ? getConfigCodeWithFormData(codeLang, getConfigApi.data)
-                                                    : getConfigCode(codeLang, getConfigApi.data)
-                                            }
-                                            language={getLang(codeLang)}
-                                            showLineNumbers={false}
-                                            wrapLines
-                                        />
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                flexDirection: 'column',
-                                                borderRadius: 10,
-                                                background: '#d8f3dc',
-                                                padding: 10,
-                                                marginTop: 10,
-                                                marginBottom: 10
-                                            }}
-                                        >
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    flexDirection: 'row',
-                                                    alignItems: 'center'
-                                                }}
-                                            >
-                                                <IconBulb size={30} color='#2d6a4f' />
-                                                <span style={{ color: '#2d6a4f', marginLeft: 10, fontWeight: 500 }}>
-                                                    You can also specify multiple values for a config parameter by specifying the node id
-                                                </span>
-                                            </div>
-                                            <div style={{ padding: 10 }}>
-                                                <CopyBlock
-                                                    theme={atomOneDark}
-                                                    text={
-                                                        dialogProps.isFormDataRequired
-                                                            ? getMultiConfigCodeWithFormData(codeLang)
-                                                            : getMultiConfigCode()
-                                                    }
-                                                    language={getLang(codeLang)}
-                                                    showLineNumbers={false}
-                                                    wrapLines
-                                                />
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
-                                {getIsChatflowStreamingApi.data?.isStreaming && (
-                                    <p>
-                                        Read&nbsp;
-                                        <a rel='noreferrer' target='_blank' href='https://docs.flowiseai.com/using-flowise/streaming'>
-                                            here
-                                        </a>
-                                        &nbsp;on how to stream response back to application
-                                    </p>
-                                )}
-                            </>
+                            </CodeBlockContainer>
+                        )}
+                        <CheckboxInput label='Show Override Config' value={checkboxVal} onChange={onCheckBoxChanged} />
+                        {checkboxVal && getConfigApi.data && getConfigApi.data.length > 0 && (
+                            <Card sx={{ borderColor: theme.palette.primary[200] + 75, p: 2, mt: 2 }} variant='outlined'>
+                                <Stack sx={{ mt: 1, mb: 2, ml: 1, alignItems: 'center' }} direction='row' spacing={2}>
+                                    <IconExclamationCircle size={30} color='rgb(116,66,16)' />
+                                    <Typography variant='h4'>Override Config</Typography>
+                                </Stack>
+                                <TableViewOnly
+                                    rows={nodeOverrides[nodeLabel]}
+                                    columns={nodeOverrides[nodeLabel].length > 0 ? Object.keys(nodeOverrides[nodeLabel][0]) : []}
+                                />
+                            </Card>
+                        )}
+                        {checkboxVal && variableOverrides && variableOverrides.length > 0 && (
+                            <Card sx={{ borderColor: theme.palette.primary[200] + 75, p: 2, mt: 2 }} variant='outlined'>
+                                <Stack sx={{ mt: 1, mb: 2, ml: 1, alignItems: 'center' }} direction='row' spacing={2}>
+                                    <IconVariable />
+                                    <Typography variant='h4'>Variables</Typography>
+                                </Stack>
+                                <TableViewOnly rows={variableOverrides} columns={['name', 'type', 'enabled']} />
+                            </Card>
+                        )}
+                        {codeLang !== 'Embed' && codeLang !== 'Share Chatbot' && codeLang !== 'Configuration' && (
+                            <CodeBlockContainer>
+                                <CopyButton
+                                    onClick={() =>
+                                        handleCopy(
+                                            chatflowApiKeyId
+                                                ? dialogProps.isFormDataRequired
+                                                    ? getConfigCodeWithFormDataWithAuth(codeLang, getConfigApi.data)
+                                                    : getConfigCodeWithAuthorization(codeLang, getConfigApi.data)
+                                                : dialogProps.isFormDataRequired
+                                                ? getConfigCodeWithFormData(codeLang, getConfigApi.data)
+                                                : getConfigCode(codeLang, getConfigApi.data)
+                                        )
+                                    }
+                                    size='small'
+                                >
+                                    <ContentCopyIcon fontSize='small' />
+                                </CopyButton>
+                                <CopyBlock
+                                    theme={atomOneDark}
+                                    text={
+                                        chatflowApiKeyId
+                                            ? dialogProps.isFormDataRequired
+                                                ? getConfigCodeWithFormDataWithAuth(codeLang, getConfigApi.data)
+                                                : getConfigCodeWithAuthorization(codeLang, getConfigApi.data)
+                                            : dialogProps.isFormDataRequired
+                                            ? getConfigCodeWithFormData(codeLang, getConfigApi.data)
+                                            : getConfigCode(codeLang, getConfigApi.data)
+                                    }
+                                    language={getLang(codeLang)}
+                                    showLineNumbers={false}
+                                    wrapLines
+                                />
+                            </CodeBlockContainer>
+                        )}
+                        {getIsChatflowStreamingApi.data?.isStreaming && (
+                            <p>
+                                Read&nbsp;
+                                <a rel='noreferrer' target='_blank' href='https://docs.flowiseai.com/using-flowise/streaming'>
+                                    here
+                                </a>
+                                &nbsp;on how to stream response back to application
+                            </p>
                         )}
                         {codeLang === 'Share Chatbot' && !chatflowApiKeyId && (
                             <ShareChatbot isSessionMemory={dialogProps.isSessionMemory} isAgentCanvas={dialogProps.isAgentCanvas} />
                         )}
                     </TabPanel>
                 ))}
-            </DialogContent>
+            </GlassyDialogContent>
         </Dialog>
     ) : null
 

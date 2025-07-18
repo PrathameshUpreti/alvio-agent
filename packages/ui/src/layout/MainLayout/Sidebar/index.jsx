@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 // material-ui
 import { useTheme } from '@mui/material/styles'
@@ -8,6 +8,7 @@ import { Box, Drawer, useMediaQuery } from '@mui/material'
 // third-party
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { BrowserView, MobileView } from 'react-device-detect'
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 
 // project imports
 import MenuList from './MenuList'
@@ -19,22 +20,14 @@ import { drawerWidth, headerHeight } from '@/store/constant'
 const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
     const theme = useTheme()
     const matchUpMd = useMediaQuery(theme.breakpoints.up('md'))
-    const [isHovered, setIsHovered] = useState(false)
+    // Remove isHovered state
+    const [miniSidebar, setMiniSidebar] = useState(false)
 
-    // Handle mouse enter/leave events
-    const handleMouseEnter = () => {
-        if (matchUpMd) {
-            setIsHovered(true)
-            drawerToggle()
-        }
+    const handleMiniSidebarToggle = () => {
+        setMiniSidebar((prev) => !prev)
     }
 
-    const handleMouseLeave = () => {
-        if (matchUpMd) {
-            setIsHovered(false)
-            drawerToggle()
-        }
-    }
+    const showFullSidebar = !miniSidebar
 
     const drawer = (
         <>
@@ -48,21 +41,41 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
                     <LogoSection />
                 </Box>
             </Box>
+            {/* Collapse/Expand Button */}
+            {matchUpMd && (
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', px: 1, py: 1 }}>
+                    <Box
+                        sx={{
+                            background: theme.palette.background.paper,
+                            borderRadius: '50%',
+                            boxShadow: 1,
+                            cursor: 'pointer',
+                            p: 0.5,
+                            transition: 'background 0.2s',
+                            '&:hover': { background: theme.palette.action.hover }
+                        }}
+                        onClick={handleMiniSidebarToggle}
+                    >
+                        {miniSidebar ? <IconChevronRight size={20} /> : <IconChevronLeft size={20} />}
+                    </Box>
+                </Box>
+            )}
             <BrowserView>
                 <PerfectScrollbar
                     component='div'
                     style={{
                         height: !matchUpMd ? 'calc(100vh - 56px)' : `calc(100vh - ${headerHeight}px)`,
-                        paddingLeft: '16px',
-                        paddingRight: '16px'
+                        paddingLeft: showFullSidebar ? '16px' : '0px',
+                        paddingRight: showFullSidebar ? '16px' : '0px',
+                        transition: 'padding 0.2s'
                     }}
                 >
-                    <MenuList />
+                    <MenuList miniSidebar={miniSidebar} />
                 </PerfectScrollbar>
             </BrowserView>
             <MobileView>
                 <Box sx={{ px: 2 }}>
-                    <MenuList />
+                    <MenuList miniSidebar={false} />
                 </Box>
             </MobileView>
         </>
@@ -75,13 +88,16 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
             component='nav'
             sx={{
                 flexShrink: { md: 0 },
-                width: matchUpMd ? drawerWidth : 'auto',
+                width: matchUpMd ? (miniSidebar ? '64px' : drawerWidth) : 'auto',
                 height: '100vh',
-                zIndex: 1000
+                zIndex: 1000,
+                transition: 'width 0.2s',
+                borderRadius: { md: '16px' },
+                boxShadow: { md: 3 },
+                overflow: 'hidden',
+                background: theme.palette.background.default
             }}
             aria-label='mailbox folders'
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
         >
             <Drawer
                 container={container}
@@ -91,7 +107,7 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
                 onClose={drawerToggle}
                 sx={{
                     '& .MuiDrawer-paper': {
-                        width: drawerWidth,
+                        width: matchUpMd ? (miniSidebar ? '64px' : drawerWidth) : drawerWidth,
                         background: theme.palette.background.default,
                         color: theme.palette.text.primary,
                         [theme.breakpoints.up('md')]: {
@@ -99,7 +115,10 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
                         },
                         borderRight: drawerOpen ? '1px solid' : 'none',
                         borderColor: drawerOpen ? theme.palette.primary[200] + 75 : 'transparent',
-                        zIndex: 1000
+                        zIndex: 1000,
+                        borderRadius: '16px',
+                        boxShadow: 3,
+                        transition: 'width 0.2s, border-radius 0.2s'
                     }
                 }}
                 ModalProps={{ keepMounted: true }}

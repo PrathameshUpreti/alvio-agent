@@ -54,33 +54,15 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
     overflow: 'hidden',
     border: 'none !important',
     boxShadow: theme.palette.mode === 'dark' ? '0 8px 32px rgba(0, 0, 0, 0.4)' : '0 8px 32px rgba(0, 0, 0, 0.08)',
-    '&::before': {
-        content: '""',
-        position: 'absolute',
-        inset: 0,
-        opacity: theme.palette.mode === 'dark' ? 0.7 : 0.3,
-        zIndex: 0,
-        pointerEvents: 'none'
-    },
     '& .MuiTable-root': {
         position: 'relative',
         zIndex: 1,
-        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(26, 29, 30, 0.8)' : 'rgba(255, 255, 255, 0.9)'
+        backgroundColor: theme.palette.background.paper
     },
     '& .MuiTableHead-root': {
         position: 'relative',
         '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: '40%',
-            height: '100%',
-            background:
-                theme.palette.mode === 'dark'
-                    ? 'linear-gradient(90deg, transparent, rgba(141, 54, 249, 0.1))'
-                    : 'linear-gradient(90deg, transparent, rgba(141, 54, 249, 0.05))',
-            pointerEvents: 'none'
+            content: 'none'
         }
     }
 }))

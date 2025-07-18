@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 // Material
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Box, Typography, OutlinedInput } from '@mui/material'
+import { styled } from '@mui/material/styles'
 
 // Project imports
 import { StyledButton } from '@/ui-component/button/StyledButton'
@@ -25,6 +26,30 @@ import assistantsApi from '@/api/assistants'
 
 // utils
 import useNotifier from '@/utils/useNotifier'
+
+// Glassmorphism dialog and input styles
+const GlassDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialog-paper': {
+        background: theme.palette.background.paper,
+        borderRadius: 18,
+        boxShadow: theme.palette.mode === 'dark' ? '0 8px 32px rgba(0,0,0,0.45)' : '0 8px 32px rgba(141,54,249,0.10)',
+        border: `1.5px solid ${theme.palette.mode === 'dark' ? '#35373b' : '#e0e0e0'}`,
+        padding: 0
+    }
+}))
+const GlassInput = styled(OutlinedInput)(({ theme }) => ({
+    background: theme.palette.mode === 'dark' ? '#23272f' : '#f8fafc',
+    color: theme.palette.mode === 'dark' ? '#fff' : '#23272f',
+    border: `1.5px solid ${theme.palette.mode === 'dark' ? '#35373b' : '#e0e0e0'}`,
+    borderRadius: 12,
+    padding: 18,
+    fontSize: 18,
+    marginBottom: 24,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+    '::placeholder': {
+        color: theme.palette.mode === 'dark' ? '#b0b3b8' : '#888'
+    }
+}))
 
 const AddCustomAssistantDialog = ({ show, dialogProps, onCancel, onConfirm }) => {
     const portalElement = document.getElementById('portal')
@@ -92,7 +117,7 @@ const AddCustomAssistantDialog = ({ show, dialogProps, onCancel, onConfirm }) =>
     }
 
     const component = show ? (
-        <Dialog
+        <GlassDialog
             fullWidth
             maxWidth='sm'
             open={show}
@@ -112,10 +137,9 @@ const AddCustomAssistantDialog = ({ show, dialogProps, onCancel, onConfirm }) =>
                         <Typography>
                             Name<span style={{ color: 'red' }}>&nbsp;*</span>
                         </Typography>
-
                         <div style={{ flexGrow: 1 }}></div>
                     </div>
-                    <OutlinedInput
+                    <GlassInput
                         size='small'
                         sx={{ mt: 1 }}
                         type='string'
@@ -123,6 +147,7 @@ const AddCustomAssistantDialog = ({ show, dialogProps, onCancel, onConfirm }) =>
                         key='customAssistantName'
                         onChange={(e) => setCustomAssistantName(e.target.value)}
                         value={customAssistantName ?? ''}
+                        placeholder='Enter assistant name'
                     />
                 </Box>
             </DialogContent>
@@ -133,7 +158,7 @@ const AddCustomAssistantDialog = ({ show, dialogProps, onCancel, onConfirm }) =>
                 </StyledButton>
             </DialogActions>
             <ConfirmDialog />
-        </Dialog>
+        </GlassDialog>
     ) : null
 
     return createPortal(component, portalElement)

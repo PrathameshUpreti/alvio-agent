@@ -2,42 +2,39 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // material-ui
-import { Box, Typography, TextField, Button, InputAdornment, IconButton, Tabs, Tab, Divider, Alert } from '@mui/material'
+import { Box, Typography, TextField, Button, InputAdornment, IconButton, Tabs, Tab, Alert } from '@mui/material'
 import { styled, useTheme } from '@mui/material/styles'
 
 // icons
-import { IconEye, IconEyeOff, IconMail, IconLock, IconArrowRight } from '@tabler/icons-react'
+import { IconEye, IconEyeOff } from '@tabler/icons-react'
 import GoogleIcon from '@mui/icons-material/Google'
 
 // project imports
-import {
-    DarkModePlanCardComplete,
-    LightModePlanCardComplete,
-    DarkModePlanCardComplete2,
-    LightModePlanCardComplete2,
-    DarkModePlanCardComplete3,
-    LightModePlanCardComplete3
-} from '@/ui-component/cards/PlanCards'
 
 // ==============================|| AUTH PAGE ||============================== //
 
 const AuthContainer = styled(Box)(({ theme }) => ({
     minHeight: '100vh',
     display: 'flex',
-    background: theme.palette.mode === 'dark' ? theme.palette.darkBackground : '#f5f5f7',
+    background: theme.palette.mode === 'dark' ? theme.palette.background.default : theme.palette.grey[100],
     overflow: 'hidden',
-    position: 'relative'
+    height: '100vh'
 }))
 
 const LeftPanel = styled(Box)(({ theme }) => ({
     flex: '0 0 40%',
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'space-between',
     position: 'relative',
     overflow: 'hidden',
-    padding: '40px',
-    backgroundImage: 'linear-gradient(135deg, rgba(155, 93, 229, 0.2), rgba(239, 71, 111, 0.2))',
+    padding: '48px 40px',
+    background:
+        theme.palette.mode === 'dark'
+            ? 'linear-gradient(135deg, #23272f 0%, #7b2ff2 60%, #f357a8 100%)'
+            : 'linear-gradient(135deg, #4f8cff 0%, #7b2ff2 50%, #f357a8 100%)',
+    color: '#fff',
     [theme.breakpoints.down('md')]: {
         display: 'none'
     }
@@ -56,11 +53,13 @@ const RightPanel = styled(Box)(({ theme }) => ({
 
 const FormCard = styled(Box)(({ theme }) => ({
     background: theme.palette.background.paper,
-    borderRadius: '16px',
-    padding: '32px',
+    borderRadius: '20px',
+    padding: '40px 32px',
     width: '100%',
     maxWidth: '500px',
-    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)'
+    boxShadow: theme.palette.mode === 'dark' ? '0 8px 32px 0 rgba(31, 38, 135, 0.22)' : '0 8px 32px 0 rgba(31, 38, 135, 0.10)',
+    border: `1.5px solid ${theme.palette.divider}`,
+    backdropFilter: 'blur(6px)'
 }))
 
 const TabsWrapper = styled(Tabs)(({ theme }) => ({
@@ -78,7 +77,7 @@ const TabItem = styled(Tab)(({ theme }) => ({
     borderRadius: '8px',
     color: theme.palette.text.primary,
     '&.Mui-selected': {
-        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.darkLevel1 : theme.palette.grey[100],
+        backgroundColor: theme.palette.action.selected,
         color: theme.palette.primary.main
     }
 }))
@@ -87,38 +86,65 @@ const InputField = styled(TextField)(({ theme }) => ({
     marginBottom: '20px',
     '& .MuiOutlinedInput-root': {
         borderRadius: '8px',
-        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.darkLevel1 : theme.palette.grey[100],
+        backgroundColor: theme.palette.mode === 'dark' ? theme.palette.background.default : '#fff',
+        boxShadow: theme.palette.mode === 'dark' ? '0 1px 2px 0 rgba(16, 24, 40, 0.10)' : '0 1px 2px 0 rgba(16, 24, 40, 0.05)',
+        '&:hover': {
+            backgroundColor: theme.palette.action.hover
+        },
         '& fieldset': {
-            border: 'none'
+            border: `1.5px solid ${theme.palette.divider}`
         }
+    },
+    '& .MuiInputBase-input': {
+        color: theme.palette.text.primary
+    },
+    '& .MuiInputLabel-root': {
+        color: theme.palette.text.secondary
     }
 }))
 
-const SocialButton = styled(Button)(({ theme }) => ({
+const CenteredFormWrapper = styled(Box)(({ theme }) => ({
+    width: '100%',
+    maxWidth: 400,
+    margin: '0 auto',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'transparent'
+}))
+
+const GoogleButton = styled(Button)(({ theme }) => ({
     width: '100%',
     padding: '12px',
     borderRadius: '8px',
     textTransform: 'none',
     fontWeight: 600,
-    border: `1px solid ${theme.palette.divider}`,
+    background: theme.palette.mode === 'dark' ? theme.palette.background.default : '#fff',
     color: theme.palette.text.primary,
-    backgroundColor: 'transparent',
+    border: `1.5px solid ${theme.palette.divider}`,
+    boxShadow: 'none',
+    marginTop: 12,
     '&:hover': {
-        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'
+        background: theme.palette.action.hover,
+        boxShadow: 'none'
     }
 }))
 
-const SubmitButton = styled(Button)(({ theme }) => ({
+const SignInButton = styled(Button)(({ theme }) => ({
     width: '100%',
     padding: '12px',
     borderRadius: '8px',
     textTransform: 'none',
     fontWeight: 600,
     fontSize: '16px',
-    marginTop: '12px',
-    backgroundColor: '#9B5DE5',
+    marginTop: '8px',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.getContrastText(theme.palette.primary.main),
+    boxShadow: 'none',
     '&:hover': {
-        backgroundColor: '#8445d7'
+        backgroundColor: theme.palette.primary.dark,
+        boxShadow: 'none'
     }
 }))
 
@@ -162,6 +188,7 @@ const AuthPage = () => {
     const theme = useTheme()
     const navigate = useNavigate()
 
+    // 0 = Sign In, 1 = Sign Up
     const [activeTab, setActiveTab] = useState(0)
     const [showPassword, setShowPassword] = useState(false)
     const [authError, setAuthError] = useState('')
@@ -175,7 +202,6 @@ const AuthPage = () => {
     useEffect(() => {
         const username = localStorage.getItem('username')
         const password = localStorage.getItem('password')
-
         if (username && password) {
             navigate('/')
         }
@@ -184,6 +210,7 @@ const AuthPage = () => {
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue)
         setAuthError('')
+        setFormData({ email: '', password: '', confirmPassword: '' })
     }
 
     const handleInputChange = (e) => {
@@ -205,165 +232,231 @@ const AuthPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-
         // Form validation
-        if (!formData.email || !formData.password) {
+        if (!formData.email || !formData.password || (activeTab === 1 && !formData.confirmPassword)) {
             setAuthError('Please fill in all required fields')
             return
         }
-
         if (activeTab === 1 && formData.password !== formData.confirmPassword) {
             setAuthError('Passwords do not match')
             return
         }
-
         // For demo purposes, we'll store in localStorage as that's what the app uses
         // In a real app, this would be a proper API call
         localStorage.setItem('username', formData.email)
         localStorage.setItem('password', formData.password)
-
         // Navigate to dashboard
         navigate('/')
     }
 
-    const PlanCard =
-        activeTab === 0 ? (
-            theme.palette.mode === 'dark' ? (
-                <DarkModePlanCardComplete />
-            ) : (
-                <LightModePlanCardComplete />
-            )
-        ) : theme.palette.mode === 'dark' ? (
-            <DarkModePlanCardComplete2 />
-        ) : (
-            <LightModePlanCardComplete2 />
-        )
-
     return (
         <AuthContainer>
             <LeftPanel>
-                <PlansContainer>
-                    <Typography variant='h3' fontWeight='bold' color='white' textAlign='center' mb={4}>
-                        Choose Your Plan
+                <Box
+                    sx={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%'
+                    }}
+                >
+                    {/* Heading */}
+                    <Typography variant='h3' fontWeight='bold' color='inherit' sx={{ mb: 2, textAlign: 'center' }}>
+                        Join Alvio Agent
                     </Typography>
-
-                    {theme.palette.mode === 'dark' ? (
-                        <>
-                            <DarkModePlanCardComplete />
-                            <DarkModePlanCardComplete2 />
-                            <DarkModePlanCardComplete3 />
-                        </>
-                    ) : (
-                        <>
-                            <LightModePlanCardComplete />
-                            <LightModePlanCardComplete2 />
-                            <LightModePlanCardComplete3 />
-                        </>
-                    )}
-                </PlansContainer>
+                    {/* Subtitle */}
+                    <Typography variant='body1' color='inherit' sx={{ mb: 4, opacity: 0.85, textAlign: 'center' }}>
+                        Create an account to access personalized search experiences powered by advanced AI.
+                    </Typography>
+                    {/* Feature List */}
+                    <Box sx={{ mb: 6 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                            <Box sx={{ color: '#00e676', mr: 1 }}>
+                                <svg width='22' height='22' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                                    <circle cx='12' cy='12' r='12' fill='#00e676' />
+                                    <path
+                                        d='M8 12.5L11 15.5L16 10.5'
+                                        stroke='white'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                        strokeLinejoin='round'
+                                    />
+                                </svg>
+                            </Box>
+                            <Typography color='inherit' fontSize={18}>
+                                Advanced AI-powered search
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                            <Box sx={{ color: '#00e676', mr: 1 }}>
+                                <svg width='22' height='22' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                                    <circle cx='12' cy='12' r='12' fill='#00e676' />
+                                    <path
+                                        d='M8 12.5L11 15.5L16 10.5'
+                                        stroke='white'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                        strokeLinejoin='round'
+                                    />
+                                </svg>
+                            </Box>
+                            <Typography color='inherit' fontSize={18}>
+                                Personalized search history
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Box sx={{ color: '#00e676', mr: 1 }}>
+                                <svg width='22' height='22' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                                    <circle cx='12' cy='12' r='12' fill='#00e676' />
+                                    <path
+                                        d='M8 12.5L11 15.5L16 10.5'
+                                        stroke='white'
+                                        strokeWidth='2'
+                                        strokeLinecap='round'
+                                        strokeLinejoin='round'
+                                    />
+                                </svg>
+                            </Box>
+                            <Typography color='inherit' fontSize={18}>
+                                Secure and private experience
+                            </Typography>
+                        </Box>
+                    </Box>
+                </Box>
+                {/* Copyright */}
+                <Typography variant='caption' color='inherit' sx={{ opacity: 0.7, width: '100%', textAlign: 'center' }}>
+                    © 2025 Alvio Agent. All rights reserved.
+                </Typography>
             </LeftPanel>
 
             <RightPanel>
-                <FormCard>
-                    <TabsWrapper value={activeTab} onChange={handleTabChange} centered>
-                        <TabItem label='Sign in' />
-                        <TabItem label='Create account' />
-                    </TabsWrapper>
-
+                <CenteredFormWrapper>
+                    <Typography variant='h4' fontWeight='bold' sx={{ mb: 1, color: theme.palette.text.primary, textAlign: 'center' }}>
+                        {activeTab === 0 ? 'Welcome back' : 'Create your account'}
+                    </Typography>
+                    <Typography variant='body1' sx={{ mb: 3, color: theme.palette.text.secondary, textAlign: 'center' }}>
+                        {activeTab === 0 ? 'Welcome back! Please enter your details.' : 'Sign up to get started.'}
+                    </Typography>
                     {authError && (
-                        <Alert severity='error' sx={{ mb: 3 }}>
+                        <Alert severity='error' sx={{ mb: 2 }}>
                             {authError}
                         </Alert>
                     )}
-
-                    <form onSubmit={handleSubmit}>
-                        <SocialButton startIcon={<GoogleIcon />} onClick={handleGoogleSignIn} sx={{ mb: 3 }}>
-                            Continue with Google
-                        </SocialButton>
-
-                        <Divider sx={{ my: 2 }}>
-                            <Typography variant='body2' color='textSecondary'>
-                                OR
-                            </Typography>
-                        </Divider>
-
+                    <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                        <Typography variant='subtitle2' sx={{ color: theme.palette.text.primary, mb: 0.5 }}>
+                            Email
+                        </Typography>
                         <InputField
                             fullWidth
-                            placeholder='Email'
+                            placeholder='Enter your email'
                             name='email'
                             type='email'
                             value={formData.email}
                             onChange={handleInputChange}
                             InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position='start'>
-                                        <IconMail size={20} />
-                                    </InputAdornment>
-                                )
+                                startAdornment: null,
+                                style: { color: theme.palette.text.primary }
                             }}
                         />
-
+                        <Typography variant='subtitle2' sx={{ color: theme.palette.text.primary, mb: 0.5 }}>
+                            Password
+                        </Typography>
                         <InputField
                             fullWidth
-                            placeholder='Password'
+                            placeholder='********'
                             name='password'
                             type={showPassword ? 'text' : 'password'}
                             value={formData.password}
                             onChange={handleInputChange}
                             InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position='start'>
-                                        <IconLock size={20} />
-                                    </InputAdornment>
-                                ),
+                                startAdornment: null,
                                 endAdornment: (
                                     <InputAdornment position='end'>
                                         <IconButton onClick={handleTogglePasswordVisibility} edge='end'>
                                             {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
                                         </IconButton>
                                     </InputAdornment>
-                                )
+                                ),
+                                style: { color: theme.palette.text.primary }
                             }}
                         />
-
                         {activeTab === 1 && (
-                            <InputField
-                                fullWidth
-                                placeholder='Confirm Password'
-                                name='confirmPassword'
-                                type={showPassword ? 'text' : 'password'}
-                                value={formData.confirmPassword}
-                                onChange={handleInputChange}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <IconLock size={20} />
-                                        </InputAdornment>
-                                    )
-                                }}
-                            />
-                        )}
-
-                        <SubmitButton type='submit' variant='contained' endIcon={<IconArrowRight size={20} />}>
-                            {activeTab === 0 ? 'Sign in' : 'Create account'}
-                        </SubmitButton>
-
-                        {activeTab === 0 && (
-                            <Box sx={{ mt: 2, textAlign: 'center' }}>
-                                <Typography variant='body2' color='textSecondary'>
-                                    Forgot password?
+                            <>
+                                <Typography variant='subtitle2' sx={{ color: theme.palette.text.primary, mb: 0.5 }}>
+                                    Confirm Password
                                 </Typography>
+                                <InputField
+                                    fullWidth
+                                    placeholder='********'
+                                    name='confirmPassword'
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={formData.confirmPassword}
+                                    onChange={handleInputChange}
+                                    InputProps={{
+                                        startAdornment: null,
+                                        endAdornment: (
+                                            <InputAdornment position='end'>
+                                                <IconButton onClick={handleTogglePasswordVisibility} edge='end'>
+                                                    {showPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                        style: { color: theme.palette.text.primary }
+                                    }}
+                                />
+                            </>
+                        )}
+                        {activeTab === 0 && (
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <input type='checkbox' id='remember' style={{ marginRight: 6 }} />
+                                    <label htmlFor='remember' style={{ color: theme.palette.text.secondary, fontSize: 14 }}>
+                                        Remember for 30 days
+                                    </label>
+                                </Box>
+                                <Button
+                                    variant='text'
+                                    sx={{ color: theme.palette.primary.main, fontSize: 14, textTransform: 'none', minWidth: 0, p: 0 }}
+                                >
+                                    Forgot password
+                                </Button>
                             </Box>
                         )}
+                        <SignInButton type='submit' variant='contained'>
+                            {activeTab === 0 ? 'Sign in' : 'Sign up'}
+                        </SignInButton>
+                        <GoogleButton startIcon={<GoogleIcon />}>
+                            {activeTab === 0 ? 'Sign in with Google' : 'Sign up with Google'}
+                        </GoogleButton>
                     </form>
-
-                    <Box sx={{ mt: 4, display: { xs: 'block', md: 'none' } }}>
-                        <Typography variant='h6' fontWeight='bold' mb={2}>
-                            Selected Plan
-                        </Typography>
-                        {PlanCard}
-                    </Box>
-                </FormCard>
+                    <Typography variant='body2' sx={{ color: theme.palette.text.secondary, mt: 3, textAlign: 'center' }}>
+                        {activeTab === 0 ? (
+                            <>
+                                Don&apos;t have an account?{' '}
+                                <Button
+                                    variant='text'
+                                    sx={{ color: theme.palette.primary.main, fontSize: 14, textTransform: 'none', minWidth: 0, p: 0 }}
+                                    onClick={() => setActiveTab(1)}
+                                >
+                                    Sign up
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                Already have an account?{' '}
+                                <Button
+                                    variant='text'
+                                    sx={{ color: theme.palette.primary.main, fontSize: 14, textTransform: 'none', minWidth: 0, p: 0 }}
+                                    onClick={() => setActiveTab(0)}
+                                >
+                                    Sign in
+                                </Button>
+                            </>
+                        )}
+                    </Typography>
+                </CenteredFormWrapper>
             </RightPanel>
         </AuthContainer>
     )

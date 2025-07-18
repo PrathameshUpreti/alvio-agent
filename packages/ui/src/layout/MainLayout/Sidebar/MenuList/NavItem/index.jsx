@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // material-ui
 import { useTheme } from '@mui/material/styles'
-import { Avatar, Chip, ListItemButton, ListItemIcon, ListItemText, Typography, useMediaQuery } from '@mui/material'
+import { Avatar, Chip, ListItemButton, ListItemIcon, ListItemText, Typography, useMediaQuery, Tooltip, Box } from '@mui/material'
 
 // project imports
 import { MENU_OPEN, SET_MENU } from '@/store/actions'
@@ -16,7 +16,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord'
 
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
-const NavItem = ({ item, level, navType, onClick, onUploadFile }) => {
+const NavItem = ({ item, level, navType, onClick, onUploadFile, miniSidebar }) => {
     const theme = useTheme()
     const dispatch = useDispatch()
     const customization = useSelector((state) => state.customization)
@@ -69,6 +69,12 @@ const NavItem = ({ item, level, navType, onClick, onUploadFile }) => {
     }
 
     const itemHandler = (id) => {
+        if (id === 'signout') {
+            localStorage.removeItem('username')
+            localStorage.removeItem('password')
+            window.location.href = '/login'
+            return
+        }
         if (navType === 'SETTINGS' && id !== 'loadChatflow') {
             onClick(id)
         } else {
@@ -95,7 +101,7 @@ const NavItem = ({ item, level, navType, onClick, onUploadFile }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [navType])
 
-    return (
+    const buttonContent = (
         <ListItemButton
             {...listItemProps}
             disabled={item.disabled}
@@ -105,33 +111,58 @@ const NavItem = ({ item, level, navType, onClick, onUploadFile }) => {
                 alignItems: 'flex-start',
                 backgroundColor: level > 1 ? 'transparent !important' : 'inherit',
                 py: level > 1 ? 1 : 1.25,
-                pl: `${level * 24}px`
+                pl: `${level * 24}px`,
+                justifyContent: miniSidebar ? 'center' : 'flex-start',
+                minHeight: miniSidebar ? '48px' : undefined,
+                ...(customization.isOpen.findIndex((id) => id === item.id) > -1 && {
+                    background: (theme.palette?.primary?.main || theme.colors?.primaryMain || '#1976d2') + '22',
+                    boxShadow: '0 2px 8px 0 rgba(32, 40, 45, 0.08)'
+                })
             }}
             selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
             onClick={() => itemHandler(item.id)}
         >
             {item.id === 'loadChatflow' && <input type='file' hidden accept='.json' onChange={(e) => handleFileUpload(e)} />}
-            <ListItemIcon sx={{ my: 'auto', minWidth: !item?.icon ? 18 : 36 }}>{itemIcon}</ListItemIcon>
-            <ListItemText
-                primary={
-                    <Typography
-                        variant={customization.isOpen.findIndex((id) => id === item.id) > -1 ? 'h5' : 'body1'}
-                        color='inherit'
-                        sx={{ my: 0.5 }}
-                    >
-                        {item.title}
-                    </Typography>
-                }
-                secondary={
-                    item.caption && (
-                        <Typography variant='caption' sx={{ ...theme.typography.subMenuCaption, mt: -0.6 }} display='block' gutterBottom>
-                            {item.caption}
+            <ListItemIcon
+                sx={{
+                    my: 'auto',
+                    minWidth: 36,
+                    justifyContent: 'center',
+                    color:
+                        customization.isOpen.findIndex((id) => id === item.id) > -1
+                            ? theme.palette?.primary?.main || theme.colors?.primaryMain || '#1976d2'
+                            : undefined
+                }}
+            >
+                {itemIcon}
+            </ListItemIcon>
+            {!miniSidebar && (
+                <ListItemText
+                    primary={
+                        <Typography
+                            variant={customization.isOpen.findIndex((id) => id === item.id) > -1 ? 'h5' : 'body1'}
+                            color='inherit'
+                            sx={{ my: 0.5 }}
+                        >
+                            {item.title}
                         </Typography>
-                    )
-                }
-                sx={{ my: 'auto' }}
-            />
-            {item.chip && (
+                    }
+                    secondary={
+                        item.caption && (
+                            <Typography
+                                variant='caption'
+                                sx={{ ...theme.typography.subMenuCaption, mt: -0.6 }}
+                                display='block'
+                                gutterBottom
+                            >
+                                {item.caption}
+                            </Typography>
+                        )
+                    }
+                    sx={{ my: 'auto' }}
+                />
+            )}
+            {!miniSidebar && item.chip && (
                 <Chip
                     color={item.chip.color}
                     variant={item.chip.variant}
@@ -140,7 +171,7 @@ const NavItem = ({ item, level, navType, onClick, onUploadFile }) => {
                     avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
                 />
             )}
-            {item.isBeta && (
+            {!miniSidebar && item.isBeta && (
                 <Chip
                     sx={{
                         my: 'auto',
@@ -155,6 +186,45 @@ const NavItem = ({ item, level, navType, onClick, onUploadFile }) => {
             )}
         </ListItemButton>
     )
+    return miniSidebar ? (
+        <Tooltip title={item.title} placement='right' arrow>
+            <Box sx={{ position: 'relative', width: '100%' }}>
+                {customization.isOpen.findIndex((id) => id === item.id) > -1 && (
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            left: 0,
+                            top: 6,
+                            bottom: 6,
+                            width: '4px',
+                            borderRadius: '4px',
+                            background: theme.palette?.primary?.main || theme.colors?.primaryMain || '#1976d2',
+                            zIndex: 1
+                        }}
+                    />
+                )}
+                {buttonContent}
+            </Box>
+        </Tooltip>
+    ) : (
+        <Box sx={{ position: 'relative', width: '100%' }}>
+            {customization.isOpen.findIndex((id) => id === item.id) > -1 && (
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        left: 0,
+                        top: 6,
+                        bottom: 6,
+                        width: '4px',
+                        borderRadius: '4px',
+                        background: theme.palette?.primary?.main || theme.colors?.primaryMain || '#1976d2',
+                        zIndex: 1
+                    }}
+                />
+            )}
+            {buttonContent}
+        </Box>
+    )
 }
 
 NavItem.propTypes = {
@@ -162,7 +232,8 @@ NavItem.propTypes = {
     level: PropTypes.number,
     navType: PropTypes.string,
     onClick: PropTypes.func,
-    onUploadFile: PropTypes.func
+    onUploadFile: PropTypes.func,
+    miniSidebar: PropTypes.bool
 }
 
 export default NavItem

@@ -1041,7 +1041,7 @@ const CustomAssistantConfigurePreview = () => {
                                                         onDocStoreItemSelected(newValue)
                                                     }
                                                 }}
-                                                value={selectedDocumentStores.map((ds) => ds.id) ?? 'choose an option'}
+                                                value={JSON.stringify(selectedDocumentStores.map((ds) => ds.id))}
                                             />
                                             {selectedDocumentStores.length > 0 && (
                                                 <Stack sx={{ mt: 3, position: 'relative', alignItems: 'center' }} direction='row'>

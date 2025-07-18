@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import PropTypes from 'prop-types'
 
 // material-ui
 import {
@@ -20,6 +21,7 @@ import {
     FormControl
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 // project imports
 import MainCard from '@/ui-component/cards/MainCard'
@@ -49,6 +51,54 @@ function TabPanel(props) {
         </div>
     )
 }
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    value: PropTypes.any.isRequired,
+    index: PropTypes.number.isRequired
+}
+
+// 2. Add styled components for glassy card, pill tabs, and section cards
+const GlassyMainCard = styled(MainCard)(({ theme }) => ({
+    background: theme.palette.mode === 'dark' ? 'rgba(30,34,44,0.92)' : 'rgba(255,255,255,0.92)',
+    backdropFilter: 'blur(16px)',
+    borderRadius: 18,
+    boxShadow: theme.shadows[24],
+    border: `1px solid ${theme.palette.divider}`,
+    transition: 'background 0.3s'
+}))
+const PillTabs = styled(Tabs)(({ theme }) => ({
+    borderRadius: 999,
+    minHeight: 40,
+    background: theme.palette.background.paper,
+    boxShadow: theme.shadows[1],
+    '& .MuiTabs-indicator': {
+        height: 4,
+        borderRadius: 2,
+        background: theme.palette.primary.main
+    }
+}))
+const PillTab = styled(Tab)(({ theme }) => ({
+    borderRadius: 999,
+    minHeight: 36,
+    minWidth: 90,
+    fontWeight: 600,
+    color: theme.palette.text.secondary,
+    '&.Mui-selected': {
+        color: theme.palette.primary.main,
+        background: theme.palette.action.selected
+    },
+    transition: 'background 0.2s, color 0.2s'
+}))
+const GlassySectionCard = styled(Paper)(({ theme }) => ({
+    background: theme.palette.mode === 'dark' ? 'rgba(40,45,50,0.85)' : 'rgba(245,245,245,0.85)',
+    borderRadius: 14,
+    boxShadow: theme.shadows[2],
+    border: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(3),
+    marginBottom: theme.spacing(2),
+    transition: 'background 0.2s'
+}))
 
 const SettingsPage = () => {
     const theme = useTheme()
@@ -85,32 +135,22 @@ const SettingsPage = () => {
     }
 
     return (
-        <MainCard title='Settings'>
+        <GlassyMainCard title='Settings'>
             <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-                <Tabs value={value} onChange={handleTabChange} aria-label='settings tabs' textColor='primary' indicatorColor='primary'>
-                    <Tab label='General' {...a11yProps(0)} />
-                    <Tab label='Appearance' {...a11yProps(1)} />
-                    <Tab label='API Keys' {...a11yProps(2)} />
-                    <Tab label='Notifications' {...a11yProps(3)} />
-                    <Tab label='Security' {...a11yProps(4)} />
-                </Tabs>
+                <PillTabs value={value} onChange={handleTabChange} aria-label='settings tabs' textColor='primary' indicatorColor='primary'>
+                    <PillTab label='General' {...a11yProps(0)} />
+                    <PillTab label='Appearance' {...a11yProps(1)} />
+                    <PillTab label='API Keys' {...a11yProps(2)} />
+                    <PillTab label='Notifications' {...a11yProps(3)} />
+                    <PillTab label='Security' {...a11yProps(4)} />
+                </PillTabs>
             </Box>
 
             {/* General Settings Tab */}
             <TabPanel value={value} index={0}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Paper
-                            elevation={0}
-                            sx={{
-                                p: 3,
-                                backgroundColor:
-                                    theme.palette.mode === 'dark'
-                                        ? theme.palette.dark?.main || theme.palette.background.default
-                                        : theme.palette.grey[50],
-                                borderRadius: 2
-                            }}
-                        >
+                        <GlassySectionCard>
                             <Typography variant='h4' gutterBottom>
                                 User Profile
                             </Typography>
@@ -157,7 +197,7 @@ const SettingsPage = () => {
                                     </Button>
                                 </Grid>
                             </Grid>
-                        </Paper>
+                        </GlassySectionCard>
                     </Grid>
                 </Grid>
             </TabPanel>
@@ -166,17 +206,7 @@ const SettingsPage = () => {
             <TabPanel value={value} index={1}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Paper
-                            elevation={0}
-                            sx={{
-                                p: 3,
-                                backgroundColor:
-                                    theme.palette.mode === 'dark'
-                                        ? theme.palette.dark?.main || theme.palette.background.default
-                                        : theme.palette.grey[50],
-                                borderRadius: 2
-                            }}
-                        >
+                        <GlassySectionCard>
                             <Typography variant='h4' gutterBottom>
                                 Theme Settings
                             </Typography>
@@ -186,70 +216,7 @@ const SettingsPage = () => {
                                 control={<Switch checked={isDark} onChange={changeDarkMode} color='primary' />}
                                 label='Dark Mode'
                             />
-
-                            <Typography variant='h5' sx={{ mt: 3, mb: 2 }}>
-                                Color Theme
-                            </Typography>
-                            <Grid container spacing={2}>
-                                <Grid item>
-                                    <Box
-                                        sx={{
-                                            width: 40,
-                                            height: 40,
-                                            backgroundColor: theme.palette.primary.main,
-                                            borderRadius: '50%',
-                                            cursor: 'pointer',
-                                            border: '2px solid white',
-                                            boxShadow: `0 0 0 2px ${theme.palette.primary.main}`
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <Box
-                                        sx={{
-                                            width: 40,
-                                            height: 40,
-                                            backgroundColor: '#5466ff',
-                                            borderRadius: '50%',
-                                            cursor: 'pointer'
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <Box
-                                        sx={{
-                                            width: 40,
-                                            height: 40,
-                                            backgroundColor: '#00c853',
-                                            borderRadius: '50%',
-                                            cursor: 'pointer'
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <Box
-                                        sx={{
-                                            width: 40,
-                                            height: 40,
-                                            backgroundColor: '#ff3b30',
-                                            borderRadius: '50%',
-                                            cursor: 'pointer'
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item>
-                                    <Box
-                                        sx={{
-                                            width: 40,
-                                            height: 40,
-                                            backgroundColor: '#ffcc00',
-                                            borderRadius: '50%',
-                                            cursor: 'pointer'
-                                        }}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </Paper>
+                        </GlassySectionCard>
                     </Grid>
                 </Grid>
             </TabPanel>
@@ -258,17 +225,7 @@ const SettingsPage = () => {
             <TabPanel value={value} index={2}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Paper
-                            elevation={0}
-                            sx={{
-                                p: 3,
-                                backgroundColor:
-                                    theme.palette.mode === 'dark'
-                                        ? theme.palette.dark?.main || theme.palette.background.default
-                                        : theme.palette.grey[50],
-                                borderRadius: 2
-                            }}
-                        >
+                        <GlassySectionCard>
                             <Typography variant='h4' gutterBottom>
                                 API Keys
                             </Typography>
@@ -308,7 +265,7 @@ const SettingsPage = () => {
                                     </Button>
                                 </Grid>
                             </Grid>
-                        </Paper>
+                        </GlassySectionCard>
                     </Grid>
                 </Grid>
             </TabPanel>
@@ -317,17 +274,7 @@ const SettingsPage = () => {
             <TabPanel value={value} index={3}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Paper
-                            elevation={0}
-                            sx={{
-                                p: 3,
-                                backgroundColor:
-                                    theme.palette.mode === 'dark'
-                                        ? theme.palette.dark?.main || theme.palette.background.default
-                                        : theme.palette.grey[50],
-                                borderRadius: 2
-                            }}
-                        >
+                        <GlassySectionCard>
                             <Typography variant='h4' gutterBottom>
                                 Notification Settings
                             </Typography>
@@ -338,7 +285,7 @@ const SettingsPage = () => {
                             <FormControlLabel control={<Switch color='primary' />} label='SMS Notifications' />
                             <FormControlLabel control={<Switch defaultChecked color='primary' />} label='Chat Flow Updates' />
                             <FormControlLabel control={<Switch defaultChecked color='primary' />} label='System Notifications' />
-                        </Paper>
+                        </GlassySectionCard>
                     </Grid>
                 </Grid>
             </TabPanel>
@@ -347,17 +294,7 @@ const SettingsPage = () => {
             <TabPanel value={value} index={4}>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Paper
-                            elevation={0}
-                            sx={{
-                                p: 3,
-                                backgroundColor:
-                                    theme.palette.mode === 'dark'
-                                        ? theme.palette.dark?.main || theme.palette.background.default
-                                        : theme.palette.grey[50],
-                                borderRadius: 2
-                            }}
-                        >
+                        <GlassySectionCard>
                             <Typography variant='h4' gutterBottom>
                                 Security Settings
                             </Typography>
@@ -390,12 +327,18 @@ const SettingsPage = () => {
                             <Typography variant='body2' color='textSecondary' sx={{ mt: 1 }}>
                                 Improve your account security by enabling two-factor authentication.
                             </Typography>
-                        </Paper>
+                        </GlassySectionCard>
                     </Grid>
                 </Grid>
             </TabPanel>
-        </MainCard>
+        </GlassyMainCard>
     )
+}
+
+SettingsPage.propTypes = {
+    children: PropTypes.node,
+    value: PropTypes.any,
+    index: PropTypes.number
 }
 
 export default SettingsPage

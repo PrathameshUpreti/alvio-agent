@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 
 import { Card, Box, Typography, Button, Switch, OutlinedInput, Popover, Stack, IconButton } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 
 // Project import
 import { StyledButton } from '@/ui-component/button/StyledButton'
@@ -43,6 +44,37 @@ const defaultConfig = {
         sendButtonColor: '#3B81F6'
     }
 }
+
+const GlassyCard = styled(Card)(({ theme }) => ({
+    background: theme.palette.mode === 'dark' ? 'rgba(30,34,44,0.85)' : 'rgba(255,255,255,0.85)',
+    backdropFilter: 'blur(10px)',
+    borderRadius: 18,
+    boxShadow: theme.shadows[24],
+    border: `1px solid ${theme.palette.divider}`,
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(3)
+}))
+const LinkPill = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    background: theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light,
+    color: theme.palette.getContrastText(theme.palette.primary.main),
+    borderRadius: 999,
+    padding: '8px 20px',
+    fontWeight: 600,
+    fontSize: 16,
+    boxShadow: theme.shadows[2],
+    marginRight: theme.spacing(2),
+    transition: 'background 0.2s'
+}))
+const GlassyPopover = styled(Popover)(({ theme }) => ({
+    '& .MuiPaper-root': {
+        background: theme.palette.mode === 'dark' ? 'rgba(30,34,44,0.95)' : 'rgba(255,255,255,0.95)',
+        borderRadius: 14,
+        boxShadow: theme.shadows[24],
+        padding: theme.spacing(2)
+    }
+}))
 
 const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
     const dispatch = useDispatch()
@@ -414,19 +446,8 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
 
     return (
         <>
-            <Stack direction='row'>
-                <Typography
-                    sx={{
-                        p: 1,
-                        borderRadius: 10,
-                        backgroundColor: theme.palette.primary.light,
-                        width: 'max-content',
-                        height: 'max-content'
-                    }}
-                    variant='h5'
-                >
-                    {`${baseURL}/chatbot/${chatflowid}`}
-                </Typography>
+            <Stack direction='row' alignItems='center' spacing={2} sx={{ mb: 2 }}>
+                <LinkPill>{`${baseURL}/chatbot/${chatflowid}`}</LinkPill>
                 <IconButton
                     title='Copy Link'
                     color='success'
@@ -437,14 +458,15 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
                             handleCloseCopyPopOver()
                         }, 1500)
                     }}
+                    sx={{ ml: 1 }}
                 >
                     <IconCopy />
                 </IconButton>
                 <IconButton title='Open New Tab' color='primary' onClick={() => window.open(`${baseURL}/chatbot/${chatflowid}`, '_blank')}>
                     <IconArrowUpRightCircle />
                 </IconButton>
-                <div style={{ flex: 1 }} />
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ flex: 1 }} />
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Switch
                         checked={isPublicChatflow}
                         onChange={(event) => {
@@ -457,10 +479,10 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
                         style={{ marginLeft: 10 }}
                         title={'Making public will allow anyone to access the chatbot without username & password'}
                     />
-                </div>
+                </Box>
             </Stack>
 
-            <Card sx={{ borderColor: theme.palette.primary[200] + 75, p: 3, mt: 2 }} variant='outlined'>
+            <GlassyCard>
                 <Stack sx={{ mt: 1, mb: 2, alignItems: 'center' }} direction='row' spacing={2}>
                     <Typography variant='h4'>Title Settings</Typography>
                 </Stack>
@@ -474,9 +496,9 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
                 )}
                 {colorField(titleBackgroundColor, 'titleBackgroundColor', 'Title Background Color')}
                 {colorField(titleTextColor, 'titleTextColor', 'Title TextColor')}
-            </Card>
+            </GlassyCard>
 
-            <Card sx={{ borderColor: theme.palette.primary[200] + 75, p: 3, mt: 2 }} variant='outlined'>
+            <GlassyCard>
                 <Stack sx={{ mt: 1, mb: 2, alignItems: 'center' }} direction='row' spacing={2}>
                     <Typography variant='h4'>General Settings</Typography>
                 </Stack>
@@ -489,9 +511,9 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
                 {booleanField(renderHTML, 'renderHTML', 'Render HTML on the chat')}
                 {isSessionMemory &&
                     booleanField(generateNewSession, 'generateNewSession', 'Start new session when chatbot link is opened or refreshed')}
-            </Card>
+            </GlassyCard>
 
-            <Card sx={{ borderColor: theme.palette.primary[200] + 75, p: 3, mt: 2 }} variant='outlined'>
+            <GlassyCard>
                 <Stack sx={{ mt: 1, mb: 2, alignItems: 'center' }} direction='row' spacing={2}>
                     <Typography variant='h4'>Bot Message</Typography>
                 </Stack>
@@ -505,9 +527,9 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
                     `https://raw.githubusercontent.com/zahidkhawaja/langchain-chat-nextjs/main/public/parroticon.png`
                 )}
                 {booleanField(botMessageShowAvatar, 'botMessageShowAvatar', 'Show Avatar')}
-            </Card>
+            </GlassyCard>
 
-            <Card sx={{ borderColor: theme.palette.primary[200] + 75, p: 3, mt: 2 }} variant='outlined'>
+            <GlassyCard>
                 <Stack sx={{ mt: 1, mb: 2, alignItems: 'center' }} direction='row' spacing={2}>
                     <Typography variant='h4'>User Message</Typography>
                 </Stack>
@@ -521,9 +543,9 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
                     `https://raw.githubusercontent.com/zahidkhawaja/langchain-chat-nextjs/main/public/usericon.png`
                 )}
                 {booleanField(userMessageShowAvatar, 'userMessageShowAvatar', 'Show Avatar')}
-            </Card>
+            </GlassyCard>
 
-            <Card sx={{ borderColor: theme.palette.primary[200] + 75, p: 3, mt: 2 }} variant='outlined'>
+            <GlassyCard>
                 <Stack sx={{ mt: 1, mb: 2, alignItems: 'center' }} direction='row' spacing={2}>
                     <Typography variant='h4'>Text Input</Typography>
                 </Stack>
@@ -531,7 +553,7 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
                 {colorField(textInputTextColor, 'textInputTextColor', 'Text Color')}
                 {textField(textInputPlaceholder, 'textInputPlaceholder', 'TextInput Placeholder', 'string', `Type question..`)}
                 {colorField(textInputSendButtonColor, 'textInputSendButtonColor', 'TextIntput Send Button Color')}
-            </Card>
+            </GlassyCard>
 
             <StyledButton
                 fullWidth
@@ -546,38 +568,26 @@ const ShareChatbot = ({ isSessionMemory, isAgentCanvas }) => {
             >
                 Save Changes
             </StyledButton>
-            <Popover
+            <GlassyPopover
                 open={openColorPopOver}
                 anchorEl={colorAnchorEl}
                 onClose={handleClosePopOver}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left'
-                }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
             >
                 <SketchPicker color={sketchPickerColor} onChange={(color) => onColorSelected(color.hex)} />
-            </Popover>
-            <Popover
+            </GlassyPopover>
+            <GlassyPopover
                 open={openCopyPopOver}
                 anchorEl={copyAnchorEl}
                 onClose={handleCloseCopyPopOver}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left'
-                }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
             >
-                <Typography variant='h6' sx={{ pl: 1, pr: 1, color: 'white', background: theme.palette.success.dark }}>
+                <Typography variant='h6' sx={{ pl: 1, pr: 1, color: 'white', background: theme.palette.success.dark, borderRadius: 2 }}>
                     Copied!
                 </Typography>
-            </Popover>
+            </GlassyPopover>
         </>
     )
 }

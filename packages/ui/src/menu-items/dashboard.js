@@ -124,6 +124,30 @@ const dashboard = {
             url: '/document-stores',
             icon: icons.IconFiles,
             breadcrumbs: true
+        },
+        {
+            id: 'settings',
+            title: 'Settings',
+            type: 'item',
+            url: '/settings',
+            icon: icons.IconSettings,
+            breadcrumbs: false
+        },
+        {
+            id: 'billing',
+            title: 'Billing & Subscription',
+            type: 'item',
+            url: '/billing',
+            icon: icons.IconShoppingCart, // You may want to use a more appropriate icon
+            breadcrumbs: false
+        },
+        {
+            id: 'signout',
+            title: 'Sign Out',
+            type: 'item',
+            url: '/logout', // This will be handled specially in NavItem
+            icon: icons.IconLock, // You may want to use IconLogout if available
+            breadcrumbs: false
         }
     ]
 }

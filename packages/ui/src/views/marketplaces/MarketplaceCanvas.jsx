@@ -54,54 +54,38 @@ const MarketplaceCanvas = () => {
     }
 
     return (
-        <>
-            <Box>
-                <AppBar
-                    enableColorOnDark
-                    position='fixed'
-                    color='inherit'
-                    elevation={1}
-                    sx={{
-                        bgcolor: theme.palette.background.default
-                    }}
-                >
-                    <Toolbar>
-                        <MarketplaceCanvasHeader
-                            flowName={name}
-                            flowData={JSON.parse(flowData)}
-                            onChatflowCopy={(flowData) => onChatflowCopy(flowData)}
+        <Box sx={{ bgcolor: theme.palette.background.default, minHeight: '100vh', width: '100%' }}>
+            <AppBar position='fixed' color='inherit' elevation={1} sx={{ bgcolor: theme.palette.background.paper }}>
+                <Toolbar>
+                    <MarketplaceCanvasHeader flowName={name} flowData={JSON.parse(flowData)} onChatflowCopy={onChatflowCopy} />
+                </Toolbar>
+            </AppBar>
+            <Box sx={{ pt: '70px', height: '100vh', width: '100%' }}>
+                <Box ref={reactFlowWrapper} sx={{ height: '100%', width: '100%' }}>
+                    <ReactFlow
+                        nodes={nodes}
+                        edges={edges}
+                        onNodesChange={onNodesChange}
+                        onEdgesChange={onEdgesChange}
+                        nodesDraggable={false}
+                        nodeTypes={nodeTypes}
+                        edgeTypes={edgeTypes}
+                        fitView
+                        minZoom={0.1}
+                    >
+                        <Controls
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)'
+                            }}
                         />
-                    </Toolbar>
-                </AppBar>
-                <Box sx={{ pt: '70px', height: '100vh', width: '100%' }}>
-                    <div className='reactflow-parent-wrapper'>
-                        <div className='reactflow-wrapper' ref={reactFlowWrapper}>
-                            <ReactFlow
-                                nodes={nodes}
-                                edges={edges}
-                                onNodesChange={onNodesChange}
-                                onEdgesChange={onEdgesChange}
-                                nodesDraggable={false}
-                                nodeTypes={nodeTypes}
-                                edgeTypes={edgeTypes}
-                                fitView
-                                minZoom={0.1}
-                            >
-                                <Controls
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        left: '50%',
-                                        transform: 'translate(-50%, -50%)'
-                                    }}
-                                />
-                                <Background color='#aaa' gap={16} />
-                            </ReactFlow>
-                        </div>
-                    </div>
+                        <Background color={theme.palette.mode === 'dark' ? '#232627' : '#e0e0e0'} gap={16} />
+                    </ReactFlow>
                 </Box>
             </Box>
-        </>
+        </Box>
     )
 }
 

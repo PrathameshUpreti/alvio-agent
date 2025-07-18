@@ -6,7 +6,7 @@ import { styled } from '@mui/material/styles'
 
 // Project imports
 import GradientDialogWrapper from './GradientDialogWrapper'
-import { StyledPaper } from './DialogStyles'
+import { ModernStyledPaper as StyledPaper } from './DialogStyles'
 
 // Components
 import SpeechToText from '@/ui-component/extended/SpeechToText'

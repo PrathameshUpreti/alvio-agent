@@ -66,24 +66,53 @@ const ConnectionLine = ({ fromX, fromY, toX, toY, fromPosition, toPosition }) =>
     const color =
         AGENTFLOW_ICONS.find((icon) => icon.name === (connectionHandleId || '').split('_')[0] || '')?.color ?? theme.palette.primary.main
 
+    const gradientId = `connection-gradient`
     return (
         <g>
-            <path fill='none' stroke={color} strokeWidth={1.5} className='animated' d={edgePath} />
+            <defs>
+                <linearGradient id={gradientId} x1='0' y1='0' x2='1' y2='1'>
+                    <stop offset='0%' stopColor={theme.palette.primary.main} />
+                    <stop offset='100%' stopColor={theme.palette.secondary.main} />
+                </linearGradient>
+            </defs>
+            <path
+                fill='none'
+                stroke={`url(#${gradientId})`}
+                strokeWidth={3}
+                className='animated'
+                d={edgePath}
+                style={{ filter: 'drop-shadow(0 0 8px #C837AB)' }}
+            />
             <g transform={`translate(${toX - 10}, ${toY - 10}) scale(0.8)`}>
                 <path stroke='none' d='M0 0h24v24H0z' fill='none' />
                 <path
                     d='M12 2c5.523 0 10 4.477 10 10a10 10 0 0 1 -20 0c0 -5.523 4.477 -10 10 -10m-.293 6.293a1 1 0 0 0 -1.414 0l-.083 .094a1 1 0 0 0 .083 1.32l2.292 2.293l-2.292 2.293a1 1 0 0 0 1.414 1.414l3 -3a1 1 0 0 0 0 -1.414z'
-                    fill={color}
+                    fill={theme.palette.primary.main}
                 />
             </g>
             {isLabelVisible && (
                 <EdgeLabelRenderer>
-                    <EdgeLabel
-                        color={color}
-                        isHumanInput={nodeName === 'humanInputAgentflow'}
-                        label={getEdgeLabel()}
-                        transform={`translate(-50%, 0%) translate(${fromX}px,${fromY}px)`}
-                    />
+                    <div
+                        style={{
+                            position: 'absolute',
+                            left: fromX + 20,
+                            top: fromY - 10,
+                            background: 'rgba(255,255,255,0.85)',
+                            color: theme.palette.primary.main,
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            borderRadius: 16,
+                            boxShadow: '0 2px 8px rgba(141,54,249,0.10)',
+                            padding: '4px 14px',
+                            border: `1.5px solid ${theme.palette.secondary.main}`,
+                            zIndex: 1000,
+                            pointerEvents: 'none',
+                            filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.10))'
+                        }}
+                        className='nodrag nopan'
+                    >
+                        {getEdgeLabel()}
+                    </div>
                 </EdgeLabelRenderer>
             )}
         </g>

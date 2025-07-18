@@ -18,8 +18,8 @@ const MainCard = forwardRef(function MainCard(
         content = true,
         contentClass = '',
         contentSX = {
-            px: 2,
-            py: 0
+            px: 1,
+            py: 0.5
         },
         darkTitle,
         secondary,

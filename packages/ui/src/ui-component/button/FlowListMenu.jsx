@@ -53,11 +53,14 @@ const StyledMenu = styled((props) => (
     />
 ))(({ theme }) => ({
     '& .MuiPaper-root': {
-        borderRadius: 6,
+        borderRadius: 12,
         marginTop: theme.spacing(1),
         minWidth: 180,
-        boxShadow:
-            'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+        boxShadow: theme.shadows[4],
+        background: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+        border: `1px solid ${theme.palette.divider}`,
+        zIndex: 1500,
         '& .MuiMenu-list': {
             padding: '4px 0'
         },
